@@ -8,7 +8,9 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
+
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Constants;
 
@@ -18,8 +20,8 @@ public class Drivetrain extends SubsystemBase {
 
   public Drivetrain() {
 
-    PWMVictorSPX leftMotors = new PWMVictorSPX(Constants.leftMotorsPWM);
-    PWMVictorSPX rightMotors = new PWMVictorSPX(Constants.rightMotorsPWM);
+    WPI_TalonSRX leftMotors = new WPI_TalonSRX(Constants.leftMotorsPWM);
+    WPI_TalonSRX rightMotors = new WPI_TalonSRX(Constants.rightMotorsPWM);
     leftMotors.setInverted(true);
     rightMotors.setInverted(true);
     this.differentialDrive = new DifferentialDrive(leftMotors, rightMotors);

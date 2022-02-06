@@ -13,11 +13,14 @@ package frc.robot;
  */
 public final class Constants {
 
-  public static final int leftMotorsPWM = 1;
-  public static final int rightMotorsPWM = 0;
-  public static final int leftIntakeMotorPWM = 2;
+  public static final int driveRearLeftCAN = 1;
+  public static final int driveFrontLeftCAN = 4;
+  public static final int driveRearRightCAN = 2;
+  public static final int driveFrontRightCAN = 3;
+
+  public static final int leftIntakeMotorPWM = 4;
   public static final int rightIntakeMotorPWM = 2;
-  public static final int armMotorPWM = 4;
+  public static final int armMotorPWM = 1; // disconnected pwm
   public static final int climberMotorPWM = 3;
 
   public static final int shootingCamera = 0;

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import frc.robot.Constants;
 
 public class Drivetrain extends SubsystemBase {
@@ -20,10 +21,15 @@ public class Drivetrain extends SubsystemBase {
 
   public Drivetrain() {
 
-    WPI_TalonSRX leftMotors = new WPI_TalonSRX(Constants.leftMotorsPWM);
-    WPI_TalonSRX rightMotors = new WPI_TalonSRX(Constants.rightMotorsPWM);
+    WPI_TalonSRX driveRearLeftMotor = new WPI_TalonSRX(Constants.driveRearLeftCAN);
+    WPI_TalonSRX driveFrontLeftMotor = new WPI_TalonSRX(Constants.driveFrontLeftCAN);
+    WPI_TalonSRX driveRearRightMotor = new WPI_TalonSRX(Constants.driveRearRightCAN);
+    WPI_TalonSRX driveFrontRightMotor = new WPI_TalonSRX(Constants.driveFrontRightCAN);
+
+    MotorControllerGroup leftMotors = new MotorControllerGroup(driveFrontLeftMotor, driveRearLeftMotor);
+    MotorControllerGroup rightMotors = new MotorControllerGroup(driveFrontRightMotor, driveRearRightMotor);
     leftMotors.setInverted(true);
-    rightMotors.setInverted(true);
+    rightMotors.setInverted(false);
     this.differentialDrive = new DifferentialDrive(leftMotors, rightMotors);
   }
 

@@ -7,12 +7,15 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.sensors.Pigeon2;
 
 import frc.robot.Constants;
 
@@ -24,8 +27,12 @@ public class Drivetrain extends SubsystemBase {
   TalonSRX driveRearRightMotor = new TalonSRX(Constants.driveRearRightCAN);
   TalonSRX driveFrontRightMotor = new TalonSRX(Constants.driveFrontRightCAN);
 
+  Pigeon2 pigeonGyro = new Pigeon2(Constants.pigeonCAN);
+
   DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
       Units.inchesToMeters(Constants.trackWidthInInches));
+  
+  DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(getRotation());
 
   public Drivetrain() {
 
@@ -45,6 +52,11 @@ public class Drivetrain extends SubsystemBase {
     // TODO: also could just try using the version of tankDrive that takes a 3rd argument true to decrease sensitivity at low speeds
     driveFrontLeftMotor.set(TalonSRXControlMode.PercentOutput, leftPercent);
     driveFrontRightMotor.set(TalonSRXControlMode.PercentOutput, rightPercent);    
+  }
+
+  public Rotation2d getRotation() {
+    // TODO: confirm that this needs to be negative for the unit circle nonsense
+    return Rotation2d.fromDegrees(-1 * pigeonGyro.getYaw());
   }
 
 }

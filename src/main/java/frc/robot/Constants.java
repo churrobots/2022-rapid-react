@@ -22,6 +22,8 @@ public final class Constants {
 
   public static final double trackWidthInInches = 22.0;
 
+  public static final int pigeonCAN = 5;
+
   public static final int leftIntakeMotorPWM = 4;
   public static final int rightIntakeMotorPWM = 2;
   public static final int armMotorPWM = 1; // disconnected pwm

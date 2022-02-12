@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -28,6 +29,8 @@ public class Drivetrain extends SubsystemBase {
   TalonSRX driveFrontRightMotor = new TalonSRX(Constants.driveFrontRightCAN);
 
   Pigeon2 pigeonGyro = new Pigeon2(Constants.pigeonCAN);
+
+  RamseteController controller = new RamseteController(Constants.ramseteB, Constants.ramseteZeta);
 
   DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
       Units.inchesToMeters(Constants.trackWidthInInches));

@@ -21,6 +21,8 @@ public final class Constants {
   public static final boolean rightIsInverted = false;
 
   public static final double trackWidthInInches = 22.0;
+  public static final double ramseteB = 2.0;
+  public static final double ramseteZeta = 0.7;
 
   public static final int pigeonCAN = 5;
 

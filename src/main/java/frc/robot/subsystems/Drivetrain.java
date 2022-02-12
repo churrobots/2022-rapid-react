@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
@@ -21,6 +23,9 @@ public class Drivetrain extends SubsystemBase {
 
   TalonSRX driveRearRightMotor = new TalonSRX(Constants.driveRearRightCAN);
   TalonSRX driveFrontRightMotor = new TalonSRX(Constants.driveFrontRightCAN);
+
+  DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
+      Units.inchesToMeters(Constants.trackWidthInInches));
 
   public Drivetrain() {
 

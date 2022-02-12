@@ -17,6 +17,10 @@ public final class Constants {
   public static final int driveFrontLeftCAN = 4;
   public static final int driveRearRightCAN = 2;
   public static final int driveFrontRightCAN = 3;
+  public static final boolean leftIsInverted = true;
+  public static final boolean rightIsInverted = false;
+
+  public static final double trackWidthInInches = 22.0;
 
   public static final int leftIntakeMotorPWM = 4;
   public static final int rightIntakeMotorPWM = 2;

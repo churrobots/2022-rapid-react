@@ -17,7 +17,7 @@ public class PowerCellHandler extends SubsystemBase {
   PWMVictorSPX rightIntakeMotor = new PWMVictorSPX(Constants.rightIntakeMotorPWM);
 
   public void runPowercellMotor(double leftSpeed, double rightSpeed) {
-    leftIntakeMotor.set(leftSpeed);
+    leftIntakeMotor.set(-1 * leftSpeed);
     rightIntakeMotor.set(rightSpeed);
   }
 }

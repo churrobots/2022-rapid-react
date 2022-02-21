@@ -7,59 +7,138 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.sensors.WPI_CANCoder;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import frc.robot.Constants;
 
 public class Drivetrain extends SubsystemBase {
 
-  TalonSRX driveRearLeftMotor = new TalonSRX(Constants.driveRearLeftCAN);
-  TalonSRX driveFrontLeftMotor = new TalonSRX(Constants.driveFrontLeftCAN);
+  private final NetworkTable stats = NetworkTableInstance.getDefault().getTable("Drivetrain");
+  private final NetworkTableEntry statsRotation = stats.getEntry("rotation");
+  private final NetworkTableEntry statsX = stats.getEntry("x");
+  private final NetworkTableEntry statsY = stats.getEntry("y");
 
-  TalonSRX driveRearRightMotor = new TalonSRX(Constants.driveRearRightCAN);
-  TalonSRX driveFrontRightMotor = new TalonSRX(Constants.driveFrontRightCAN);
+  private final WPI_TalonFX leftFollower = new WPI_TalonFX(Constants.falconRearLeftCAN);
+  private final WPI_TalonFX leftLeader = new WPI_TalonFX(Constants.falconFrontLeftCAN);
 
-  Pigeon2 pigeonGyro = new Pigeon2(Constants.pigeonCAN);
+  private final WPI_TalonFX rightFollower = new WPI_TalonFX(Constants.falconRearRightCAN);
+  private final WPI_TalonFX rightLeader = new WPI_TalonFX(Constants.falconFrontRightCAN);
 
-  RamseteController controller = new RamseteController(Constants.ramseteB, Constants.ramseteZeta);
+  private final WPI_Pigeon2 pigeonGyro = new WPI_Pigeon2(Constants.pigeonCAN);
 
-  DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
+  // TODO: figure out what these constants mean
+  private final PIDController leftPIDController = new PIDController(1, 0, 0);
+  private final PIDController rightPIDController = new PIDController(1, 0, 0);
+  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(1, 3);
+
+  private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
       Units.inchesToMeters(Constants.trackWidthInInches));
-  
-  DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(getRotation());
+
+  private final DifferentialDriveOdometry odometry;
+
+  // TODO: revisit trajectory-following, and figure out where they got the "recommended" 2.0 and 0.7
+  // https://github.com/wpilibsuite/allwpilib/tree/main/wpilibjExamples/src/main/java/edu/wpi/first/wpilibj/examples/ramsetecontroller
+  // private final RamseteController controller = new RamseteController(2.0, 0.7);
 
   public Drivetrain() {
 
-    driveRearLeftMotor.setInverted(Constants.leftIsInverted);
-    driveFrontLeftMotor.setInverted(Constants.leftIsInverted);
-    driveRearLeftMotor.follow(driveFrontLeftMotor);
+    leftLeader.configFactoryDefault();
+    leftLeader.setInverted(Constants.leftFalconsAreInverted);
+    leftLeader.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
-    driveRearRightMotor.setInverted(Constants.rightIsInverted);
-    driveFrontRightMotor.setInverted(Constants.rightIsInverted);
-    driveRearRightMotor.follow(driveFrontRightMotor);
+    rightLeader.configFactoryDefault();
+    rightLeader.setInverted(Constants.rightFalconsAreInverted);
+    rightLeader.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+
+    leftFollower.configFactoryDefault();
+    leftFollower.follow(leftLeader);
+    leftFollower.setInverted(InvertType.FollowMaster);
+
+    rightFollower.configFactoryDefault();
+    rightFollower.follow(rightLeader);
+    rightFollower.setInverted(InvertType.FollowMaster);
+
+    pigeonGyro.configFactoryDefault();
+
+    // FIXME: need set an initial Pose based on which starting position we chose
+    odometry = new DifferentialDriveOdometry(getHeading());
+
+    resetSensors();
+  }
+
+  public void resetSensors() {
+    leftLeader.setSelectedSensorPosition(0);
+    rightLeader.setSelectedSensorPosition(0);
+    pigeonGyro.reset();
+  }
+
+  public void driveWithMetersPerSecond(double leftTargetMetersPerSecond, double rightTargetMetersPerSecond) {
+
+    double leftFeedforward = feedforward.calculate(leftTargetMetersPerSecond);
+    double leftActualSensorCountsPerSecond = leftLeader.getSelectedSensorVelocity();
+    double leftActualMetersPerSecond = convertSensorCountsToDistanceInMeters(leftActualSensorCountsPerSecond);
+    double leftOutput = leftPIDController.calculate(leftActualMetersPerSecond, leftTargetMetersPerSecond);
+    leftLeader.setVoltage(leftOutput + leftFeedforward);
+
+    double rightFeedforward = feedforward.calculate(rightTargetMetersPerSecond);
+    double rightActualSensorCountsPerSecond = rightLeader.getSelectedSensorVelocity();
+    double rightActualMetersPerSecond = convertSensorCountsToDistanceInMeters(rightActualSensorCountsPerSecond);
+    double rightOutput = rightPIDController.calculate(rightActualMetersPerSecond, rightTargetMetersPerSecond);
+    rightLeader.setVoltage(rightOutput + rightFeedforward);
 
   }
 
-  public void tankDrive(double leftPercent, double rightPercent) {
+  public void driveWithPercentages(double leftPercent, double rightPercent) {
     // TODO: consider filtering for smoother joystick driving
     // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/filters/slew-rate-limiter.html
     // TODO: also could just try using the version of tankDrive that takes a 3rd argument true to decrease sensitivity at low speeds
-    driveFrontLeftMotor.set(TalonSRXControlMode.PercentOutput, leftPercent);
-    driveFrontRightMotor.set(TalonSRXControlMode.PercentOutput, rightPercent);    
+    leftLeader.set(leftPercent);
+    rightLeader.set(rightPercent);    
   }
 
-  public Rotation2d getRotation() {
-    // TODO: confirm that this needs to be negative for the unit circle nonsense
-    return Rotation2d.fromDegrees(-1 * pigeonGyro.getYaw());
+  @Override
+  public void periodic() {
+    Rotation2d heading = getHeading();
+    double leftDistanceInMeters = convertSensorCountsToDistanceInMeters(leftLeader.getSelectedSensorPosition());
+    double rightDistanceInMeters = convertSensorCountsToDistanceInMeters(rightLeader.getSelectedSensorPosition());
+    odometry.update(heading, leftDistanceInMeters, rightDistanceInMeters);
+    Pose2d pose = odometry.getPoseMeters();
+    statsRotation.setDouble(pose.getRotation().getRadians());
+    statsX.setDouble(pose.getX());
+    statsY.setDouble(pose.getY());
+  }
+
+  private Rotation2d getHeading() {
+    // TODO: confirm whether this needs to be negative for the unit circle nonsense
+    return pigeonGyro.getRotation2d();
+  }
+
+  private double convertSensorCountsToDistanceInMeters(double sensorCounts) {
+    double motorRotations = (double) sensorCounts / Constants.sensorUnitsPerRevolution;
+    double wheelRotations = motorRotations / Constants.driveGearRatio;
+    double inchesOfRotation = wheelRotations * Constants.driveWheelCircumferenceInInches;
+    return Units.inchesToMeters(inchesOfRotation);
   }
 
 }

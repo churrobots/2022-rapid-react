@@ -13,20 +13,29 @@ package frc.robot;
  */
 public final class Constants {
 
-  public static final int driveRearLeftCAN = 1;
-  public static final int driveFrontLeftCAN = 4;
-  public static final int driveRearRightCAN = 2;
-  public static final int driveFrontRightCAN = 3;
+  public static final int falconRearLeftCAN = 1;
+  public static final int falconFrontLeftCAN = 4;
+  public static final int falconRearRightCAN = 2;
+  public static final int falconFrontRightCAN = 3;
+  public static final boolean leftFalconsAreInverted = true;
+  public static final boolean rightFalconsAreInverted = false;
 
-  public static final int leftIntakeMotorPWM = 4;
-  public static final int rightIntakeMotorPWM = 2;
-  public static final int armMotorPWM = 1; // disconnected pwm
-  public static final int climberMotorPWM = 3;
+  // The Falcon 500s have a Talon FX Integrated sensor, which is rated for 2048 units per rotation:
+  // https://docs.ctre-phoenix.com/en/latest/ch14_MCSensor.html#sensor-resolution
+  public static final int sensorUnitsPerRevolution = 2048;
 
-  public static final int shootingCamera = 0;
-  public static final int climberCamera = 1;
+  public static final double driveWheelCircumferenceInInches = 18.75;
+  public static final double trackWidthInInches = 22.0;
+  public static final double driveGearRatio = 7.31;
+
+  // TODO: look into MotionMagic for the Arm
+  // https://docs.ctre-phoenix.com/en/latest/ch16_ClosedLoop.html#motion-magic-control-mode
+
+  public static final int pigeonCAN = 5;
 
   public static final int driverGamepadPort = 0;
   public static final int operatorGamepadPort = 1;
+
+  public static final double maxNonBoostDrivePower = 0.7;
 
 }

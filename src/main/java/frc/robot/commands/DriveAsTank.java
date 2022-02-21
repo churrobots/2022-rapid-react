@@ -7,7 +7,7 @@
 
 package frc.robot.commands;
 
-import frc.robot.Tuner;
+import frc.robot.Constants;
 import frc.robot.helpers.Gamepad.Axis;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -36,13 +36,13 @@ public class DriveAsTank extends CommandBase {
 
   @Override
   public void execute() {
-    double normalSpeed = Tuner.getMaxNonBoostDrivePower();
+    double normalSpeed = Constants.maxNonBoostDrivePower;
     double maxBoost = 1 - normalSpeed;
     double boost = boostAxis.get() * maxBoost;
     double maxSpeed = normalSpeed + (maxBoost * boost);
     double leftSpeed = this.leftAxis.get() * maxSpeed;
     double rightSpeed = this.rightAxis.get() * maxSpeed;
-    this.drivetrainSubsystem.tankDrive(leftSpeed, rightSpeed);
+    this.drivetrainSubsystem.driveWithPercentages(leftSpeed, rightSpeed);
   }
 
   @Override

@@ -4,12 +4,14 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
 import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class IntakeLeft extends SubsystemBase {
-  private final PWMVictorSPX leftRollerMotor = new PWMVictorSPX(Constants.leftRollerMotorPWM);
+  private final WPI_VictorSPX leftRollerMotor = new WPI_VictorSPX(Constants.leftRollerMotorCAN);
   /** Creates a new Intake. */
   public IntakeLeft() {
     leftRollerMotor.setInverted(Constants.leftRollerMotorIsInverted);

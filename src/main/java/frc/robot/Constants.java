@@ -22,8 +22,9 @@ public final class Constants {
   public static final boolean leftFalconsAreInverted = true;
   public static final boolean rightFalconsAreInverted = false;
 
-  public static final int leftRollerMotorPWM = 0;
-  public static final int rightRollerMotorPWM = 1;
+  //left and right Roller motors are inverted on the tuner
+  public static final int leftRollerMotorCAN= 7;
+  public static final int rightRollerMotorCAN = 8;
   public static final int armSensorDIO = 0; 
   public static final boolean leftRollerMotorIsInverted = true;
   public static final boolean rightRollerMotorIsInverted = false;

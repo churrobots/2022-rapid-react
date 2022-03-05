@@ -36,13 +36,11 @@ public class DriveAsTank extends CommandBase {
 
   @Override
   public void execute() {
-    double normalSpeed = Constants.maxNonBoostDrivePower;
-    double maxBoost = 1 - normalSpeed;
-    double boost = boostAxis.get() * maxBoost;
-    double maxSpeed = normalSpeed + (maxBoost * boost);
-    double leftSpeed = this.leftAxis.get() * maxSpeed;
-    double rightSpeed = this.rightAxis.get() * maxSpeed;
-    this.drivetrainSubsystem.driveWithPercentages(leftSpeed, rightSpeed);
+    double leftMetersPerSecond = 6 * leftAxis.get();
+    double rightMetersPerSecond = 6 * rightAxis.get();
+    this.drivetrainSubsystem.driveWithMetersPerSecond(leftMetersPerSecond, rightMetersPerSecond);
+
+
   }
 
   @Override

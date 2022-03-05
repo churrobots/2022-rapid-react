@@ -8,7 +8,16 @@
 package frc.robot;
 
 import frc.robot.commands.DriveAsTank;
+import frc.robot.commands.EjectLeft;
+import frc.robot.commands.EjectRight;
+import frc.robot.commands.MoveArmDown;
+import frc.robot.commands.MoveArmUp;
+import frc.robot.commands.ResetDrivetrainSensors;
+import frc.robot.commands.Vacuum;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.IntakeLeft;
+import frc.robot.subsystems.IntakeRight;
 import frc.robot.commands.AutoDriveOffTarmac;
 import frc.robot.helpers.Gamepad;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,7 +31,6 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
 
-  public final Command autonomousCommand;
   public final Command driveOffTarmac;
 
   public RobotContainer() {
@@ -36,12 +44,20 @@ public class RobotContainer {
 
     // Connect to all the outputs.
     Drivetrain drivetrain = new Drivetrain();
+    IntakeLeft polterLeftGust3000 = new IntakeLeft();
+    IntakeRight polterRightGust3000 = new IntakeRight();
+    Arm muscleArm = new Arm();
 
     // Describe when the commands should be scheduled.
     this.driveOffTarmac = new AutoDriveOffTarmac(drivetrain);
 
     drivetrain.setDefaultCommand(new DriveAsTank(drivetrain, driverGamepad.leftYAxis, driverGamepad.rightYAxis,
         driverGamepad.rightAnalogTrigger));
+    operatorGamepad.bButton.whenHeld(new Vacuum(polterLeftGust3000, polterRightGust3000));
+    operatorGamepad.leftBumper.whenHeld(new EjectLeft(polterLeftGust3000));
+    operatorGamepad.rightBumper.whenHeld(new EjectRight(polterRightGust3000));
+    operatorGamepad.povUp.whenHeld(new MoveArmUp(muscleArm));
+    operatorGamepad.povDown.whenHeld(new MoveArmDown(muscleArm));
   }
 
   public Command getAutonomousCommand() {

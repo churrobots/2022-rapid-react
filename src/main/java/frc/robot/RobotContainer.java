@@ -12,7 +12,6 @@ import frc.robot.commands.EjectLeft;
 import frc.robot.commands.EjectRight;
 import frc.robot.commands.MoveArmDown;
 import frc.robot.commands.MoveArmUp;
-import frc.robot.commands.ResetDrivetrainSensors;
 import frc.robot.commands.Vacuum;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;

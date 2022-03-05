@@ -41,6 +41,7 @@ public class Drivetrain extends SubsystemBase {
   private final NetworkTableEntry statsLeftEncoder = stats.getEntry("leftEncoder");
   private final NetworkTableEntry statsRightEncoder = stats.getEntry("rightEncoder");
 
+
   private final WPI_TalonFX leftFollower = new WPI_TalonFX(Constants.falconRearLeftCAN);
   private final WPI_TalonFX leftLeader = new WPI_TalonFX(Constants.falconFrontLeftCAN);
 

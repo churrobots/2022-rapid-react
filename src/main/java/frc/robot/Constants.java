@@ -24,6 +24,7 @@ public final class Constants {
 
   public static final int leftRollerMotorPWM = 0;
   public static final int rightRollerMotorPWM = 1;
+  public static final int armSensorDIO = 0; 
   public static final boolean leftRollerMotorIsInverted = true;
   public static final boolean rightRollerMotorIsInverted = false;
   // The Falcon 500s have a Talon FX Integrated sensor, which is rated for 2048 units per rotation:

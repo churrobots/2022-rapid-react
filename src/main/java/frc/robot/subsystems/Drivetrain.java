@@ -38,20 +38,22 @@ public class Drivetrain extends SubsystemBase {
   private final NetworkTableEntry statsRotation = stats.getEntry("rotation");
   private final NetworkTableEntry statsX = stats.getEntry("x");
   private final NetworkTableEntry statsY = stats.getEntry("y");
+  private final NetworkTableEntry statsLeftEncoder = stats.getEntry("leftEncoder");
+  private final NetworkTableEntry statsRightEncoder = stats.getEntry("rightEncoder");
 
   private final WPI_TalonFX leftFollower = new WPI_TalonFX(Constants.falconRearLeftCAN);
   private final WPI_TalonFX leftLeader = new WPI_TalonFX(Constants.falconFrontLeftCAN);
 
-  private final WPI_TalonFX rightFollower = new WPI_TalonFX(Constants.falconRearRightCAN);
-  private final WPI_TalonFX rightLeader = new WPI_TalonFX(Constants.falconFrontRightCAN);
+  // made the RearRight the leader, FrontRight Encoder is broken 
+  private final WPI_TalonFX rightFollower = new WPI_TalonFX(Constants.falconFrontRightCAN);
+  private final WPI_TalonFX rightLeader = new WPI_TalonFX(Constants.falconRearRightCAN);
 
   private final WPI_Pigeon2 pigeonGyro = new WPI_Pigeon2(Constants.pigeonCAN);
 
   // TODO: figure out what these constants mean
-  private final PIDController leftPIDController = new PIDController(1, 0, 0);
-  private final PIDController rightPIDController = new PIDController(1, 0, 0);
-  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(1, 3);
-
+  private final PIDController leftPIDController = new PIDController(Constants.kP, 0, Constants.kD);
+  private final PIDController rightPIDController = new PIDController(Constants.kP, 0, Constants.kD);
+  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.kS, Constants.kV, Constants.kA);
   private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
       Units.inchesToMeters(Constants.trackWidthInInches));
 
@@ -83,17 +85,20 @@ public class Drivetrain extends SubsystemBase {
 
     // FIXME: need set an initial Pose based on which starting position we chose
     odometry = new DifferentialDriveOdometry(getHeading());
-
-    resetSensors();
+    resetPosition();
   }
 
-  public void resetSensors() {
+  public void resetPosition() {
     leftLeader.setSelectedSensorPosition(0);
     rightLeader.setSelectedSensorPosition(0);
     pigeonGyro.reset();
+    odometry.resetPosition(new Pose2d(0.0, 0.0, getHeading()), getHeading());
   }
 
   public void driveWithMetersPerSecond(double leftTargetMetersPerSecond, double rightTargetMetersPerSecond) {
+
+    // TODO: drive with speed + heading instead?
+    // var wheelSpeeds = kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
 
     double leftFeedforward = feedforward.calculate(leftTargetMetersPerSecond);
     double leftActualSensorCountsPerSecond = leftLeader.getSelectedSensorVelocity();
@@ -123,10 +128,13 @@ public class Drivetrain extends SubsystemBase {
     double leftDistanceInMeters = convertSensorCountsToDistanceInMeters(leftLeader.getSelectedSensorPosition());
     double rightDistanceInMeters = convertSensorCountsToDistanceInMeters(rightLeader.getSelectedSensorPosition());
     odometry.update(heading, leftDistanceInMeters, rightDistanceInMeters);
+    // Show debug information in NetworkTables
     Pose2d pose = odometry.getPoseMeters();
-    statsRotation.setDouble(pose.getRotation().getRadians());
+    statsRotation.setDouble(pose.getRotation().getDegrees());
     statsX.setDouble(pose.getX());
     statsY.setDouble(pose.getY());
+    statsLeftEncoder.setDouble(leftLeader.getSelectedSensorPosition());
+    statsRightEncoder.setDouble(rightLeader.getSelectedSensorPosition());
   }
 
   private Rotation2d getHeading() {
@@ -137,7 +145,7 @@ public class Drivetrain extends SubsystemBase {
   private double convertSensorCountsToDistanceInMeters(double sensorCounts) {
     double motorRotations = (double) sensorCounts / Constants.sensorUnitsPerRevolution;
     double wheelRotations = motorRotations / Constants.driveGearRatio;
-    double inchesOfRotation = wheelRotations * Constants.driveWheelCircumferenceInInches;
+    double inchesOfRotation = wheelRotations * 2 * Math.PI * Constants.driveWheelRadiusInInches;
     return Units.inchesToMeters(inchesOfRotation);
   }
 

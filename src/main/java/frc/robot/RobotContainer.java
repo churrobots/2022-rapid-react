@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class RobotContainer {
 
   public final Command autonomousCommand;
+  public final Command driveOffTarmac;
 
   public RobotContainer() {
 
@@ -37,14 +38,17 @@ public class RobotContainer {
     Drivetrain drivetrain = new Drivetrain();
 
     // Describe when the commands should be scheduled.
-    this.autonomousCommand = new AutoDriveOffTarmac(drivetrain);
+    this.driveOffTarmac = new AutoDriveOffTarmac(drivetrain);
 
     drivetrain.setDefaultCommand(new DriveAsTank(drivetrain, driverGamepad.leftYAxis, driverGamepad.rightYAxis,
         driverGamepad.rightAnalogTrigger));
   }
 
   public Command getAutonomousCommand() {
-    return this.autonomousCommand;
+    // TODO: use the value from the Station chooser
+    // TODO: figure out how to make this reset the encoders onclick in the Station dropdown
+    // TODO: figureo out how to make this initialize the Pose correctly onclick (for auto choices)
+    return this.driveOffTarmac;
   }
 
 }

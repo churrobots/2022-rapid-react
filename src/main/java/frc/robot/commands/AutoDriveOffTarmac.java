@@ -31,8 +31,8 @@ public class AutoDriveOffTarmac extends CommandBase {
   @Override
   public void execute() {
     double howlong = System.currentTimeMillis() - this.startTime;
-    if (howlong < 2000) {
-      this.drivetrain.driveWithPercentages(.5, .5);
+    if (howlong < 1000) {
+      this.drivetrain.driveWithMetersPerSecond(1, 1);
     }
 
   }
@@ -40,7 +40,7 @@ public class AutoDriveOffTarmac extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    this.drivetrain.driveWithPercentages(0, 0);
+    this.drivetrain.driveWithMetersPerSecond(0, 0);
   }
 
   // Returns true when the command should end.

@@ -16,22 +16,19 @@ import frc.robot.helpers.SubsystemInspector;
 
 public class Arm extends SubsystemBase {
   
-  // HACK: just testing out MotionMagic by co-opting the drivetrain right now
-  // private final WPI_TalonFX armMotor = new WPI_TalonFX(Constants.falconArmCAN);
-  private final WPI_TalonFX armMotor = new WPI_TalonFX(Constants.falconFrontLeftCAN);
+  private final WPI_TalonFX armMotor = new WPI_TalonFX(Constants.falconArmCAN);
   private final DigitalInput armSensor = new DigitalInput(Constants.armSensorDIO);
   private boolean didResetEncoderOnce = false;
 
   private final SubsystemInspector inspector = new SubsystemInspector("Arm");
-  
+
   /** Creates a new Arm. */
   public Arm() {
-    // HACK: using the drivetrain to try out MotionMagic, don't fight the other configs it got
-    // armMotor.configFactoryDefault();
-    // armMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    armMotor.configFactoryDefault();
+    armMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
-    // This helper method sets a lot of the defaults that the example code seems to require
-    // for full functioning of the Falcon500s.
+    // This sets a lot of the defaults that the example code seems to require
+    // for full functioning of the Falcon500s. Cargo culting FTW.
     // https://github.com/CrossTheRoadElec/Phoenix-Examples-Languages/blob/master/Java%20Talon%20FX%20(Falcon%20500)/MotionMagic/src/main/java/frc/robot/Robot.java
     // TODO: calculate or characterize these values? why would you ever not use the 0th slots?
     int fakeSlot = 0;
@@ -41,6 +38,7 @@ public class Arm extends SubsystemBase {
     double fakeKI = 0.0;
     double fakeKD = 0.0;
     double fakeKF = 0.2;
+
     armMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, fakeTimeoutMilliseconds);
 		armMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, fakeTimeoutMilliseconds);
 
@@ -55,7 +53,6 @@ public class Arm extends SubsystemBase {
 		armMotor.config_kI(fakeSlot, fakeKI, fakeTimeoutMilliseconds);
 		armMotor.config_kD(fakeSlot, fakeKD, fakeTimeoutMilliseconds);
 
-		/* Set acceleration and vcruise velocity - see documentation */
 		armMotor.configMotionCruiseVelocity(15000, fakeTimeoutMilliseconds);
 		armMotor.configMotionAcceleration(5000, fakeTimeoutMilliseconds);
     armMotor.configMotionSCurveStrength(8);

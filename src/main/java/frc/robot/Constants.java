@@ -18,7 +18,8 @@ public final class Constants {
   public static final int falconRearRightCAN = 2;
   public static final int falconFrontRightCAN = 3;
   public static final int pigeonCAN = 5;
-  public static final int falconArmCAN = 6;
+  // HACK: just testing out MotionMagic by co-opting the right-side drivetrain right now (falconArmCAN should be 6)
+  public static final int falconArmCAN = falconRearRightCAN;
   public static final boolean leftFalconsAreInverted = true;
   public static final boolean rightFalconsAreInverted = false;
 

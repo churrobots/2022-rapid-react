@@ -69,11 +69,12 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (didReachCalibrationPosition()) {
-      armMotor.setSelectedSensorPosition(0);
-    } else {
-      moveSlowlyIntoCalibrationPosition();
-    }
+    // TODO: add calibration back in
+    // if (didReachCalibrationPosition()) {
+    //   armMotor.setSelectedSensorPosition(0);
+    // } else {
+    //   moveSlowlyIntoCalibrationPosition();
+    // }
     inspector.set("armSensor", armSensor.get());
     inspector.set("didResetEncoderOnce", didResetEncoderOnce);
   }
@@ -83,6 +84,7 @@ public class Arm extends SubsystemBase {
   }
 
   private void moveSlowlyIntoCalibrationPosition() {
+    // TODO: this should probably be more like a slower cruise velocity and an attempt to motionmagic by the total delta, rather than fixed velocity forever
     // TODO: look at PDP current draw for the motor as a sanity check
     armMotor.set(0.15);
   }

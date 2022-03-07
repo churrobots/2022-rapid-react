@@ -6,6 +6,7 @@ package frc.robot.helpers;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj2.command.Command;
 
 /** Add your docs here. */
 public class SubsystemInspector {
@@ -31,6 +32,10 @@ public class SubsystemInspector {
 
   public void set(String name, Integer value) {
     stats.getEntry(name).setDouble(value);
+  }
+
+  public void set(String name, Command value) {
+    stats.getEntry(name).setString(value != null ? value.getName() : "---");
   }
 
 }

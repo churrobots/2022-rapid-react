@@ -13,6 +13,7 @@ public class SubsystemInspector {
   private final NetworkTable stats;
 
   public SubsystemInspector(String subsystemName) {
+    // TODO: figure out how to clear the table on bootup so there aren't stale entries of old data
     stats = NetworkTableInstance.getDefault().getTable(subsystemName);
   }
 

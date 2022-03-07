@@ -69,10 +69,12 @@ public class Drivetrain extends SubsystemBase {
     leftLeader.configFactoryDefault();
     leftLeader.setInverted(Constants.leftFalconsAreInverted);
     leftLeader.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    leftLeader.configNeutralDeadband(Constants.drivetrainNeutralDeadbandPercentage);
 
     rightLeader.configFactoryDefault();
     rightLeader.setInverted(Constants.rightFalconsAreInverted);
     rightLeader.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    rightLeader.configNeutralDeadband(Constants.drivetrainNeutralDeadbandPercentage);
 
     leftFollower.configFactoryDefault();
     leftFollower.follow(leftLeader);
@@ -92,8 +94,12 @@ public class Drivetrain extends SubsystemBase {
   public void resetPosition() {
     leftLeader.setSelectedSensorPosition(0);
     rightLeader.setSelectedSensorPosition(0);
+    // TODO: figure out if we really should be resetting the pigeon here, the other team doesn't
+    // https://github.com/FRC5190/FalconLibrary/blob/main/wpi/src/main/kotlin/org/ghrobotics/lib/subsystems/drive/FalconWestCoastDrivetrain.kt#L271
     pigeonGyro.reset();
-    odometry.resetPosition(new Pose2d(0.0, 0.0, getHeading()), getHeading());
+    // TODO: take this as an argument (initial pose)
+    Pose2d currentPosition = new Pose2d(0.0, 0.0, getHeading());
+    odometry.resetPosition(currentPosition, getHeading());
   }
 
   public void driveWithMetersPerSecond(double leftTargetMetersPerSecond, double rightTargetMetersPerSecond) {
@@ -150,4 +156,5 @@ public class Drivetrain extends SubsystemBase {
     return Units.inchesToMeters(inchesOfRotation);
   }
 
+  
 }

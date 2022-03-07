@@ -8,39 +8,24 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.WPI_CANCoder;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import frc.robot.Constants;
+import frc.robot.helpers.SubsystemInspector;
 
 public class Drivetrain extends SubsystemBase {
 
-  private final NetworkTable stats = NetworkTableInstance.getDefault().getTable("Drivetrain");
-  private final NetworkTableEntry statsRotation = stats.getEntry("rotation");
-  private final NetworkTableEntry statsX = stats.getEntry("x");
-  private final NetworkTableEntry statsY = stats.getEntry("y");
-  private final NetworkTableEntry statsLeftEncoder = stats.getEntry("leftEncoder");
-  private final NetworkTableEntry statsRightEncoder = stats.getEntry("rightEncoder");
-
+  private final SubsystemInspector inspector = new SubsystemInspector("Drivetrain");
 
   private final WPI_TalonFX leftFollower = new WPI_TalonFX(Constants.falconRearLeftCAN);
   private final WPI_TalonFX leftLeader = new WPI_TalonFX(Constants.falconFrontLeftCAN);
@@ -55,8 +40,8 @@ public class Drivetrain extends SubsystemBase {
   private final PIDController leftPIDController = new PIDController(Constants.kP, 0, Constants.kD);
   private final PIDController rightPIDController = new PIDController(Constants.kP, 0, Constants.kD);
   private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.kS, Constants.kV, Constants.kA);
-  private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
-      Units.inchesToMeters(Constants.trackWidthInInches));
+  // private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
+  //     Units.inchesToMeters(Constants.trackWidthInInches));
 
   private final DifferentialDriveOdometry odometry;
 
@@ -137,11 +122,11 @@ public class Drivetrain extends SubsystemBase {
     odometry.update(heading, leftDistanceInMeters, rightDistanceInMeters);
     // Show debug information in NetworkTables
     Pose2d pose = odometry.getPoseMeters();
-    statsRotation.setDouble(pose.getRotation().getDegrees());
-    statsX.setDouble(pose.getX());
-    statsY.setDouble(pose.getY());
-    statsLeftEncoder.setDouble(leftLeader.getSelectedSensorPosition());
-    statsRightEncoder.setDouble(rightLeader.getSelectedSensorPosition());
+    inspector.set("rotation", pose.getRotation().getDegrees());
+    inspector.set("x", pose.getX());
+    inspector.set("y", pose.getY());
+    inspector.set("leftEncoder", leftLeader.getSelectedSensorPosition());
+    inspector.set("rightEncoder", rightLeader.getSelectedSensorPosition());
   }
 
   private Rotation2d getHeading() {

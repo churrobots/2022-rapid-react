@@ -77,6 +77,7 @@ public class Arm extends SubsystemBase {
     // }
     inspector.set("armSensor", armSensor.get());
     inspector.set("didResetEncoderOnce", didResetEncoderOnce);
+    inspector.set("currentCommand", this.getCurrentCommand());
   }
 
   private boolean didReachCalibrationPosition() {

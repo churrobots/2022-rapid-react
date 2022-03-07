@@ -25,13 +25,12 @@ public class MoveArmDown extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.moveDown();
+    armSubsystem.moveToPosition(140000);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    armSubsystem.stopArm();
   }
 
   // Returns true when the command should end.

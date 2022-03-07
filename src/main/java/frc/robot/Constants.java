@@ -46,6 +46,8 @@ public final class Constants {
 
   // TODO: look into MotionMagic for the Arm
   // https://docs.ctre-phoenix.com/en/latest/ch16_ClosedLoop.html#motion-magic-control-mode
+  // https://github.com/CrossTheRoadElec/Phoenix-Examples-Languages/blob/master/Java%20Talon%20FX%20(Falcon%20500)/MotionMagic/src/main/java/frc/robot/Robot.java
+  // public static final double armCruiseVelocity = 
 
 
   public static final int driverGamepadPort = 0;

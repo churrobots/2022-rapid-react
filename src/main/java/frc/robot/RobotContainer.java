@@ -55,8 +55,8 @@ public class RobotContainer {
     operatorGamepad.bButton.whenHeld(new Vacuum(polterLeftGust3000, polterRightGust3000));
     operatorGamepad.leftBumper.whenHeld(new EjectLeft(polterLeftGust3000));
     operatorGamepad.rightBumper.whenHeld(new EjectRight(polterRightGust3000));
-    operatorGamepad.povUp.whenHeld(new MoveArmUp(muscleArm));
-    operatorGamepad.povDown.whenHeld(new MoveArmDown(muscleArm));
+    operatorGamepad.povUp.whenPressed(new MoveArmUp(muscleArm));
+    operatorGamepad.povDown.whenPressed(new MoveArmDown(muscleArm));
   }
 
   public Command getAutonomousCommand() {

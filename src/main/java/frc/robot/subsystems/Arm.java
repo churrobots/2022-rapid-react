@@ -75,12 +75,12 @@ public class Arm extends SubsystemBase {
   private void calibrateIfNeeded() {
     if (isCalibrating) {
       if (armSensor.get() == true) {
-        armMotor.set(0);
+        armMotor.set(TalonFXControlMode.PercentOutput, 0);
         armMotor.setSelectedSensorPosition(0);
         isCalibrating = false; 
       }
       else {
-        armMotor.set(0.10);
+        armMotor.set(TalonFXControlMode.PercentOutput, 0.10);
       }
     }
   }

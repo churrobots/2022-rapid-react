@@ -18,7 +18,7 @@ public class Arm extends SubsystemBase {
   
   private final WPI_TalonFX armMotor = new WPI_TalonFX(Constants.falconArmCAN);
   private final DigitalInput armSensor = new DigitalInput(Constants.armSensorDIO);
-  private boolean didResetEncoderOnce = false;
+  private boolean isCalibrating = true;
 
   private final SubsystemInspector inspector = new SubsystemInspector("Arm");
 
@@ -39,13 +39,10 @@ public class Arm extends SubsystemBase {
     double fakeKD = 0.0;
     double fakeKF = 0.2;
 
+    armMotor.configNeutralDeadband(0.001); // really low deadzone
+
     armMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, fakeTimeoutMilliseconds);
 		armMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, fakeTimeoutMilliseconds);
-
-		armMotor.configNominalOutputForward(0, fakeTimeoutMilliseconds);
-		armMotor.configNominalOutputReverse(0, fakeTimeoutMilliseconds);
-		armMotor.configPeakOutputForward(1, fakeTimeoutMilliseconds);
-		armMotor.configPeakOutputReverse(-1, fakeTimeoutMilliseconds);
 
 		armMotor.selectProfileSlot(fakeSlot, fakePIDSlot);
 		armMotor.config_kF(fakeSlot, fakeKF, fakeTimeoutMilliseconds);
@@ -60,31 +57,32 @@ public class Arm extends SubsystemBase {
   }
 
   public void moveToPosition(int sensorCountsFromUpPosition) {
-    this.armMotor.set(TalonFXControlMode.MotionMagic, sensorCountsFromUpPosition);
-    inspector.set("moveToPosition", sensorCountsFromUpPosition);
+    if(!isCalibrating){
+      this.armMotor.set(TalonFXControlMode.MotionMagic, sensorCountsFromUpPosition);
+      inspector.set("moveToPosition", sensorCountsFromUpPosition);
+    }
   }
 
   @Override
   public void periodic() {
-    // TODO: add calibration back in
-    // if (didReachCalibrationPosition()) {
-    //   armMotor.setSelectedSensorPosition(0);
-    // } else {
-    //   moveSlowlyIntoCalibrationPosition();
-    // }
+    calibrateIfNeeded();
     inspector.set("armSensor", armSensor.get());
-    inspector.set("didResetEncoderOnce", didResetEncoderOnce);
+    inspector.set("isCalibrating", isCalibrating);
     inspector.set("currentCommand", this.getCurrentCommand());
+    inspector.set("sensorCount", this.armMotor.getSelectedSensorPosition());
   }
 
-  private boolean didReachCalibrationPosition() {
-    return !armSensor.get();
-  }
-
-  private void moveSlowlyIntoCalibrationPosition() {
-    // TODO: this should probably be more like a slower cruise velocity and an attempt to motionmagic by the total delta, rather than fixed velocity forever
-    // TODO: look at PDP current draw for the motor as a sanity check
-    armMotor.set(0.15);
+  private void calibrateIfNeeded() {
+    if (isCalibrating) {
+      if (armSensor.get() == true) {
+        armMotor.set(0);
+        armMotor.setSelectedSensorPosition(0);
+        isCalibrating = false; 
+      }
+      else {
+        armMotor.set(0.10);
+      }
+    }
   }
 
 }

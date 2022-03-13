@@ -127,6 +127,9 @@ public class Drivetrain extends SubsystemBase {
     inspector.set("y", pose.getY());
     inspector.set("leftEncoder", leftLeader.getSelectedSensorPosition());
     inspector.set("rightEncoder", rightLeader.getSelectedSensorPosition());
+    inspector.set("roll", pigeonGyro.getRoll());
+    inspector.set("pitch", pigeonGyro.getPitch());
+    inspector.set("yaw", pigeonGyro.getYaw());
   }
 
   private Rotation2d getHeading() {

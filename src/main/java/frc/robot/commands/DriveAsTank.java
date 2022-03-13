@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import frc.robot.Constants;
 import frc.robot.helpers.Gamepad.Axis;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -35,8 +36,8 @@ public class DriveAsTank extends CommandBase {
 
   @Override
   public void execute() {
-    double leftMetersPerSecond = 6 * leftAxis.get();
-    double rightMetersPerSecond = 6 * rightAxis.get();
+    double leftMetersPerSecond = Constants.maxSpeedInMetersPerSecond * leftAxis.get();
+    double rightMetersPerSecond = Constants.maxSpeedInMetersPerSecond * rightAxis.get();
     this.drivetrainSubsystem.driveWithMetersPerSecond(leftMetersPerSecond, rightMetersPerSecond);
 
 

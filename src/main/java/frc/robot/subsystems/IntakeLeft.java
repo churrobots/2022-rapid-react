@@ -14,7 +14,6 @@ public class IntakeLeft extends SubsystemBase {
   /** Creates a new Intake. */
   public IntakeLeft() {
     leftRollerMotor.setInverted(Constants.leftRollerMotorIsInverted);
-
   }
   
   public void collectballs() {

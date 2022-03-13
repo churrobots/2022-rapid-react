@@ -5,13 +5,12 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 
-public class MoveArmUp extends CommandBase {
+public class Calibrating extends CommandBase {
   protected final Arm armSubsystem;
-  /** Creates a new MoveArmUp. */
-  public MoveArmUp(Arm armSubsystem) {
+  /** Creates a new Calbibrating. */
+  public Calibrating(Arm armSubsystem) {
     this.armSubsystem = armSubsystem;
     this.addRequirements(this.armSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -24,7 +23,7 @@ public class MoveArmUp extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.moveToPosition(Constants.armUpSensorCounts);
+    armSubsystem.forceCalibration();
   }
 
   // Called once the command ends or is interrupted.

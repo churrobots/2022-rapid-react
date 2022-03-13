@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import java.util.function.DoubleToIntFunction;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. Do not put anything functional here.
@@ -21,12 +23,15 @@ public final class Constants {
   public static final int falconArmCAN = 6;
   public static final int leftRollerMotorCAN= 7;
   public static final int rightRollerMotorCAN = 8;
+
   public static final boolean leftFalconsAreInverted = true;
   public static final boolean rightFalconsAreInverted = false;
-  public static final boolean leftRollerMotorIsInverted = false;
+  public static final boolean leftRollerMotorIsInverted = true;
   public static final boolean rightRollerMotorIsInverted = false;
 
-  public static final int armSensorDIO = 0;
+  public static final int maxSpeedInMetersPerSecond = 3;
+
+  public static final int armSensorDIO = 9;
 
   // The Falcon 500s have a Talon FX Integrated sensor, which is rated for 2048 units per rotation:
   // https://docs.ctre-phoenix.com/en/latest/ch14_MCSensor.html#sensor-resolution
@@ -34,6 +39,9 @@ public final class Constants {
   public static final double driveWheelRadiusInInches = 3;
   public static final double trackWidthInInches = 22.0;
   public static final double drivetrainNeutralDeadbandPercentage = 0.08;
+  public static final int armUpSensorCounts = 0;
+  public static final int armDownSensorCounts = -40540;
+
 
   // From the System Identification for Connie
   public static final double driveGearRatio = 7.31;

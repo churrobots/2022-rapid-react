@@ -18,8 +18,10 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeLeft;
 import frc.robot.subsystems.IntakeRight;
 import frc.robot.commands.AutoDriveOffTarmac;
+import frc.robot.commands.Calibrating;
 import frc.robot.helpers.Gamepad;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.Button;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -52,6 +54,8 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand(new DriveAsTank(drivetrain, driverGamepad.leftYAxis, driverGamepad.rightYAxis,
         driverGamepad.rightAnalogTrigger));
+    operatorGamepad.getDualButton(operatorGamepad.startButton, operatorGamepad.backButton)
+        .whenPressed(new Calibrating(muscleArm));
     operatorGamepad.bButton.whenHeld(new Vacuum(polterLeftGust3000, polterRightGust3000));
     operatorGamepad.leftBumper.whenHeld(new EjectLeft(polterLeftGust3000));
     operatorGamepad.rightBumper.whenHeld(new EjectRight(polterRightGust3000));

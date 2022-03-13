@@ -50,10 +50,16 @@ public class Arm extends SubsystemBase {
 		armMotor.config_kI(fakeSlot, fakeKI, fakeTimeoutMilliseconds);
 		armMotor.config_kD(fakeSlot, fakeKD, fakeTimeoutMilliseconds);
 
-		armMotor.configMotionCruiseVelocity(15000, fakeTimeoutMilliseconds);
-		armMotor.configMotionAcceleration(5000, fakeTimeoutMilliseconds);
+		armMotor.configMotionCruiseVelocity(16000, fakeTimeoutMilliseconds);
+		armMotor.configMotionAcceleration(8000, fakeTimeoutMilliseconds);
     armMotor.configMotionSCurveStrength(8);
+    
+    armMotor.configPeakOutputForward(0.4);
+    armMotor.configPeakOutputReverse(-0.4);
+  }
 
+  public void forceCalibration() {
+    isCalibrating = true;
   }
 
   public void moveToPosition(int sensorCountsFromUpPosition) {
@@ -70,11 +76,13 @@ public class Arm extends SubsystemBase {
     inspector.set("isCalibrating", isCalibrating);
     inspector.set("currentCommand", this.getCurrentCommand());
     inspector.set("sensorCount", this.armMotor.getSelectedSensorPosition());
+    inspector.set("currentCommand", this.getCurrentCommand());
   }
 
   private void calibrateIfNeeded() {
+    final boolean isArmUp = armSensor.get() == true;
     if (isCalibrating) {
-      if (armSensor.get() == true) {
+      if (isArmUp) {
         armMotor.set(TalonFXControlMode.PercentOutput, 0);
         armMotor.setSelectedSensorPosition(0);
         isCalibrating = false; 

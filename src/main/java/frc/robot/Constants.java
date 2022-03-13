@@ -26,8 +26,11 @@ public final class Constants {
 
   public static final boolean leftFalconsAreInverted = true;
   public static final boolean rightFalconsAreInverted = false;
+
   public static final boolean leftRollerMotorIsInverted = true;
   public static final boolean rightRollerMotorIsInverted = false;
+  public static final double collectionSpeedPercentage = 0.75;
+  public static final double ejectionSpeedPercentage = -0.75;
 
   public static final int maxSpeedInMetersPerSecond = 3;
 

@@ -17,12 +17,12 @@ public class IntakeLeft extends SubsystemBase {
   }
   
   public void collectballs() {
-    this.leftRollerMotor.set(0.5);
+    this.leftRollerMotor.set(Constants.collectionSpeedPercentage);
 
   }
   
   public void leftejection() {
-    this.leftRollerMotor.set(-0.5);
+    this.leftRollerMotor.set(Constants.ejectionSpeedPercentage);
   }
 
   public void leftstopRollers() {

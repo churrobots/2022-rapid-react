@@ -56,7 +56,7 @@ public class RobotContainer {
         driverGamepad.rightAnalogTrigger));
     operatorGamepad.getDualButton(operatorGamepad.startButton, operatorGamepad.backButton)
         .whenPressed(new Calibrating(muscleArm));
-    operatorGamepad.bButton.whenHeld(new Vacuum(polterLeftGust3000, polterRightGust3000));
+    operatorGamepad.yButton.whenHeld(new Vacuum(polterLeftGust3000, polterRightGust3000));
     operatorGamepad.leftBumper.whenHeld(new EjectLeft(polterLeftGust3000));
     operatorGamepad.rightBumper.whenHeld(new EjectRight(polterRightGust3000));
     operatorGamepad.povUp.whenPressed(new MoveArmUp(muscleArm));

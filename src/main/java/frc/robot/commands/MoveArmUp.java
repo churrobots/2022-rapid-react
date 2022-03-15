@@ -6,11 +6,15 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.helpers.Tuner.TunableInteger;
 import frc.robot.subsystems.Arm;
 
 public class MoveArmUp extends CommandBase {
   protected final Arm armSubsystem;
-  /** Creates a new MoveArmUp. */
+  protected final TunableInteger armUpSensorCounts = new TunableInteger("armUpSensorCounts",
+      Constants.armUpSensorCounts);
+
+      /** Creates a new MoveArmUp. */
   public MoveArmUp(Arm armSubsystem) {
     this.armSubsystem = armSubsystem;
     this.addRequirements(this.armSubsystem);
@@ -24,7 +28,7 @@ public class MoveArmUp extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.moveToPosition(Constants.armUpSensorCounts);
+    armSubsystem.moveToPosition(armUpSensorCounts.get());
   }
 
   // Called once the command ends or is interrupted.

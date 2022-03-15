@@ -46,10 +46,11 @@ public final class Constants {
   public static final double trackWidthInInches = 22.0;
   public static final double drivetrainNeutralDeadbandPercentage = 0.08;
   public static final int armUpSensorCounts = 500;
-  public static final int armDownSensorCounts = -41000;
-  public static final double armCruiseVelocityInSensorUnits = 15000;
-  public static final double armAccelerationInSensorUnits = 6000;
-  public static final int armSmoothingStrength = 6;
+  public static final int armDownSensorCounts = -45900;
+  public static final double armCruiseVelocityInSensorUnits = 16000;
+  public static final double armAccelerationInSensorUnits = 5000;
+  public static final int armSmoothingStrength = 4;
+  public static final double armCalibrationSpeedPercentage = 0.15;
 
 
   // // From the System Identification for Connie

@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -77,6 +78,8 @@ public class Arm extends SubsystemBase {
     inspector.set("currentCommand", this.getCurrentCommand());
     inspector.set("sensorCount", this.armMotor.getSelectedSensorPosition());
     inspector.set("currentCommand", this.getCurrentCommand());
+    inspector.set("power:supplyCurrent", armMotor.getSupplyCurrent());
+    inspector.set("power:statorCurrent", armMotor.getStatorCurrent());
   }
 
   private void calibrateIfNeeded() {
@@ -88,7 +91,7 @@ public class Arm extends SubsystemBase {
         isCalibrating = false; 
       }
       else {
-        armMotor.set(TalonFXControlMode.PercentOutput, 0.10);
+        armMotor.set(TalonFXControlMode.PercentOutput, Constants.armCalibrationSpeedPercentage);
       }
     }
   }

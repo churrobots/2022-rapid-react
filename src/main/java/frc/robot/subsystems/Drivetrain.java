@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
@@ -59,11 +60,13 @@ public class Drivetrain extends SubsystemBase {
     leftLeader.setInverted(Constants.leftFalconsAreInverted);
     leftLeader.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     leftLeader.configNeutralDeadband(Constants.drivetrainNeutralDeadbandPercentage);
+    leftLeader.setNeutralMode(NeutralMode.Coast);
 
     rightLeader.configFactoryDefault();
     rightLeader.setInverted(Constants.rightFalconsAreInverted);
     rightLeader.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     rightLeader.configNeutralDeadband(Constants.drivetrainNeutralDeadbandPercentage);
+    rightLeader.setNeutralMode(NeutralMode.Coast);
 
     leftFollower.configFactoryDefault();
     leftFollower.follow(leftLeader);

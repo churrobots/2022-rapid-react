@@ -38,8 +38,8 @@ public class Drivetrain extends SubsystemBase {
 
   private final WPI_Pigeon2 pigeonGyro = new WPI_Pigeon2(Constants.pigeonCAN);
 
-  private final SlewRateLimiter leftDriveFilter = new SlewRateLimiter(Constants.slewRateForDrivetrain);
-  private final SlewRateLimiter rightDriveFilter = new SlewRateLimiter(Constants.slewRateForDrivetrain);
+  private final SlewRateLimiter leftMetersPerSecondFilter = new SlewRateLimiter(Constants.slewRateForDrivetrain);
+  private final SlewRateLimiter rightMetersPerSecondFilter = new SlewRateLimiter(Constants.slewRateForDrivetrain);
 
   // TODO: figure out what these constants mean
   private final PIDController leftPIDController = new PIDController(Constants.kP, 0, Constants.kD);
@@ -99,28 +99,29 @@ public class Drivetrain extends SubsystemBase {
     // TODO: drive with speed + heading instead?
     // var wheelSpeeds = kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
 
-    double leftFeedforward = feedforward.calculate(leftTargetMetersPerSecond);
+    double smoothedLeftMetersPerSecond = leftMetersPerSecondFilter.calculate(leftTargetMetersPerSecond);
+    double leftFeedforward = feedforward.calculate(smoothedLeftMetersPerSecond);
     double leftActualSensorCountsPerSecond = leftLeader.getSelectedSensorVelocity();
     double leftActualMetersPerSecond = convertSensorCountsToDistanceInMeters(leftActualSensorCountsPerSecond);
-    double leftOutput = leftPIDController.calculate(leftActualMetersPerSecond, leftTargetMetersPerSecond);
-    double leftVoltage = leftOutput + leftFeedforward;
-    double smoothedLeftVoltage = leftDriveFilter.calculate(leftVoltage);
-    leftLeader.setVoltage(smoothedLeftVoltage);
+    double leftFeedback = leftPIDController.calculate(leftActualMetersPerSecond, smoothedLeftMetersPerSecond);
+    double leftVoltage = leftFeedback + leftFeedforward;
+    leftLeader.setVoltage(leftVoltage);
 
-    double rightFeedforward = feedforward.calculate(rightTargetMetersPerSecond);
+    double smoothedRightMetersPerSecond = rightMetersPerSecondFilter.calculate(rightTargetMetersPerSecond);
+    double rightFeedforward = feedforward.calculate(smoothedRightMetersPerSecond);
     double rightActualSensorCountsPerSecond = rightLeader.getSelectedSensorVelocity();
     double rightActualMetersPerSecond = convertSensorCountsToDistanceInMeters(rightActualSensorCountsPerSecond);
-    double rightOutput = rightPIDController.calculate(rightActualMetersPerSecond, rightTargetMetersPerSecond);
-    double rightVoltage = rightOutput + rightFeedforward;
-    double smoothedRightVoltage = rightDriveFilter.calculate(rightVoltage);
-    rightLeader.setVoltage(smoothedRightVoltage);
+    double rightFeedback = rightPIDController.calculate(rightActualMetersPerSecond, smoothedRightMetersPerSecond);
+    double rightVoltage = rightFeedback + rightFeedforward;
+    rightLeader.setVoltage(rightVoltage);
 
+    inspector.set("drive:leftTargetMetersPerSecond", leftTargetMetersPerSecond);
+    inspector.set("drive:rightTargetMetersPerSecond", leftTargetMetersPerSecond);
+    inspector.set("drive:leftVoltage", leftVoltage);
+    inspector.set("drive:rightVoltage", rightVoltage);
   }
 
   public void driveWithPercentages(double leftPercent, double rightPercent) {
-    // TODO: consider filtering for smoother joystick driving
-    // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/filters/slew-rate-limiter.html
-    // TODO: also could just try using the version of tankDrive that takes a 3rd argument true to decrease sensitivity at low speeds
     leftLeader.set(leftPercent);
     rightLeader.set(rightPercent);    
   }

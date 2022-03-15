@@ -47,8 +47,8 @@ public final class Constants {
   public static final double drivetrainNeutralDeadbandPercentage = 0.08;
   public static final int armUpSensorCounts = 500;
   public static final int armDownSensorCounts = -45900;
-  public static final double armCruiseVelocityInSensorUnits = 16000;
-  public static final double armAccelerationInSensorUnits = 5000;
+  public static final double armCruiseVelocityInSensorUnits = 12000;
+  public static final double armAccelerationInSensorUnits = 4000;
   public static final int armSmoothingStrength = 4;
   public static final double armCalibrationSpeedPercentage = 0.15;
 

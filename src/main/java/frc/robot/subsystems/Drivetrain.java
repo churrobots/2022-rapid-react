@@ -24,8 +24,6 @@ import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import frc.robot.Constants;
 import frc.robot.helpers.SubsystemInspector;
-import frc.robot.helpers.SubsystemTuner.TunableBoolean;
-import frc.robot.helpers.SubsystemTuner.TunableDouble;
 import frc.robot.helpers.Tuner.TunableBoolean;
 import frc.robot.helpers.Tuner.TunableDouble;
 
@@ -120,9 +118,9 @@ public class Drivetrain extends SubsystemBase {
     rightLeader.setVoltage(rightVoltage);
 
     inspector.set("drive:leftTargetMetersPerSecond", leftTargetMetersPerSecond);
-    inspector.set("drive:rightTargetMetersPerSecond", leftTargetMetersPerSecond);
-    inspector.set("drive:leftVoltage", leftVoltage);
-    inspector.set("drive:rightVoltage", rightVoltage);
+    inspector.set("drive:smoothedLeftMetersPerSecond", smoothedLeftMetersPerSecond);
+    inspector.set("drive:rightTargetMetersPerSecond", rightTargetMetersPerSecond);
+    inspector.set("drive:smoothedRightMetersPerSecond", smoothedRightMetersPerSecond);
   }
 
   public void driveWithPercentages(double leftPercent, double rightPercent) {

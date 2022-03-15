@@ -30,8 +30,8 @@ import frc.robot.helpers.Tuner.TunableDouble;
 public class Drivetrain extends SubsystemBase {
 
   private final SubsystemInspector inspector = new SubsystemInspector("Drivetrain");
-  private final TunableBoolean useBrakes = new TunableBoolean("useBrakes", false);
-  private final TunableDouble slewRate = new TunableDouble("slewRate", Constants.slewRateForDrivetrain);
+  private final TunableBoolean useBrakes = new TunableBoolean("useDrivetrainBrakes", false);
+  private final TunableDouble slewRate = new TunableDouble("slewRateForDrivetrain", Constants.slewRateForDrivetrain);
 
   private final WPI_TalonFX leftFollower = new WPI_TalonFX(Constants.falconRearLeftCAN);
   private final WPI_TalonFX leftLeader = new WPI_TalonFX(Constants.falconFrontLeftCAN);

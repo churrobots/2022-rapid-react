@@ -10,16 +10,28 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 
 public final class Tuner {
 
+  private static boolean needsClearing = true;
+
+  protected static void clearTunerIfNeeded() {
+    if (needsClearing) {
+      NetworkTable tuner = NetworkTableInstance.getDefault().getTable("Tuner");
+      tuner.getKeys().forEach((key) -> tuner.delete(key));
+      needsClearing = false;
+    }
+  }
+
   protected abstract static class TunableEntry<T> {
     protected final T defaultValue;
     protected final NetworkTableEntry entry;
     protected long lastDetectedChange;
 
     public TunableEntry(String name, T defaultValue) {
+      clearTunerIfNeeded();
       NetworkTable table = NetworkTableInstance.getDefault().getTable("Tuner");
       entry = table.getEntry(name);
       this.defaultValue = defaultValue;
       this._syncDefault();
+      NetworkTableInstance.getDefault().flush();
       lastDetectedChange = entry.getLastChange();
     }
 

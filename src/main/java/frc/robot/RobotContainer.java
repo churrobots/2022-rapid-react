@@ -20,6 +20,7 @@ import frc.robot.subsystems.IntakeRight;
 import frc.robot.commands.AutoDriveOffTarmac;
 import frc.robot.commands.Calibrating;
 import frc.robot.helpers.Gamepad;
+import frc.robot.helpers.Tuner;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Button;
 
@@ -35,9 +36,6 @@ public class RobotContainer {
   public final Command driveOffTarmac;
 
   public RobotContainer() {
-
-    // Default select the Tuner tab
-    // Shuffleboard.selectTab("game");
 
     // Connect to all the inputs (gamepads and shuffleboard).
     Gamepad driverGamepad = new Gamepad(Constants.driverGamepadPort); 

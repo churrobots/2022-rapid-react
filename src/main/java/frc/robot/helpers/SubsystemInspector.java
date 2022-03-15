@@ -8,7 +8,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 
-/** Add your docs here. */
+// TODO: deal with duplicate graphed lines on code restart https://github.com/wpilibsuite/shuffleboard/issues/720
 public class SubsystemInspector {
 
   private final NetworkTable stats;
@@ -27,7 +27,10 @@ public class SubsystemInspector {
   }
 
   public void set(String name, Double value) {
-    stats.getEntry(name).setDouble(value);
+    boolean differenceIsSignificantEnoughToUpdateEntry = Math.abs(value - stats.getEntry(name).getDouble(Double.MAX_VALUE)) > 0.01;
+    if (differenceIsSignificantEnoughToUpdateEntry) {
+      stats.getEntry(name).setDouble(value);
+    }
   }
 
   public void set(String name, Integer value) {

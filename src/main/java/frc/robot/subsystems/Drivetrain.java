@@ -24,10 +24,14 @@ import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import frc.robot.Constants;
 import frc.robot.helpers.SubsystemInspector;
+import frc.robot.helpers.SubsystemTuner.TunableBoolean;
+import frc.robot.helpers.SubsystemTuner.TunableDouble;
 
 public class Drivetrain extends SubsystemBase {
 
   private final SubsystemInspector inspector = new SubsystemInspector("Drivetrain");
+  private final TunableBoolean useBrakes = new TunableBoolean("Drivetrain", "useBrakes", false);
+  private final TunableDouble slewRate = new TunableDouble("Drivetrain", "slewRate", Constants.slewRateForDrivetrain);
 
   private final WPI_TalonFX leftFollower = new WPI_TalonFX(Constants.falconRearLeftCAN);
   private final WPI_TalonFX leftLeader = new WPI_TalonFX(Constants.falconFrontLeftCAN);
@@ -38,8 +42,8 @@ public class Drivetrain extends SubsystemBase {
 
   private final WPI_Pigeon2 pigeonGyro = new WPI_Pigeon2(Constants.pigeonCAN);
 
-  private final SlewRateLimiter leftMetersPerSecondFilter = new SlewRateLimiter(Constants.slewRateForDrivetrain);
-  private final SlewRateLimiter rightMetersPerSecondFilter = new SlewRateLimiter(Constants.slewRateForDrivetrain);
+  private SlewRateLimiter leftMetersPerSecondFilter = new SlewRateLimiter(Constants.slewRateForDrivetrain);
+  private SlewRateLimiter rightMetersPerSecondFilter = new SlewRateLimiter(Constants.slewRateForDrivetrain);
 
   // TODO: figure out what these constants mean
   private final PIDController leftPIDController = new PIDController(Constants.kP, 0, Constants.kD);
@@ -60,13 +64,11 @@ public class Drivetrain extends SubsystemBase {
     leftLeader.setInverted(Constants.leftFalconsAreInverted);
     leftLeader.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     leftLeader.configNeutralDeadband(Constants.drivetrainNeutralDeadbandPercentage);
-    leftLeader.setNeutralMode(NeutralMode.Coast);
 
     rightLeader.configFactoryDefault();
     rightLeader.setInverted(Constants.rightFalconsAreInverted);
     rightLeader.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     rightLeader.configNeutralDeadband(Constants.drivetrainNeutralDeadbandPercentage);
-    rightLeader.setNeutralMode(NeutralMode.Coast);
 
     leftFollower.configFactoryDefault();
     leftFollower.follow(leftLeader);
@@ -128,6 +130,19 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
+    // Allow tuning
+    if (useBrakes.get()) {
+      leftLeader.setNeutralMode(NeutralMode.Brake);
+      rightLeader.setNeutralMode(NeutralMode.Brake);
+    } else {
+      leftLeader.setNeutralMode(NeutralMode.Coast);
+      rightLeader.setNeutralMode(NeutralMode.Coast);
+    }
+    if (slewRate.didChange()) {
+      leftMetersPerSecondFilter = new SlewRateLimiter(slewRate.get());
+      rightMetersPerSecondFilter = new SlewRateLimiter(slewRate.get());
+    }
+
     Rotation2d heading = getHeading();
     double leftDistanceInMeters = convertSensorCountsToDistanceInMeters(leftLeader.getSelectedSensorPosition());
     double rightDistanceInMeters = convertSensorCountsToDistanceInMeters(rightLeader.getSelectedSensorPosition());
@@ -155,6 +170,5 @@ public class Drivetrain extends SubsystemBase {
     double inchesOfRotation = wheelRotations * 2 * Math.PI * Constants.driveWheelRadiusInInches;
     return Units.inchesToMeters(inchesOfRotation);
   }
-
   
 }

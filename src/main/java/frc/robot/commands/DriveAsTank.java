@@ -39,8 +39,6 @@ public class DriveAsTank extends CommandBase {
     double leftMetersPerSecond = Constants.maxSpeedInMetersPerSecond * leftAxis.get();
     double rightMetersPerSecond = Constants.maxSpeedInMetersPerSecond * rightAxis.get();
     this.drivetrainSubsystem.driveWithMetersPerSecond(leftMetersPerSecond, rightMetersPerSecond);
-
-
   }
 
   @Override

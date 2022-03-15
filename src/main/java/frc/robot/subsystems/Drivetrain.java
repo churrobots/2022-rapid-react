@@ -13,10 +13,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
@@ -55,11 +58,13 @@ public class Drivetrain extends SubsystemBase {
     leftLeader.setInverted(Constants.leftFalconsAreInverted);
     leftLeader.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     leftLeader.configNeutralDeadband(Constants.drivetrainNeutralDeadbandPercentage);
+    configureFalconForMotion(leftLeader);
 
     rightLeader.configFactoryDefault();
     rightLeader.setInverted(Constants.rightFalconsAreInverted);
     rightLeader.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     rightLeader.configNeutralDeadband(Constants.drivetrainNeutralDeadbandPercentage);
+    configureFalconForMotion(rightLeader);
 
     leftFollower.configFactoryDefault();
     leftFollower.follow(leftLeader);
@@ -88,6 +93,19 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void driveWithMetersPerSecond(double leftTargetMetersPerSecond, double rightTargetMetersPerSecond) {
+    double leftTargetSensorUnitsPerSecond = this.convertDistanceInMetersToSensorCounts(leftTargetMetersPerSecond);
+    double leftTargetSensorUnitsPer100ms = leftTargetSensorUnitsPerSecond / 10;
+    leftLeader.set(TalonFXControlMode.Velocity, leftTargetSensorUnitsPer100ms);
+    inspector.set("leftTargetMetersPerSecond", leftTargetMetersPerSecond);
+    inspector.set("leftTargetSensorUnitsPer100ms", leftTargetSensorUnitsPer100ms);
+    double rightTargetSensorUnitsPerSecond = this.convertDistanceInMetersToSensorCounts(rightTargetMetersPerSecond);
+    double rightTargetSensorUnitsPer100ms = rightTargetSensorUnitsPerSecond / 10;
+    rightLeader.set(TalonFXControlMode.Velocity, rightTargetSensorUnitsPer100ms);
+    inspector.set("rightTargetMetersPerSecond", rightTargetMetersPerSecond);
+    inspector.set("rightTargetSensorUnitsPer100ms", rightTargetSensorUnitsPer100ms);
+  }
+
+  public void driveWithMetersPerSecondTheOldWay(double leftTargetMetersPerSecond, double rightTargetMetersPerSecond) {
 
     // TODO: drive with speed + heading instead?
     // var wheelSpeeds = kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
@@ -144,5 +162,36 @@ public class Drivetrain extends SubsystemBase {
     return Units.inchesToMeters(inchesOfRotation);
   }
 
-  
+  private double convertDistanceInMetersToSensorCounts(double distanceInMeters) {
+    double distanceInInches = Units.metersToInches(distanceInMeters);
+    double wheelRotations = distanceInInches / (2 * Math.PI * Constants.driveWheelRadiusInInches);
+    double motorRotations = wheelRotations * Constants.driveGearRatio;
+    double sensorCounts = motorRotations * Constants.sensorUnitsPerRevolution;
+    return sensorCounts;
+  }
+
+  private void configureFalconForMotion(WPI_TalonFX motor) {
+    int fakeSlot = 0;
+    int fakePIDSlot = 0;
+    int fakeTimeoutMilliseconds = 30;
+    double fakeKP = 0.1;
+    double fakeKI = 0.001;
+    double fakeKD = 5.0;
+    double fakeKF = 1023.0/20660.0;
+ 
+    motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, fakeTimeoutMilliseconds);
+    motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, fakeTimeoutMilliseconds);
+
+    motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, fakeSlot, fakeTimeoutMilliseconds);
+
+		motor.selectProfileSlot(fakeSlot, fakePIDSlot);
+		motor.config_kF(fakeSlot, fakeKF, fakeTimeoutMilliseconds);
+		motor.config_kP(fakeSlot, fakeKP, fakeTimeoutMilliseconds);
+		motor.config_kI(fakeSlot, fakeKI, fakeTimeoutMilliseconds);
+		motor.config_kD(fakeSlot, fakeKD, fakeTimeoutMilliseconds);
+
+		// motor.configMotionCruiseVelocity(16000, fakeTimeoutMilliseconds);
+		motor.configMotionAcceleration(8000, fakeTimeoutMilliseconds);
+    motor.configMotionSCurveStrength(8);
+  }
 }

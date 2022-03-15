@@ -7,7 +7,7 @@
 
 package frc.robot;
 
-import java.util.function.DoubleToIntFunction;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -35,6 +35,9 @@ public final class Constants {
   public static final int maxSpeedInMetersPerSecond = 3;
 
   public static final int armSensorDIO = 9;
+
+  public static final double slewRateForDrivetrain = 10.0;
+
 
   // The Falcon 500s have a Talon FX Integrated sensor, which is rated for 2048 units per rotation:
   // https://docs.ctre-phoenix.com/en/latest/ch14_MCSensor.html#sensor-resolution

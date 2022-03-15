@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -35,6 +36,9 @@ public class Drivetrain extends SubsystemBase {
   private final WPI_TalonFX rightLeader = new WPI_TalonFX(Constants.falconRearRightCAN);
 
   private final WPI_Pigeon2 pigeonGyro = new WPI_Pigeon2(Constants.pigeonCAN);
+
+  private final SlewRateLimiter leftDriveFilter = new SlewRateLimiter(Constants.slewRateForDrivetrain);
+  private final SlewRateLimiter rightDriveFilter = new SlewRateLimiter(Constants.slewRateForDrivetrain);
 
   // TODO: figure out what these constants mean
   private final PIDController leftPIDController = new PIDController(Constants.kP, 0, Constants.kD);
@@ -96,13 +100,17 @@ public class Drivetrain extends SubsystemBase {
     double leftActualSensorCountsPerSecond = leftLeader.getSelectedSensorVelocity();
     double leftActualMetersPerSecond = convertSensorCountsToDistanceInMeters(leftActualSensorCountsPerSecond);
     double leftOutput = leftPIDController.calculate(leftActualMetersPerSecond, leftTargetMetersPerSecond);
-    leftLeader.setVoltage(leftOutput + leftFeedforward);
+    double leftVoltage = leftOutput + leftFeedforward;
+    double smoothedLeftVoltage = leftDriveFilter.calculate(leftVoltage);
+    leftLeader.setVoltage(smoothedLeftVoltage);
 
     double rightFeedforward = feedforward.calculate(rightTargetMetersPerSecond);
     double rightActualSensorCountsPerSecond = rightLeader.getSelectedSensorVelocity();
     double rightActualMetersPerSecond = convertSensorCountsToDistanceInMeters(rightActualSensorCountsPerSecond);
     double rightOutput = rightPIDController.calculate(rightActualMetersPerSecond, rightTargetMetersPerSecond);
-    rightLeader.setVoltage(rightOutput + rightFeedforward);
+    double rightVoltage = rightOutput + rightFeedforward;
+    double smoothedRightVoltage = rightDriveFilter.calculate(rightVoltage);
+    rightLeader.setVoltage(smoothedRightVoltage);
 
   }
 

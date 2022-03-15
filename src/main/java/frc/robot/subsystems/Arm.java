@@ -50,9 +50,9 @@ public class Arm extends SubsystemBase {
 		armMotor.config_kI(fakeSlot, fakeKI, fakeTimeoutMilliseconds);
 		armMotor.config_kD(fakeSlot, fakeKD, fakeTimeoutMilliseconds);
 
-		armMotor.configMotionCruiseVelocity(16000, fakeTimeoutMilliseconds);
-		armMotor.configMotionAcceleration(8000, fakeTimeoutMilliseconds);
-    armMotor.configMotionSCurveStrength(8);
+		armMotor.configMotionCruiseVelocity(Constants.armCruiseVelocityInSensorUnits, fakeTimeoutMilliseconds);
+		armMotor.configMotionAcceleration(Constants.armAccelerationInSensorUnits, fakeTimeoutMilliseconds);
+    armMotor.configMotionSCurveStrength(Constants.armSmoothingStrength);
     
     armMotor.configPeakOutputForward(0.4);
     armMotor.configPeakOutputReverse(-0.4);

@@ -36,7 +36,7 @@ public final class Constants {
 
   public static final int armSensorDIO = 9;
 
-  public static final double slewRateForDrivetrain = 10.0;
+  public static final double slewRateForDrivetrain = 8.0;
 
 
   // The Falcon 500s have a Talon FX Integrated sensor, which is rated for 2048 units per rotation:
@@ -45,20 +45,28 @@ public final class Constants {
   public static final double driveWheelRadiusInInches = 3;
   public static final double trackWidthInInches = 22.0;
   public static final double drivetrainNeutralDeadbandPercentage = 0.08;
-  public static final int armUpSensorCounts = 0;
-  public static final int armDownSensorCounts = -40540;
+  public static final int armUpSensorCounts = 500;
+  public static final int armDownSensorCounts = -41000;
+  public static final double armCruiseVelocityInSensorUnits = 15000;
+  public static final double armAccelerationInSensorUnits = 6000;
+  public static final int armSmoothingStrength = 6;
 
 
-  // From the System Identification for Connie
-  public static final double driveGearRatio = 7.31;
-  public static final double kS = 0.62331;
-  public static final double kV = 1.5593;
-  public static final double kA = 0.20183;
-  public static final double kP = 0.021079;
-  public static final double kD = 0.0;
+  // // From the System Identification for Connie
+  // public static final double driveGearRatio = 7.31;
+  // public static final double kS = 0.62331;
+  // public static final double kV = 1.5593;
+  // public static final double kA = 0.20183;
+  // public static final double kP = 0.021079;
+  // public static final double kD = 0.0;
 
   // From the System Identification for Ponyo
-  // public static final double driveGearRatio = 8.45;
+  public static final double driveGearRatio = 8.45;
+  public static final double kS = 0.693;
+  public static final double kV = 0.748;
+  public static final double kA = 0.118;
+  public static final double kP = 2.667;
+  public static final double kD = 0.0;
 
   public static final int driverGamepadPort = 0;
   public static final int operatorGamepadPort = 1;

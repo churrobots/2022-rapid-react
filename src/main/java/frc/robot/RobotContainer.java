@@ -51,7 +51,7 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(new DriveManually(drivetrain, driverGamepad.leftYAxis, driverGamepad.rightYAxis,
         driverGamepad.rightXAxis));
     operatorGamepad.getDualButton(operatorGamepad.startButton, operatorGamepad.backButton)
-        .whenPressed(new Calibrating(muscleArm));
+        .whileHeld(new Calibrating(muscleArm));
     operatorGamepad.yButton.whenHeld(new Vacuum(polterLeftGust3000, polterRightGust3000));
     operatorGamepad.leftBumper.whenHeld(new EjectLeft(polterLeftGust3000));
     operatorGamepad.rightBumper.whenHeld(new EjectRight(polterRightGust3000));

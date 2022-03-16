@@ -58,8 +58,14 @@ public class Arm extends SubsystemBase {
     armMotor.configPeakOutputReverse(-0.4);
   }
 
-  public void forceCalibration() {
+  public void beginCalibration() {
     isCalibrating = true;
+  }
+
+  public void finishCalibration() {
+    armMotor.set(TalonFXControlMode.PercentOutput, 0);
+    armMotor.setSelectedSensorPosition(0);
+    isCalibrating = false; 
   }
 
   public void moveToPosition(int sensorCountsFromUpPosition) {

@@ -9,6 +9,8 @@ package frc.robot.commands;
 
 import frc.robot.Constants;
 import frc.robot.helpers.Gamepad.Axis;
+import frc.robot.helpers.Tuner.TunableBoolean;
+import frc.robot.helpers.Tuner.TunableDouble;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -20,13 +22,15 @@ public class DriveManually extends CommandBase {
   protected final Drivetrain drivetrainSubsystem;
   protected final Axis leftAxis;
   protected final Axis rightAxis;
-  protected final Axis boostAxis;
+  protected final Axis rightHorizontalAxis;
+  protected final TunableBoolean useSteering = new TunableBoolean("useSteering", false);
+  protected final TunableDouble maxSteeringRadiansPerSecond = new TunableDouble("maxSteeringRadiansPerSecond", 10.0);
 
-  public DriveManually(Drivetrain drivetrainSubsystem, Axis leftAxis, Axis rightAxis, Axis boostAxis) {
+  public DriveManually(Drivetrain drivetrainSubsystem, Axis leftAxis, Axis rightAxis, Axis rightHorizontalAxis) {
     this.drivetrainSubsystem = drivetrainSubsystem;
     this.leftAxis = leftAxis;
     this.rightAxis = rightAxis;
-    this.boostAxis = boostAxis;
+    this.rightHorizontalAxis = rightHorizontalAxis;
     this.addRequirements(this.drivetrainSubsystem);
   }
 
@@ -36,11 +40,15 @@ public class DriveManually extends CommandBase {
 
   @Override
   public void execute() {
-    double leftMetersPerSecond = Constants.maxSpeedInMetersPerSecond * leftAxis.get();
-    double rightMetersPerSecond = Constants.maxSpeedInMetersPerSecond * rightAxis.get();
-    this.drivetrainSubsystem.driveWithMetersPerSecond(leftMetersPerSecond, rightMetersPerSecond);
-
-
+    if (useSteering.get()) {
+      double leftMetersPerSecond = Constants.maxSpeedInMetersPerSecond * leftAxis.get();
+      double rightMetersPerSecond = Constants.maxSpeedInMetersPerSecond * rightAxis.get();
+      this.drivetrainSubsystem.driveWithMetersPerSecond(leftMetersPerSecond, rightMetersPerSecond);
+    } else {
+      double throttleMetersPerSecond = Constants.maxSpeedInMetersPerSecond * leftAxis.get();
+      double steeringRotationRadiansPerSecond =  maxSteeringRadiansPerSecond.get() * rightHorizontalAxis.get();
+      this.drivetrainSubsystem.driveWithThrottleAndSteering(throttleMetersPerSecond, steeringRotationRadiansPerSecond);
+    }
   }
 
   @Override

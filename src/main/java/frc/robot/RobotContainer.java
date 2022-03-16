@@ -49,7 +49,7 @@ public class RobotContainer {
     this.driveOffTarmac = new AutoDriveOffTarmac(drivetrain);
 
     drivetrain.setDefaultCommand(new DriveManually(drivetrain, driverGamepad.leftYAxis, driverGamepad.rightYAxis,
-        driverGamepad.rightAnalogTrigger));
+        driverGamepad.rightXAxis));
     operatorGamepad.getDualButton(operatorGamepad.startButton, operatorGamepad.backButton)
         .whenPressed(new Calibrating(muscleArm));
     operatorGamepad.yButton.whenHeld(new Vacuum(polterLeftGust3000, polterRightGust3000));

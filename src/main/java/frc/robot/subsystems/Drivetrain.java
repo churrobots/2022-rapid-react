@@ -12,6 +12,8 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,6 +33,7 @@ public class Drivetrain extends SubsystemBase {
 
   private final SubsystemInspector inspector = new SubsystemInspector("Drivetrain");
   private final TunableBoolean useBrakes = new TunableBoolean("useDrivetrainBrakes", false);
+  private final TunableBoolean useSlew = new TunableBoolean("useDrivetrainSlew", true);
   private final TunableDouble slewRate = new TunableDouble("slewRateForDrivetrain", Constants.slewRateForDrivetrain);
 
   private final WPI_TalonFX leftFollower = new WPI_TalonFX(Constants.falconRearLeftCAN);
@@ -49,8 +52,8 @@ public class Drivetrain extends SubsystemBase {
   private final PIDController leftPIDController = new PIDController(Constants.kP, 0, Constants.kD);
   private final PIDController rightPIDController = new PIDController(Constants.kP, 0, Constants.kD);
   private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.kS, Constants.kV, Constants.kA);
-  // private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
-  //     Units.inchesToMeters(Constants.trackWidthInInches));
+  private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
+      Units.inchesToMeters(Constants.trackWidthInInches));
 
   private final DifferentialDriveOdometry odometry;
 
@@ -96,12 +99,16 @@ public class Drivetrain extends SubsystemBase {
     odometry.resetPosition(currentPosition, getHeading());
   }
 
+  public void driveWithThrottleAndSteering(double throttleMetersPerSecond, double steeringRotationRadiansPerSecond) {
+    var wheelSpeeds = kinematics.toWheelSpeeds(new ChassisSpeeds(throttleMetersPerSecond, 0.0, steeringRotationRadiansPerSecond));
+    driveWithMetersPerSecond(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);
+  }
+
   public void driveWithMetersPerSecond(double leftTargetMetersPerSecond, double rightTargetMetersPerSecond) {
-
-    // TODO: drive with speed + heading instead?
-    // var wheelSpeeds = kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
-
     double smoothedLeftMetersPerSecond = leftMetersPerSecondFilter.calculate(leftTargetMetersPerSecond);
+    if (!useSlew.get()) {
+      smoothedLeftMetersPerSecond = leftTargetMetersPerSecond;
+    }
     double leftFeedforward = feedforward.calculate(smoothedLeftMetersPerSecond);
     double leftActualSensorCountsPerSecond = leftLeader.getSelectedSensorVelocity();
     double leftActualMetersPerSecond = convertSensorCountsToDistanceInMeters(leftActualSensorCountsPerSecond);
@@ -110,6 +117,9 @@ public class Drivetrain extends SubsystemBase {
     leftLeader.setVoltage(leftVoltage);
 
     double smoothedRightMetersPerSecond = rightMetersPerSecondFilter.calculate(rightTargetMetersPerSecond);
+    if (!useSlew.get()) {
+      smoothedRightMetersPerSecond = rightTargetMetersPerSecond;
+    }
     double rightFeedforward = feedforward.calculate(smoothedRightMetersPerSecond);
     double rightActualSensorCountsPerSecond = rightLeader.getSelectedSensorVelocity();
     double rightActualMetersPerSecond = convertSensorCountsToDistanceInMeters(rightActualSensorCountsPerSecond);

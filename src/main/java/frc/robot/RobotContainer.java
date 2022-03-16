@@ -7,7 +7,7 @@
 
 package frc.robot;
 
-import frc.robot.commands.DriveAsTank;
+import frc.robot.commands.DriveManually;
 import frc.robot.commands.EjectLeft;
 import frc.robot.commands.EjectRight;
 import frc.robot.commands.MoveArmDown;
@@ -20,9 +20,7 @@ import frc.robot.subsystems.IntakeRight;
 import frc.robot.commands.AutoDriveOffTarmac;
 import frc.robot.commands.Calibrating;
 import frc.robot.helpers.Gamepad;
-import frc.robot.helpers.Tuner;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.Button;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -50,7 +48,7 @@ public class RobotContainer {
     // Describe when the commands should be scheduled.
     this.driveOffTarmac = new AutoDriveOffTarmac(drivetrain);
 
-    drivetrain.setDefaultCommand(new DriveAsTank(drivetrain, driverGamepad.leftYAxis, driverGamepad.rightYAxis,
+    drivetrain.setDefaultCommand(new DriveManually(drivetrain, driverGamepad.leftYAxis, driverGamepad.rightYAxis,
         driverGamepad.rightAnalogTrigger));
     operatorGamepad.getDualButton(operatorGamepad.startButton, operatorGamepad.backButton)
         .whenPressed(new Calibrating(muscleArm));

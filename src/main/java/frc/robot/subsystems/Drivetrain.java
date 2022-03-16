@@ -33,7 +33,6 @@ public class Drivetrain extends SubsystemBase {
 
   private final SubsystemInspector inspector = new SubsystemInspector("Drivetrain");
   private final TunableBoolean useBrakes = new TunableBoolean("useDrivetrainBrakes", false);
-  private final TunableBoolean useSlew = new TunableBoolean("useDrivetrainSlew", true);
   private final TunableDouble slewRate = new TunableDouble("slewRateForDrivetrain", Constants.slewRateForDrivetrain);
 
   private final WPI_TalonFX leftFollower = new WPI_TalonFX(Constants.falconRearLeftCAN);
@@ -106,9 +105,6 @@ public class Drivetrain extends SubsystemBase {
 
   public void driveWithMetersPerSecond(double leftTargetMetersPerSecond, double rightTargetMetersPerSecond) {
     double smoothedLeftMetersPerSecond = leftMetersPerSecondFilter.calculate(leftTargetMetersPerSecond);
-    if (!useSlew.get()) {
-      smoothedLeftMetersPerSecond = leftTargetMetersPerSecond;
-    }
     double leftFeedforward = feedforward.calculate(smoothedLeftMetersPerSecond);
     double leftActualSensorCountsPerSecond = leftLeader.getSelectedSensorVelocity();
     double leftActualMetersPerSecond = convertSensorCountsToDistanceInMeters(leftActualSensorCountsPerSecond);
@@ -117,9 +113,6 @@ public class Drivetrain extends SubsystemBase {
     leftLeader.setVoltage(leftVoltage);
 
     double smoothedRightMetersPerSecond = rightMetersPerSecondFilter.calculate(rightTargetMetersPerSecond);
-    if (!useSlew.get()) {
-      smoothedRightMetersPerSecond = rightTargetMetersPerSecond;
-    }
     double rightFeedforward = feedforward.calculate(smoothedRightMetersPerSecond);
     double rightActualSensorCountsPerSecond = rightLeader.getSelectedSensorVelocity();
     double rightActualMetersPerSecond = convertSensorCountsToDistanceInMeters(rightActualSensorCountsPerSecond);

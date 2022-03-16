@@ -31,6 +31,7 @@ public final class Constants {
   public static final double ejectionSpeedPercentage = -0.75;
 
   public static final double maxSpeedInMetersPerSecond = 2.0;
+  public static final double maxSteeringRadiansPerSecond = 1.0;
 
   public static final int armSensorDIO = 9;
 

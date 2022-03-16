@@ -24,7 +24,9 @@ public class DriveManually extends CommandBase {
   protected final Axis rightAxis;
   protected final Axis rightHorizontalAxis;
   protected final TunableBoolean useSteering = new TunableBoolean("useSteering", false);
-  protected final TunableDouble maxSteeringRadiansPerSecond = new TunableDouble("maxSteeringRadiansPerSecond", 10.0);
+  protected final TunableDouble maxSteeringRadiansPerSecond = new TunableDouble("maxSteeringRadiansPerSecond", Constants.maxSteeringRadiansPerSecond);
+  protected final TunableDouble maxDriveMetersPerSecond = new TunableDouble("maxDriveMetersPerSecond",
+      Constants.maxSpeedInMetersPerSecond);
 
   public DriveManually(Drivetrain drivetrainSubsystem, Axis leftAxis, Axis rightAxis, Axis rightHorizontalAxis) {
     this.drivetrainSubsystem = drivetrainSubsystem;
@@ -41,13 +43,13 @@ public class DriveManually extends CommandBase {
   @Override
   public void execute() {
     if (useSteering.get()) {
-      double leftMetersPerSecond = Constants.maxSpeedInMetersPerSecond * leftAxis.get();
-      double rightMetersPerSecond = Constants.maxSpeedInMetersPerSecond * rightAxis.get();
-      this.drivetrainSubsystem.driveWithMetersPerSecond(leftMetersPerSecond, rightMetersPerSecond);
-    } else {
-      double throttleMetersPerSecond = Constants.maxSpeedInMetersPerSecond * leftAxis.get();
+      double throttleMetersPerSecond = maxDriveMetersPerSecond.get() * leftAxis.get();
       double steeringRotationRadiansPerSecond =  maxSteeringRadiansPerSecond.get() * rightHorizontalAxis.get();
       this.drivetrainSubsystem.driveWithThrottleAndSteering(throttleMetersPerSecond, steeringRotationRadiansPerSecond);
+    } else {
+      double leftMetersPerSecond = maxDriveMetersPerSecond.get() * leftAxis.get();
+      double rightMetersPerSecond = maxDriveMetersPerSecond.get() * rightAxis.get();
+      this.drivetrainSubsystem.driveWithMetersPerSecond(leftMetersPerSecond, rightMetersPerSecond);
     }
   }
 

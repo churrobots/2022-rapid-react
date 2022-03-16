@@ -30,11 +30,11 @@ public final class Constants {
   public static final double collectionSpeedPercentage = 0.75;
   public static final double ejectionSpeedPercentage = -0.75;
 
-  public static final int maxSpeedInMetersPerSecond = 3;
+  public static final double maxSpeedInMetersPerSecond = 2.0;
 
   public static final int armSensorDIO = 9;
 
-  public static final double slewRateForDrivetrain = 8.0;
+  public static final double slewRateForDrivetrain = 4.0;
 
 
   // The Falcon 500s have a Talon FX Integrated sensor, which is rated for 2048 units per rotation:
@@ -44,7 +44,7 @@ public final class Constants {
   public static final double trackWidthInInches = 22.0;
   public static final double drivetrainNeutralDeadbandPercentage = 0.08;
   public static final int armUpSensorCounts = 500;
-  public static final int armDownSensorCounts = -45900;
+  public static final int armDownSensorCounts = -44000;
   public static final double armCruiseVelocityInSensorUnits = 12000;
   public static final double armAccelerationInSensorUnits = 4000;
   public static final int armSmoothingStrength = 4;

@@ -26,6 +26,7 @@ import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import frc.robot.Constants;
 import frc.robot.helpers.SubsystemInspector;
+import frc.robot.helpers.DangerDetector;
 import frc.robot.helpers.Tuner.TunableBoolean;
 import frc.robot.helpers.Tuner.TunableDouble;
 
@@ -35,6 +36,9 @@ public class Drivetrain extends SubsystemBase {
   private final TunableBoolean useBrakes = new TunableBoolean("useDrivetrainBrakes", false);
   private final TunableDouble slewRate = new TunableDouble("slewRateForDrivetrain", Constants.slewRateForDrivetrain);
 
+  private final TunableDouble minTippingIntegral = new TunableDouble("minTippingIntegral", 50.0);
+  private final TunableDouble maxTippingIntegral = new TunableDouble("maxTippingIntegral", 250.0);
+
   private final WPI_TalonFX leftFollower = new WPI_TalonFX(Constants.falconRearLeftCAN);
   private final WPI_TalonFX leftLeader = new WPI_TalonFX(Constants.falconFrontLeftCAN);
 
@@ -43,6 +47,8 @@ public class Drivetrain extends SubsystemBase {
   private final WPI_TalonFX rightLeader = new WPI_TalonFX(Constants.falconRearRightCAN);
 
   private final WPI_Pigeon2 pigeonGyro = new WPI_Pigeon2(Constants.pigeonCAN);
+
+  private final DangerDetector dangerDetector = new DangerDetector();
 
   private SlewRateLimiter leftMetersPerSecondFilter = new SlewRateLimiter(Constants.slewRateForDrivetrain);
   private SlewRateLimiter rightMetersPerSecondFilter = new SlewRateLimiter(Constants.slewRateForDrivetrain);
@@ -104,6 +110,11 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void driveWithMetersPerSecond(double leftTargetMetersPerSecond, double rightTargetMetersPerSecond) {
+
+    // Adjust for tipping.
+    leftTargetMetersPerSecond *= getTippingAdjustmentPercentage();
+    rightTargetMetersPerSecond *= getTippingAdjustmentPercentage();
+
     double smoothedLeftMetersPerSecond = leftMetersPerSecondFilter.calculate(leftTargetMetersPerSecond);
     double leftFeedforward = feedforward.calculate(smoothedLeftMetersPerSecond);
     double leftActualSensorCountsPerSecond = leftLeader.getSelectedSensorVelocity();
@@ -133,6 +144,7 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
+
     // Allow tuning
     if (useBrakes.get()) {
       leftLeader.setNeutralMode(NeutralMode.Brake);
@@ -146,10 +158,17 @@ public class Drivetrain extends SubsystemBase {
       rightMetersPerSecondFilter = new SlewRateLimiter(slewRate.get());
     }
 
+    // Watch tipping behavior.
+    double pitch = pigeonGyro.getPitch();
+    double roll = pigeonGyro.getRoll();
+    dangerDetector.update(pitch, roll);
+
+    // Update odometry
     Rotation2d heading = getHeading();
     double leftDistanceInMeters = convertSensorCountsToDistanceInMeters(leftLeader.getSelectedSensorPosition());
     double rightDistanceInMeters = convertSensorCountsToDistanceInMeters(rightLeader.getSelectedSensorPosition());
     odometry.update(heading, leftDistanceInMeters, rightDistanceInMeters);
+
     // Show debug information in NetworkTables
     Pose2d pose = odometry.getPoseMeters();
     inspector.set("rotation", pose.getRotation().getDegrees());
@@ -160,6 +179,8 @@ public class Drivetrain extends SubsystemBase {
     inspector.set("roll", pigeonGyro.getRoll());
     inspector.set("pitch", pigeonGyro.getPitch());
     inspector.set("yaw", pigeonGyro.getYaw());
+    inspector.set("dangerLevel", dangerDetector.getDangerLevel());
+    inspector.set("tippingAdjustmentPercentage", getTippingAdjustmentPercentage());
   }
 
   private Rotation2d getHeading() {
@@ -173,5 +194,17 @@ public class Drivetrain extends SubsystemBase {
     double inchesOfRotation = wheelRotations * 2 * Math.PI * Constants.driveWheelRadiusInInches;
     return Units.inchesToMeters(inchesOfRotation);
   }
-  
+
+  private double getTippingAdjustmentPercentage() {
+    double percentageAdjustment = 1.0;
+    double dangerLevel = dangerDetector.getDangerLevel();
+    double minDangerLevel = minTippingIntegral.get();
+    double maxDangerLevel = maxTippingIntegral.get();
+    if (dangerLevel > minDangerLevel) {
+      percentageAdjustment = 1
+          - (dangerLevel - minDangerLevel) / (maxDangerLevel - minDangerLevel);
+    }
+    return percentageAdjustment;
+  }
+
 }

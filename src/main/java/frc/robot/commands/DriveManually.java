@@ -47,8 +47,8 @@ public class DriveManually extends CommandBase {
       double steeringRotationRadiansPerSecond =  maxSteeringRadiansPerSecond.get() * rightHorizontalAxis.get();
       this.drivetrainSubsystem.driveWithThrottleAndSteering(throttleMetersPerSecond, steeringRotationRadiansPerSecond);
     } else {
-      double leftMetersPerSecond = maxDriveMetersPerSecond.get() * leftAxis.get();
-      double rightMetersPerSecond = maxDriveMetersPerSecond.get() * rightAxis.get();
+      double leftMetersPerSecond = maxDriveMetersPerSecond.get() * (leftAxis.get() * Math.abs(leftAxis.get()));
+      double rightMetersPerSecond = maxDriveMetersPerSecond.get() * rightAxis.get() * Math.abs(rightAxis.get());
       this.drivetrainSubsystem.driveWithMetersPerSecond(leftMetersPerSecond, rightMetersPerSecond);
     }
   }

@@ -33,6 +33,10 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
 
+  // Connect to all the inputs (gamepads and shuffleboard).
+  Gamepad driverGamepad = new Gamepad(Constants.driverGamepadPort); 
+  Gamepad operatorGamepad = new Gamepad(Constants.operatorGamepadPort);
+
   // Connect to all the outputs.
   Drivetrain drivetrain = new Drivetrain();
   IntakeLeft polterLeftGust3000 = new IntakeLeft();
@@ -40,13 +44,7 @@ public class RobotContainer {
   Arm muscleArm = new Arm();
 
   public RobotContainer() {
-
-    // Connect to all the inputs (gamepads and shuffleboard).
-    Gamepad driverGamepad = new Gamepad(Constants.driverGamepadPort); 
-    Gamepad operatorGamepad = new Gamepad(Constants.operatorGamepadPort);
-
-
-    // Describe when the commands should be scheduled.
+    // Wire up commands to the controllers.
     drivetrain.setDefaultCommand(new DriveManually(drivetrain, driverGamepad.leftYAxis, driverGamepad.rightYAxis,
         driverGamepad.rightXAxis));
     driverGamepad.aButton.whileHeld(new AutoClimb(muscleArm, drivetrain));
@@ -60,11 +58,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // TODO: use the value from the Station chooser
-    // TODO: figure out how to make this reset the encoders onclick in the Station
-    // dropdown
-    // TODO: figureo out how to make this initialize the Pose correctly onclick (for
-    // auto choices)
+    // TODO: allow Shuffleboard to choose the auto mode
     return drivetrain.getTrajectoryCommand();
   }
 

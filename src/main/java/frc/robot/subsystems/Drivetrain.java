@@ -39,19 +39,13 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import frc.robot.Constants;
+import frc.robot.Tunables;
 import frc.robot.helpers.SubsystemInspector;
 import frc.robot.helpers.DangerDetector;
-import frc.robot.helpers.Tuner.TunableBoolean;
-import frc.robot.helpers.Tuner.TunableDouble;
 
 public class Drivetrain extends SubsystemBase {
 
   private final SubsystemInspector inspector = new SubsystemInspector("Drivetrain");
-  private final TunableDouble slewRate = new TunableDouble("slewRateForDrivetrain", Constants.slewRateForDrivetrain);
-  private final TunableBoolean useAntiTipping = new TunableBoolean("useAntiTipping", false);
-
-  private final TunableDouble minTippingIntegral = new TunableDouble("minTippingIntegral", 50.0);
-  private final TunableDouble maxTippingIntegral = new TunableDouble("maxTippingIntegral", 250.0);
 
   private final WPI_TalonFX leftFollower = new WPI_TalonFX(Constants.falconRearLeftCAN);
   private final WPI_TalonFX leftLeader = new WPI_TalonFX(Constants.falconFrontLeftCAN);
@@ -184,9 +178,9 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
 
     // Allow tuning
-    if (slewRate.didChange()) {
-      leftMetersPerSecondFilter = new SlewRateLimiter(slewRate.get());
-      rightMetersPerSecondFilter = new SlewRateLimiter(slewRate.get());
+    if (Tunables.slewRate.didChange()) {
+      leftMetersPerSecondFilter = new SlewRateLimiter(Tunables.slewRate.get());
+      rightMetersPerSecondFilter = new SlewRateLimiter(Tunables.slewRate.get());
     }
 
     // Coast when disabled
@@ -249,13 +243,13 @@ public class Drivetrain extends SubsystemBase {
   }
 
   private double getTippingAdjustmentPercentage() {
-    if (useAntiTipping.get() == false) {
+    if (Tunables.useAntiTipping.get() == false) {
       return 1.0;
     }
     double percentageAdjustment = 1.0;
     double dangerLevel = dangerDetector.getDangerLevel();
-    double minDangerLevel = minTippingIntegral.get();
-    double maxDangerLevel = maxTippingIntegral.get();
+    double minDangerLevel = Tunables.minTippingIntegral.get();
+    double maxDangerLevel = Tunables.maxTippingIntegral.get();
     if (dangerLevel > minDangerLevel) {
       percentageAdjustment = 1
           - (dangerLevel - minDangerLevel) / (maxDangerLevel - minDangerLevel);

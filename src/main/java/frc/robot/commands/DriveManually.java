@@ -8,8 +8,8 @@
 package frc.robot.commands;
 
 import frc.robot.Constants;
+import frc.robot.Tunables;
 import frc.robot.helpers.Gamepad.Axis;
-import frc.robot.helpers.Tuner.TunableBoolean;
 import frc.robot.helpers.Tuner.TunableDouble;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -23,9 +23,6 @@ public class DriveManually extends CommandBase {
   protected final Axis leftAxis;
   protected final Axis rightAxis;
   protected final Axis rightHorizontalAxis;
-  protected final TunableDouble maxSteeringRadiansPerSecond = new TunableDouble("maxSteeringRadiansPerSecond", Constants.maxSteeringRadiansPerSecond);
-  protected final TunableDouble maxDriveMetersPerSecond = new TunableDouble("maxDriveMetersPerSecond",
-      Constants.maxSpeedInMetersPerSecond);
 
   public DriveManually(Drivetrain drivetrainSubsystem, Axis leftAxis, Axis rightAxis, Axis rightHorizontalAxis) {
     this.drivetrainSubsystem = drivetrainSubsystem;
@@ -41,8 +38,8 @@ public class DriveManually extends CommandBase {
 
   @Override
   public void execute() {
-    double throttleMetersPerSecond = maxDriveMetersPerSecond.get() * leftAxis.get();
-    double steeringRotationRadiansPerSecond =  maxSteeringRadiansPerSecond.get() * rightHorizontalAxis.get();
+    double throttleMetersPerSecond = Tunables.maxDriveMetersPerSecond.get() * leftAxis.get();
+    double steeringRotationRadiansPerSecond =  Tunables.maxSteeringRadiansPerSecond.get() * rightHorizontalAxis.get();
     this.drivetrainSubsystem.driveWithThrottleAndSteering(throttleMetersPerSecond, steeringRotationRadiansPerSecond);
   }
 

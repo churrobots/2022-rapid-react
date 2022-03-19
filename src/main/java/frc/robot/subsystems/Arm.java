@@ -14,17 +14,14 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Tunables;
 import frc.robot.helpers.SubsystemInspector;
-import frc.robot.helpers.Tuner.TunableDouble;
 
 public class Arm extends SubsystemBase {
   
   private final WPI_TalonFX armMotor = new WPI_TalonFX(Constants.falconArmCAN);
   private final DigitalInput armSensor = new DigitalInput(Constants.armSensorDIO);
   private boolean isCalibrating = true;
-
-  private TunableDouble kF = new TunableDouble("armKF", 0.2);
-  private TunableDouble kP = new TunableDouble("armKP", 0.2);
 
   private final SubsystemInspector inspector = new SubsystemInspector("Arm");
 
@@ -43,10 +40,10 @@ public class Arm extends SubsystemBase {
     int fakeSlot = 0;
     int fakePIDSlot = 0;
     int fakeTimeoutMilliseconds = 30;
-    double fakeKP = kP.get();
+    double fakeKP = Tunables.kP.get();
     double fakeKI = 0.0;
     double fakeKD = 0.0;
-    double fakeKF = kF.get();
+    double fakeKF = Tunables.kF.get();
 
     armMotor.configNeutralDeadband(0.001); // really low deadzone
 
@@ -87,7 +84,7 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     calibrateIfNeeded();
-    if (kF.didChange() || kP.didChange()) {
+    if (Tunables.kF.didChange() || Tunables.kP.didChange()) {
       configureMotionMagic();
     }
 

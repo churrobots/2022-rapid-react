@@ -18,10 +18,8 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeLeft;
 import frc.robot.subsystems.IntakeRight;
 import frc.robot.commands.AutoClimb;
-import frc.robot.commands.AutoDriveOffTarmac;
 import frc.robot.commands.Calibrating;
 import frc.robot.helpers.Gamepad;
-import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**

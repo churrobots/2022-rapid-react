@@ -11,11 +11,11 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.helpers.SubsystemInspector;
 import frc.robot.helpers.Tuner.TunableDouble;
-import frc.robot.helpers.Tuner.TunableInteger;
 
 public class Arm extends SubsystemBase {
   
@@ -83,22 +83,20 @@ public class Arm extends SubsystemBase {
       inspector.set("moveToPosition", i);
     }
   }
-  
-  public void useBreaks() {
-    armMotor.setNeutralMode(NeutralMode.Brake);
-  }
-  
-  public void useCoast() {
-    armMotor.setNeutralMode(NeutralMode.Coast);
-
-  }
 
   @Override
   public void periodic() {
-    // TODO: reset this between disable/enable
     calibrateIfNeeded();
     if (kF.didChange() || kP.didChange()) {
       configureMotionMagic();
+    }
+
+    // Coast when disabled, and also make sure arm freshly moves to the upward position upon enabling
+    if (RobotState.isDisabled()) {
+      armMotor.setNeutralMode(NeutralMode.Coast);
+      moveToPosition(Constants.armUpSensorCounts);
+    } else {
+      armMotor.setNeutralMode(NeutralMode.Brake);
     }
     inspector.set("armSensor", armSensor.get());
     inspector.set("isCalibrating", isCalibrating);

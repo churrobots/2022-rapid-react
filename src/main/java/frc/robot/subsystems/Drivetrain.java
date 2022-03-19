@@ -171,7 +171,6 @@ public class Drivetrain extends SubsystemBase {
   }
   
   public void useBrakes() {
-    // RobotState.isDisabled();
     leftLeader.setNeutralMode(NeutralMode.Brake);
     rightLeader.setNeutralMode(NeutralMode.Brake);
   }
@@ -188,6 +187,15 @@ public class Drivetrain extends SubsystemBase {
     if (slewRate.didChange()) {
       leftMetersPerSecondFilter = new SlewRateLimiter(slewRate.get());
       rightMetersPerSecondFilter = new SlewRateLimiter(slewRate.get());
+    }
+
+    // Coast when disabled
+    if (RobotState.isDisabled()) {
+      leftLeader.setNeutralMode(NeutralMode.Coast);
+      rightLeader.setNeutralMode(NeutralMode.Coast);
+    } else {
+      leftLeader.setNeutralMode(NeutralMode.Brake);
+      rightLeader.setNeutralMode(NeutralMode.Brake);
     }
 
     // Watch tipping behavior.

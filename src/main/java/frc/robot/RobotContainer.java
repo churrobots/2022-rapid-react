@@ -59,17 +59,6 @@ public class RobotContainer {
     operatorGamepad.povDown.whenPressed(new MoveArmDown(muscleArm));
   }
 
-  public void onEnabled() {
-    drivetrain.useBrakes();
-    muscleArm.useBreaks();
-  }
-
-  public void onDisabled() {
-    muscleArm.moveToPosition(Constants.armUpSensorCounts);
-    drivetrain.useCoast();
-    muscleArm.useCoast();
-  }
-
   public Command getAutonomousCommand() {
     // TODO: use the value from the Station chooser
     // TODO: figure out how to make this reset the encoders onclick in the Station

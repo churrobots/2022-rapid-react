@@ -49,7 +49,7 @@ public final class Constants {
   public static final int armDownSensorCounts = -44000;
   public static final double armCruiseVelocityInSensorUnits = 12000;
   public static final double armAccelerationInSensorUnits = 4000;
-  public static final int armSmoothingStrength = 4;
+  public static final int armSmoothingStrength = 8;
   public static final double armCalibrationSpeedPercentage = 0.15;
 
 

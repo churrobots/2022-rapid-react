@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.helpers.SubsystemInspector;
+import frc.robot.helpers.Tuner.TunableDouble;
+import frc.robot.helpers.Tuner.TunableInteger;
 
 public class Arm extends SubsystemBase {
   
@@ -20,13 +22,19 @@ public class Arm extends SubsystemBase {
   private final DigitalInput armSensor = new DigitalInput(Constants.armSensorDIO);
   private boolean isCalibrating = true;
 
+  private TunableDouble kF = new TunableDouble("armKF", 0.2);
+  private TunableDouble kP = new TunableDouble("armKP", 0.2);
+
   private final SubsystemInspector inspector = new SubsystemInspector("Arm");
 
   /** Creates a new Arm. */
   public Arm() {
     armMotor.configFactoryDefault();
     armMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    configureMotionMagic();
+  }
 
+  private void configureMotionMagic() {
     // This sets a lot of the defaults that the example code seems to require
     // for full functioning of the Falcon500s. Cargo culting FTW.
     // https://github.com/CrossTheRoadElec/Phoenix-Examples-Languages/blob/master/Java%20Talon%20FX%20(Falcon%20500)/MotionMagic/src/main/java/frc/robot/Robot.java
@@ -34,10 +42,10 @@ public class Arm extends SubsystemBase {
     int fakeSlot = 0;
     int fakePIDSlot = 0;
     int fakeTimeoutMilliseconds = 30;
-    double fakeKP = 0.2;
+    double fakeKP = kP.get();
     double fakeKI = 0.0;
     double fakeKD = 0.0;
-    double fakeKF = 0.2;
+    double fakeKF = kF.get();
 
     armMotor.configNeutralDeadband(0.001); // really low deadzone
 
@@ -68,16 +76,19 @@ public class Arm extends SubsystemBase {
     isCalibrating = false; 
   }
 
-  public void moveToPosition(int sensorCountsFromUpPosition) {
-    if(!isCalibrating){
-      this.armMotor.set(TalonFXControlMode.MotionMagic, sensorCountsFromUpPosition);
-      inspector.set("moveToPosition", sensorCountsFromUpPosition);
+  public void moveToPosition(int i) {
+    if (!isCalibrating) {
+      this.armMotor.set(TalonFXControlMode.MotionMagic, i);
+      inspector.set("moveToPosition", i);
     }
   }
 
   @Override
   public void periodic() {
     calibrateIfNeeded();
+    if (kF.didChange() || kP.didChange()) {
+      configureMotionMagic();
+    }
     inspector.set("armSensor", armSensor.get());
     inspector.set("isCalibrating", isCalibrating);
     inspector.set("currentCommand", this.getCurrentCommand());

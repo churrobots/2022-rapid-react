@@ -91,7 +91,7 @@ public class Arm extends SubsystemBase {
     // Coast when disabled, and also make sure arm freshly moves to the upward position upon enabling
     if (RobotState.isDisabled()) {
       armMotor.setNeutralMode(NeutralMode.Coast);
-      moveToPosition(Constants.armUpSensorCounts);
+      moveToPosition(Tunables.armUpSensorCounts.get());
     } else {
       armMotor.setNeutralMode(NeutralMode.Brake);
     }

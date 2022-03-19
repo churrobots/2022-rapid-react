@@ -58,8 +58,8 @@ public class Drivetrain extends SubsystemBase {
 
   private final DangerDetector dangerDetector = new DangerDetector();
 
-  private SlewRateLimiter leftMetersPerSecondFilter = new SlewRateLimiter(Constants.slewRateForDrivetrain);
-  private SlewRateLimiter rightMetersPerSecondFilter = new SlewRateLimiter(Constants.slewRateForDrivetrain);
+  private SlewRateLimiter leftMetersPerSecondFilter = new SlewRateLimiter(Tunables.slewRateForDrivetrain.get());
+  private SlewRateLimiter rightMetersPerSecondFilter = new SlewRateLimiter(Tunables.slewRateForDrivetrain.get());
 
   // TODO: figure out what these constants mean
   private final PIDController leftPIDController = new PIDController(Constants.kP, 0, Constants.kD);
@@ -178,9 +178,9 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
 
     // Allow tuning
-    if (Tunables.slewRate.didChange()) {
-      leftMetersPerSecondFilter = new SlewRateLimiter(Tunables.slewRate.get());
-      rightMetersPerSecondFilter = new SlewRateLimiter(Tunables.slewRate.get());
+    if (Tunables.slewRateForDrivetrain.didChange()) {
+      leftMetersPerSecondFilter = new SlewRateLimiter(Tunables.slewRateForDrivetrain.get());
+      rightMetersPerSecondFilter = new SlewRateLimiter(Tunables.slewRateForDrivetrain.get());
     }
 
     // Coast when disabled

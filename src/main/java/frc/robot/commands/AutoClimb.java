@@ -8,6 +8,7 @@ import java.util.LinkedList;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.Tunables;
 import frc.robot.helpers.Tuner.TunableInteger;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
@@ -18,7 +19,7 @@ public class AutoClimb extends CommandBase {
   protected LinkedList<Double> pitchReadings = new LinkedList<Double>();
 
   protected final TunableInteger armDownSensorCounts = new TunableInteger("armDownSensorCounts",
-      Constants.armDownSensorCounts);
+      Tunables.armDownSensorCounts.get());
   
   public AutoClimb(Arm armsubsystem, Drivetrain drivetrain) {
     this.armSubsystem = armsubsystem;
@@ -40,7 +41,7 @@ public class AutoClimb extends CommandBase {
     double pitch_value = drivetrain.getPitch();
     if (pitch_value > 26) {
       drivetrain.driveWithPercentages(0, 0);
-      armSubsystem.moveToPosition(Constants.armDownSensorCounts);
+      armSubsystem.moveToPosition(Tunables.armDownSensorCounts.get());
     }
 
     // FInd way to check pitch value

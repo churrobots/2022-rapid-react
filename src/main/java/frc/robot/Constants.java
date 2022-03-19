@@ -30,8 +30,9 @@ public final class Constants {
   public static final double collectionSpeedPercentage = 0.75;
   public static final double ejectionSpeedPercentage = -0.75;
 
-  public static final double maxSpeedInMetersPerSecond = 1.65;
+  public static final double maxSpeedInMetersPerSecond = 2.0;
   public static final double maxSteeringRadiansPerSecond = 2.0;
+  public static final double maxAccelerationinMetersPerSecondSquared = 0.5;
 
   public static final int armSensorDIO = 9;
 
@@ -54,10 +55,10 @@ public final class Constants {
 
   // // From the System Identification for Connie
   // public static final double driveGearRatio = 7.31;
-  // public static final double kS = 0.62331;
-  // public static final double kV = 1.5593;
-  // public static final double kA = 0.20183;
-  // public static final double kP = 0.021079;
+  // public static final double kS = .64142; 
+  // public static final double kV = 1.604;
+  // public static final double kA = 0.19999; 
+  // public static final double kP = 2.1274;
   // public static final double kD = 0.0;
 
   // From the System Identification for Ponyo

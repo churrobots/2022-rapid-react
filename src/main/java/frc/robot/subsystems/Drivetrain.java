@@ -8,15 +8,28 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
@@ -61,12 +74,11 @@ public class Drivetrain extends SubsystemBase {
       Units.inchesToMeters(Constants.trackWidthInInches));
 
   private final DifferentialDriveOdometry odometry;
-
-  // TODO: revisit trajectory-following, and figure out where they got the "recommended" 2.0 and 0.7
-  // https://github.com/wpilibsuite/allwpilib/tree/main/wpilibjExamples/src/main/java/edu/wpi/first/wpilibj/examples/ramsetecontroller
-  // private final RamseteController controller = new RamseteController(2.0, 0.7);
+  private final Field2d field = new Field2d();
 
   public Drivetrain() {
+
+    SmartDashboard.putData("Field", field);
 
     leftLeader.configFactoryDefault();
     leftLeader.setInverted(Constants.leftFalconsAreInverted);
@@ -87,21 +99,30 @@ public class Drivetrain extends SubsystemBase {
     rightFollower.setInverted(InvertType.FollowMaster);
 
     pigeonGyro.configFactoryDefault();
+    pigeonGyro.reset();
+
+    // TODO: pass in the initial position based on which autonomous routine we choose
+    Pose2d initialPosition = new Pose2d(0.0, 0.0, getHeadingInRotation2d());
 
     // FIXME: need set an initial Pose based on which starting position we chose
-    odometry = new DifferentialDriveOdometry(getHeading());
-    resetPosition();
+    odometry = new DifferentialDriveOdometry(getHeadingInRotation2d());
+    resetOdometry(initialPosition);
+  }
+  
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    double leftSensorUnitsPer100ms = leftLeader.getSelectedSensorVelocity();
+    double rightSensorUnitsPer100ms = rightLeader.getSelectedSensorVelocity();
+    double leftMetersPer100ms = convertSensorCountsToDistanceInMeters(leftSensorUnitsPer100ms);
+    double rightMetersPer100ms = convertSensorCountsToDistanceInMeters(rightSensorUnitsPer100ms);
+    double leftMetersPerSecond = leftMetersPer100ms * 10;
+    double rightMetersPerSecond = rightMetersPer100ms * 10;
+    return new DifferentialDriveWheelSpeeds(leftMetersPerSecond, rightMetersPerSecond);
   }
 
-  public void resetPosition() {
+  public void resetOdometry(Pose2d pose) {
     leftLeader.setSelectedSensorPosition(0);
     rightLeader.setSelectedSensorPosition(0);
-    // TODO: figure out if we really should be resetting the pigeon here, the other team doesn't
-    // https://github.com/FRC5190/FalconLibrary/blob/main/wpi/src/main/kotlin/org/ghrobotics/lib/subsystems/drive/FalconWestCoastDrivetrain.kt#L271
-    pigeonGyro.reset();
-    // TODO: take this as an argument (initial pose)
-    Pose2d currentPosition = new Pose2d(0.0, 0.0, getHeading());
-    odometry.resetPosition(currentPosition, getHeading());
+    odometry.resetPosition(pose, getHeadingInRotation2d());
   }
 
   public void driveWithThrottleAndSteering(double throttleMetersPerSecond, double steeringRotationRadiansPerSecond) {
@@ -164,13 +185,14 @@ public class Drivetrain extends SubsystemBase {
     dangerDetector.update(pitch, roll);
 
     // Update odometry
-    Rotation2d heading = getHeading();
+    Rotation2d heading = getHeadingInRotation2d();
     double leftDistanceInMeters = convertSensorCountsToDistanceInMeters(leftLeader.getSelectedSensorPosition());
     double rightDistanceInMeters = convertSensorCountsToDistanceInMeters(rightLeader.getSelectedSensorPosition());
-    odometry.update(heading, leftDistanceInMeters, rightDistanceInMeters);
+    odometry.update(heading, -leftDistanceInMeters, -rightDistanceInMeters);
 
     // Show debug information in NetworkTables
     Pose2d pose = odometry.getPoseMeters();
+    field.setRobotPose(pose);
     inspector.set("rotation", pose.getRotation().getDegrees());
     inspector.set("x", pose.getX());
     inspector.set("y", pose.getY());
@@ -183,8 +205,20 @@ public class Drivetrain extends SubsystemBase {
     inspector.set("tippingAdjustmentPercentage", getTippingAdjustmentPercentage());
   }
 
-  private Rotation2d getHeading() {
-    // TODO: confirm whether this needs to be negative for the unit circle nonsense
+  public Pose2d getPose() {
+    return odometry.getPoseMeters();
+  }
+
+  public void tankDriveVolts(double leftVolts, double rightVolts) {
+    leftLeader.setVoltage(leftVolts);
+    rightLeader.setVoltage(rightVolts);
+  }
+  
+  public double getHeading() {
+    return pigeonGyro.getRotation2d().getDegrees();
+  }
+
+  private Rotation2d getHeadingInRotation2d() {
     return pigeonGyro.getRotation2d();
   }
 
@@ -205,6 +239,53 @@ public class Drivetrain extends SubsystemBase {
           - (dangerLevel - minDangerLevel) / (maxDangerLevel - minDangerLevel);
     }
     return percentageAdjustment;
+  }
+
+  public Command getTrajectoryCommand() {
+    // maybe?
+    resetOdometry(new Pose2d(0, 0, getHeadingInRotation2d()));
+
+    // Create a voltage constraint to ensure we don't accelerate too fast
+    var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
+        feedforward,
+        kinematics,
+        10);
+
+    // Create config for trajectory
+    double slowdownPercent = 0.22;
+    TrajectoryConfig config = new TrajectoryConfig(
+        slowdownPercent * Constants.maxSpeedInMetersPerSecond,
+        slowdownPercent * Constants.maxAccelerationinMetersPerSecondSquared)
+            // Add kinematics to ensure max speed is actually obeyed
+            .setKinematics(kinematics)
+            // Apply the voltage constraint
+            .addConstraint(autoVoltageConstraint);
+
+    // An example trajectory to follow. All units in meters.
+    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+        new Pose2d(0, 0, new Rotation2d(0)),
+        List.of(new Translation2d(10, 0)),
+        new Pose2d(25, 0, new Rotation2d(0)),
+        config);
+
+    RamseteCommand ramseteCommand = new RamseteCommand(
+        exampleTrajectory,
+        this::getPose,
+        new RamseteController(),
+        feedforward,
+        kinematics,
+        this::getWheelSpeeds,
+        leftPIDController,
+        rightPIDController,
+        // RamseteCommand passes volts to the callback
+        this::tankDriveVolts,
+        this);
+
+    // Reset odometry to the starting pose of the trajectory.
+    this.resetOdometry(exampleTrajectory.getInitialPose());
+
+    // Run path following command, then stop at the end.
+    return ramseteCommand.andThen(() -> this.tankDriveVolts(0, 0));
   }
 
 }

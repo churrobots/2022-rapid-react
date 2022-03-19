@@ -46,7 +46,6 @@ import frc.robot.helpers.Tuner.TunableDouble;
 public class Drivetrain extends SubsystemBase {
 
   private final SubsystemInspector inspector = new SubsystemInspector("Drivetrain");
-  private final TunableBoolean useBrakes = new TunableBoolean("useDrivetrainBrakes", false);
   private final TunableDouble slewRate = new TunableDouble("slewRateForDrivetrain", Constants.slewRateForDrivetrain);
   private final TunableBoolean useAntiTipping = new TunableBoolean("useAntiTipping", false);
 
@@ -161,20 +160,24 @@ public class Drivetrain extends SubsystemBase {
 
   public void driveWithPercentages(double leftPercent, double rightPercent) {
     leftLeader.set(leftPercent);
-    rightLeader.set(rightPercent);    
+    rightLeader.set(rightPercent);
+  }
+  
+  public void useBrakes() {
+    // RobotState.isDisabled();
+    leftLeader.setNeutralMode(NeutralMode.Brake);
+    rightLeader.setNeutralMode(NeutralMode.Brake);
+  }
+  
+  public void useCoast() {
+    leftLeader.setNeutralMode(NeutralMode.Coast);
+    rightLeader.setNeutralMode(NeutralMode.Coast);
   }
 
   @Override
   public void periodic() {
 
     // Allow tuning
-    if (useBrakes.get()) {
-      leftLeader.setNeutralMode(NeutralMode.Brake);
-      rightLeader.setNeutralMode(NeutralMode.Brake);
-    } else {
-      leftLeader.setNeutralMode(NeutralMode.Coast);
-      rightLeader.setNeutralMode(NeutralMode.Coast);
-    }
     if (slewRate.didChange()) {
       leftMetersPerSecondFilter = new SlewRateLimiter(slewRate.get());
       rightMetersPerSecondFilter = new SlewRateLimiter(slewRate.get());

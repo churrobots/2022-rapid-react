@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -82,9 +83,19 @@ public class Arm extends SubsystemBase {
       inspector.set("moveToPosition", i);
     }
   }
+  
+  public void useBreaks() {
+    armMotor.setNeutralMode(NeutralMode.Brake);
+  }
+  
+  public void useCoast() {
+    armMotor.setNeutralMode(NeutralMode.Coast);
+
+  }
 
   @Override
   public void periodic() {
+    // TODO: reset this between disable/enable
     calibrateIfNeeded();
     if (kF.didChange() || kP.didChange()) {
       configureMotionMagic();

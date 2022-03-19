@@ -17,9 +17,11 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeLeft;
 import frc.robot.subsystems.IntakeRight;
+import frc.robot.commands.AutoClimb;
 import frc.robot.commands.AutoDriveOffTarmac;
 import frc.robot.commands.Calibrating;
 import frc.robot.helpers.Gamepad;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -31,7 +33,11 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
 
-  public final Command driveOffTarmac;
+  // Connect to all the outputs.
+  Drivetrain drivetrain = new Drivetrain();
+  IntakeLeft polterLeftGust3000 = new IntakeLeft();
+  IntakeRight polterRightGust3000 = new IntakeRight();
+  Arm muscleArm = new Arm();
 
   public RobotContainer() {
 
@@ -39,17 +45,11 @@ public class RobotContainer {
     Gamepad driverGamepad = new Gamepad(Constants.driverGamepadPort); 
     Gamepad operatorGamepad = new Gamepad(Constants.operatorGamepadPort);
 
-    // Connect to all the outputs.
-    Drivetrain drivetrain = new Drivetrain();
-    IntakeLeft polterLeftGust3000 = new IntakeLeft();
-    IntakeRight polterRightGust3000 = new IntakeRight();
-    Arm muscleArm = new Arm();
 
     // Describe when the commands should be scheduled.
-    this.driveOffTarmac = new AutoDriveOffTarmac(drivetrain);
-
     drivetrain.setDefaultCommand(new DriveManually(drivetrain, driverGamepad.leftYAxis, driverGamepad.rightYAxis,
         driverGamepad.rightXAxis));
+    driverGamepad.aButton.whileHeld(new AutoClimb(muscleArm, drivetrain));
     operatorGamepad.getDualButton(operatorGamepad.startButton, operatorGamepad.backButton)
         .whileHeld(new Calibrating(muscleArm));
     operatorGamepad.yButton.whenHeld(new Vacuum(polterLeftGust3000, polterRightGust3000));
@@ -59,11 +59,24 @@ public class RobotContainer {
     operatorGamepad.povDown.whenPressed(new MoveArmDown(muscleArm));
   }
 
+  public void onEnabled() {
+    drivetrain.useBrakes();
+    muscleArm.useBreaks();
+  }
+
+  public void onDisabled() {
+    muscleArm.moveToPosition(Constants.armUpSensorCounts);
+    drivetrain.useCoast();
+    muscleArm.useCoast();
+  }
+
   public Command getAutonomousCommand() {
     // TODO: use the value from the Station chooser
-    // TODO: figure out how to make this reset the encoders onclick in the Station dropdown
-    // TODO: figureo out how to make this initialize the Pose correctly onclick (for auto choices)
-    return this.driveOffTarmac;
+    // TODO: figure out how to make this reset the encoders onclick in the Station
+    // dropdown
+    // TODO: figureo out how to make this initialize the Pose correctly onclick (for
+    // auto choices)
+    return drivetrain.getTrajectoryCommand();
   }
 
 }

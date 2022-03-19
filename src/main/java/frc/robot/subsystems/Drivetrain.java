@@ -23,6 +23,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -125,6 +126,12 @@ public class Drivetrain extends SubsystemBase {
     odometry.resetPosition(pose, getHeadingInRotation2d());
   }
 
+  public double getPitch() {
+    double pitch = pigeonGyro.getPitch();
+    return pitch;
+
+  }
+    
   public void driveWithThrottleAndSteering(double throttleMetersPerSecond, double steeringRotationRadiansPerSecond) {
     var wheelSpeeds = kinematics.toWheelSpeeds(new ChassisSpeeds(throttleMetersPerSecond, 0.0, steeringRotationRadiansPerSecond));
     driveWithMetersPerSecond(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);

@@ -48,6 +48,7 @@ public class Drivetrain extends SubsystemBase {
   private final SubsystemInspector inspector = new SubsystemInspector("Drivetrain");
   private final TunableBoolean useBrakes = new TunableBoolean("useDrivetrainBrakes", false);
   private final TunableDouble slewRate = new TunableDouble("slewRateForDrivetrain", Constants.slewRateForDrivetrain);
+  private final TunableBoolean useAntiTipping = new TunableBoolean("useAntiTipping", false);
 
   private final TunableDouble minTippingIntegral = new TunableDouble("minTippingIntegral", 50.0);
   private final TunableDouble maxTippingIntegral = new TunableDouble("maxTippingIntegral", 250.0);
@@ -230,6 +231,9 @@ public class Drivetrain extends SubsystemBase {
   }
 
   private double getTippingAdjustmentPercentage() {
+    if (useAntiTipping.get() == false) {
+      return 1.0;
+    }
     double percentageAdjustment = 1.0;
     double dangerLevel = dangerDetector.getDangerLevel();
     double minDangerLevel = minTippingIntegral.get();

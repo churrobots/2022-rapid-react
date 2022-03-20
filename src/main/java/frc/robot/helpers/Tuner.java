@@ -4,21 +4,10 @@
 
 package frc.robot.helpers;
 
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public final class Tuner {
-
-  private static boolean needsClearing = true;
-
-  protected static void clearTunerIfNeeded() {
-    if (needsClearing) {
-      NetworkTable tuner = NetworkTableInstance.getDefault().getTable("Tuner");
-      tuner.getKeys().forEach((key) -> tuner.delete(key));
-      needsClearing = false;
-    }
-  }
 
   protected abstract static class TunableEntry<T> {
     protected final T defaultValue;
@@ -26,12 +15,9 @@ public final class Tuner {
     protected long lastDetectedChange;
 
     public TunableEntry(String name, T defaultValue) {
-      clearTunerIfNeeded();
-      NetworkTable table = NetworkTableInstance.getDefault().getTable("Tuner");
-      entry = table.getEntry(name);
+      entry = SmartDashboard.getEntry(name);
       this.defaultValue = defaultValue;
       this._syncDefault();
-      NetworkTableInstance.getDefault().flush();
       lastDetectedChange = entry.getLastChange();
     }
 

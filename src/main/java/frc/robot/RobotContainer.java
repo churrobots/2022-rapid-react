@@ -17,10 +17,16 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeLeft;
 import frc.robot.subsystems.IntakeRight;
-import frc.robot.commands.AutoClimb;
+import frc.robot.commands.AssistedClimb;
+import frc.robot.commands.AutoDriveOffTarmac;
+import frc.robot.commands.AutoDumpAndDriveOffTarmac;
 import frc.robot.commands.Calibrating;
 import frc.robot.helpers.Gamepad;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -41,11 +47,18 @@ public class RobotContainer {
   IntakeRight polterRightGust3000 = new IntakeRight();
   Arm muscleArm = new Arm();
 
+  // Create the autonomous chooser.
+  SendableChooser<Command> autonomousChooser = new SendableChooser<Command>();
+
   public RobotContainer() {
+  
+    // Enable the camera.
+    CameraServer.startAutomaticCapture();
+
     // Wire up commands to the controllers.
     drivetrain.setDefaultCommand(new DriveManually(drivetrain, driverGamepad.leftYAxis, driverGamepad.rightYAxis,
         driverGamepad.rightXAxis));
-    driverGamepad.aButton.whileHeld(new AutoClimb(muscleArm, drivetrain));
+    driverGamepad.aButton.whileHeld(new AssistedClimb(muscleArm, drivetrain));
     operatorGamepad.getDualButton(operatorGamepad.startButton, operatorGamepad.backButton)
         .whileHeld(new Calibrating(muscleArm));
     operatorGamepad.yButton.whenHeld(new Vacuum(polterLeftGust3000, polterRightGust3000));
@@ -53,11 +66,24 @@ public class RobotContainer {
     operatorGamepad.rightBumper.whenHeld(new EjectRight(polterRightGust3000));
     operatorGamepad.povUp.whenPressed(new MoveArmUp(muscleArm));
     operatorGamepad.povDown.whenPressed(new MoveArmDown(muscleArm));
+
+    // Set the options for autonomous.
+    autonomousChooser.setDefaultOption("Drive off tarmac", new AutoDriveOffTarmac());
+    autonomousChooser.addOption("Dump cargo and drive off tarmac", new AutoDumpAndDriveOffTarmac());
+    autonomousChooser.addOption("Drive some crazy trajectory", drivetrain.getTrajectoryCommand());
+    SmartDashboard.putData(autonomousChooser);
+
+    // Show all the subsystems in the smartdashboard.
+    SmartDashboard.putData(CommandScheduler.getInstance());
+    SmartDashboard.putData((drivetrain));
+    SmartDashboard.putData((polterLeftGust3000));
+    SmartDashboard.putData((polterRightGust3000));
+    SmartDashboard.putData((muscleArm));
   }
 
   public Command getAutonomousCommand() {
     // TODO: allow Shuffleboard to choose the auto mode
-    return drivetrain.getTrajectoryCommand();
+    return autonomousChooser.getSelected();
   }
 
 }

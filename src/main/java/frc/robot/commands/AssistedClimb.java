@@ -27,10 +27,10 @@ public class AssistedClimb extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.moveToPosition(Tunables.armClimberSensorCounts.get());
+    armSubsystem.moveToPosition(Tunables.armClimbUnderBarSensorCounts.get());
     drivetrain.driveWithMetersPerSecond(Tunables.driveTrainClimbingSpeed.get(), Tunables.driveTrainClimbingSpeed.get() );
     double pitch_value = drivetrain.getPitch();
-    if (pitch_value > Tunables.climbingPitchValue.get()) {
+    if (pitch_value > Tunables.maxPitchForClimb.get()) {
       drivetrain.driveWithPercentages(0, 0);
       armSubsystem.moveToPosition(Tunables.armDownSensorCounts.get());
     }

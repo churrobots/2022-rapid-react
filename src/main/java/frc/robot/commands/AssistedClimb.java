@@ -27,29 +27,32 @@ public class AssistedClimb extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.moveToPosition(Tunables.armClimbUnderBarSensorCounts.get());
-    drivetrain.driveWithMetersPerSecond(Tunables.driveTrainClimbingSpeed.get(), Tunables.driveTrainClimbingSpeed.get() );
+    // Tuck the arm under the bar
+    int desiredArmPosition = Tunables.armClimbUnderBarSensorCounts.get();
+    armSubsystem.moveToPosition(desiredArmPosition);
+
+    // Drive forward when it's safe
+    double distanceFromDesiredArmPosition = Math.abs(armSubsystem.getCurrentPosition() - desiredArmPosition);
+    boolean isSafeToDriveUnder = distanceFromDesiredArmPosition < 300;
+    if (isSafeToDriveUnder) {
+      double metersPerSecond = Tunables.driveTrainClimbingSpeed.get();
+      drivetrain.driveWithMetersPerSecond(metersPerSecond, metersPerSecond);
+    }
+
+    // Detect when we hang and try to pitch forward when needed.
     double pitch_value = drivetrain.getPitch();
     if (pitch_value > Tunables.maxPitchForClimb.get()) {
-      drivetrain.driveWithPercentages(0, 0);
+      drivetrain.driveWithMetersPerSecond(0, 0);
       armSubsystem.moveToPosition(Tunables.armDownSensorCounts.get());
-    }
-
-    // FInd way to check 
-    // will stop the motor, potentially move the arm foward or back
-    // to level the bot well
-
-
-      
-    }
-    
-    
-  
-  
+    }      
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    armSubsystem.moveToPosition(Tunables.armDownSensorCounts.get());
+    drivetrain.driveWithMetersPerSecond(0, 0);
+  }
 
   // Returns true when the command should end.
   @Override

@@ -152,16 +152,6 @@ public class Drivetrain extends SubsystemBase {
     double rightFeedback = rightPIDController.calculate(rightActualMetersPerSecond, smoothedRightMetersPerSecond);
     double rightVoltage = rightFeedback + rightFeedforward;
     rightLeader.setVoltage(rightVoltage);
-
-    inspector.set("drive:leftTargetMetersPerSecond", leftTargetMetersPerSecond);
-    inspector.set("drive:smoothedLeftMetersPerSecond", smoothedLeftMetersPerSecond);
-    inspector.set("drive:rightTargetMetersPerSecond", rightTargetMetersPerSecond);
-    inspector.set("drive:smoothedRightMetersPerSecond", smoothedRightMetersPerSecond);
-  }
-
-  public void driveWithPercentages(double leftPercent, double rightPercent) {
-    leftLeader.set(leftPercent);
-    rightLeader.set(rightPercent);
   }
 
   @Override
@@ -199,11 +189,8 @@ public class Drivetrain extends SubsystemBase {
     inspector.set("rotation", pose.getRotation().getDegrees());
     inspector.set("x", pose.getX());
     inspector.set("y", pose.getY());
-    inspector.set("leftEncoder", leftLeader.getSelectedSensorPosition());
-    inspector.set("rightEncoder", rightLeader.getSelectedSensorPosition());
     inspector.set("roll", pigeonGyro.getRoll());
     inspector.set("pitch", pigeonGyro.getPitch());
-    inspector.set("yaw", pigeonGyro.getYaw());
     inspector.set("dangerLevel", dangerDetector.getDangerLevel());
     inspector.set("tippingAdjustmentPercentage", getTippingAdjustmentPercentage());
   }

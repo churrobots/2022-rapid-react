@@ -56,9 +56,9 @@ public class Arm extends SubsystemBase {
 		armMotor.config_kI(fakeSlot, fakeKI, fakeTimeoutMilliseconds);
 		armMotor.config_kD(fakeSlot, fakeKD, fakeTimeoutMilliseconds);
 
-		armMotor.configMotionCruiseVelocity(Constants.armCruiseVelocityInSensorUnits, fakeTimeoutMilliseconds);
-		armMotor.configMotionAcceleration(Constants.armAccelerationInSensorUnits, fakeTimeoutMilliseconds);
-    armMotor.configMotionSCurveStrength(Constants.armSmoothingStrength);
+		armMotor.configMotionCruiseVelocity(Tunables.armCruiseVelocityInSensorUnits.get(), fakeTimeoutMilliseconds);
+		armMotor.configMotionAcceleration(Tunables.armAccelerationInSensorUnits.get(), fakeTimeoutMilliseconds);
+    armMotor.configMotionSCurveStrength(Tunables.armSmoothingStrength.get());
     
     armMotor.configPeakOutputForward(0.4);
     armMotor.configPeakOutputReverse(-0.4);
@@ -74,6 +74,10 @@ public class Arm extends SubsystemBase {
     isCalibrating = false; 
   }
 
+  public double getCurrentPosition() {
+    return armMotor.getSelectedSensorPosition();
+  }
+
   public void moveToPosition(int sensorCountsFromUp) {
     if (!isCalibrating) {
       this.armMotor.set(TalonFXControlMode.MotionMagic, sensorCountsFromUp);
@@ -84,7 +88,12 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     calibrateIfNeeded();
-    if (Tunables.kF.didChange() || Tunables.kP.didChange()) {
+    if (Tunables.kF.didChange()
+        || Tunables.kP.didChange()
+        || Tunables.armSmoothingStrength.didChange()
+        || Tunables.armAccelerationInSensorUnits.didChange()
+        || Tunables.armCruiseVelocityInSensorUnits.didChange()
+      ) {
       configureMotionMagic();
     }
 
@@ -97,11 +106,8 @@ public class Arm extends SubsystemBase {
     }
     inspector.set("armSensor", armSensor.get());
     inspector.set("isCalibrating", isCalibrating);
-    inspector.set("currentCommand", this.getCurrentCommand());
     inspector.set("sensorCount", this.armMotor.getSelectedSensorPosition());
-    inspector.set("currentCommand", this.getCurrentCommand());
-    inspector.set("power:supplyCurrent", armMotor.getSupplyCurrent());
-    inspector.set("power:statorCurrent", armMotor.getStatorCurrent());
+    inspector.set("statorCurrent", armMotor.getStatorCurrent());
   }
 
   private void calibrateIfNeeded() {

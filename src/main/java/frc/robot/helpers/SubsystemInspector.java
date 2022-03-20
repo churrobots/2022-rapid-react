@@ -4,41 +4,43 @@
 
 package frc.robot.helpers;
 
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
-// TODO: deal with duplicate graphed lines on code restart https://github.com/wpilibsuite/shuffleboard/issues/720
 public class SubsystemInspector {
 
-  private final NetworkTable stats;
+  private final String rootName;
 
   public SubsystemInspector(String subsystemName) {
-    // TODO: figure out how to clear the table on bootup so there aren't stale entries of old data
-    stats = NetworkTableInstance.getDefault().getTable(subsystemName).getSubTable("inspector");
+    rootName = subsystemName;
   }
 
   public void set(String name, Boolean value) {
-    stats.getEntry(name).setBoolean(value);
+    _getEntry(name).setBoolean(value);
+  }
+
+  private NetworkTableEntry _getEntry(String name) {
+    return SmartDashboard.getEntry(rootName + "." + name);
   }
 
   public void set(String name, String value) {
-    stats.getEntry(name).setString(value);
+    _getEntry(name).setString(value);
   }
 
   public void set(String name, Double value) {
-    boolean differenceIsSignificantEnoughToUpdateEntry = Math.abs(value - stats.getEntry(name).getDouble(Double.MAX_VALUE)) > 0.01;
+    boolean differenceIsSignificantEnoughToUpdateEntry = Math.abs(value - _getEntry(name).getDouble(Double.MAX_VALUE)) > 0.01;
     if (differenceIsSignificantEnoughToUpdateEntry) {
-      stats.getEntry(name).setDouble(value);
+      _getEntry(name).setDouble(value);
     }
   }
 
   public void set(String name, Integer value) {
-    stats.getEntry(name).setDouble(value);
+    _getEntry(name).setDouble(value);
   }
 
   public void set(String name, Command value) {
-    stats.getEntry(name).setString(value != null ? value.getName() : "---");
+    _getEntry(name).setString(value != null ? value.getName() : "---");
   }
 
 }

@@ -41,9 +41,6 @@ public final class Constants {
   public static final double driveWheelRadiusInInches = 3;
   public static final double trackWidthInInches = 22.0;
   public static final double drivetrainNeutralDeadbandPercentage = 0.08;
-  public static final double armCruiseVelocityInSensorUnits = 12000;
-  public static final double armAccelerationInSensorUnits = 4000;
-  public static final int armSmoothingStrength = 8;
   public static final double armCalibrationSpeedPercentage = 0.15;
 
 

@@ -8,6 +8,9 @@ public final class Tunables {
 
   public static final TunableDouble kF = new TunableDouble("armKF", 0.2);
   public static final TunableDouble kP = new TunableDouble("armKP", 0.2);
+  public static final TunableInteger armSmoothingStrength = new TunableInteger("armSmoothingStrength", 4);
+  public static final TunableInteger armCruiseVelocityInSensorUnits = new TunableInteger("armCruiseVelocityInSensorUnits", 12000);
+  public static final TunableInteger armAccelerationInSensorUnits = new TunableInteger("armAccelerationInSensorUnits", 4000);
 
   public static final TunableDouble maxDriveAcceleration = new TunableDouble("maxDriveAcceleration", 3.75);
   public static final TunableBoolean useAntiTipping = new TunableBoolean("useAntiTipping", false);

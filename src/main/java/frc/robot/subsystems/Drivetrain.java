@@ -163,16 +163,6 @@ public class Drivetrain extends SubsystemBase {
     leftLeader.set(leftPercent);
     rightLeader.set(rightPercent);
   }
-  
-  public void useBrakes() {
-    leftLeader.setNeutralMode(NeutralMode.Brake);
-    rightLeader.setNeutralMode(NeutralMode.Brake);
-  }
-  
-  public void useCoast() {
-    leftLeader.setNeutralMode(NeutralMode.Coast);
-    rightLeader.setNeutralMode(NeutralMode.Coast);
-  }
 
   @Override
   public void periodic() {
@@ -248,8 +238,8 @@ public class Drivetrain extends SubsystemBase {
     }
     double percentageAdjustment = 1.0;
     double dangerLevel = dangerDetector.getDangerLevel();
-    double minDangerLevel = Tunables.minTippingIntegral.get();
-    double maxDangerLevel = Tunables.maxTippingIntegral.get();
+    double minDangerLevel = Tunables.minDangerLevel.get();
+    double maxDangerLevel = Tunables.maxDangerLevel.get();
     if (dangerLevel > minDangerLevel) {
       percentageAdjustment = 1
           - (dangerLevel - minDangerLevel) / (maxDangerLevel - minDangerLevel);

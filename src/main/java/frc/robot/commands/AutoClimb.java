@@ -16,10 +16,6 @@ import frc.robot.subsystems.Drivetrain;
 public class AutoClimb extends CommandBase {
   protected final Arm armSubsystem;
   protected final Drivetrain drivetrain;
-  protected LinkedList<Double> pitchReadings = new LinkedList<Double>();
-
-  protected final TunableInteger armDownSensorCounts = new TunableInteger("armDownSensorCounts",
-      Tunables.armDownSensorCounts.get());
   
   public AutoClimb(Arm armsubsystem, Drivetrain drivetrain) {
     this.armSubsystem = armsubsystem;
@@ -36,15 +32,15 @@ public class AutoClimb extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.moveToPosition(-22000);
-    drivetrain.driveWithMetersPerSecond(2, 2);
+    armSubsystem.moveToPosition(Tunables.armClimberSensorCounts.get());
+    drivetrain.driveWithMetersPerSecond(Tunables.driveTrainClimbingSpeed.get(), Tunables.driveTrainClimbingSpeed.get() );
     double pitch_value = drivetrain.getPitch();
-    if (pitch_value > 26) {
+    if (pitch_value > Tunables.climbingPitchValue.get()) {
       drivetrain.driveWithPercentages(0, 0);
       armSubsystem.moveToPosition(Tunables.armDownSensorCounts.get());
     }
 
-    // FInd way to check pitch value
+    // FInd way to check 
     // will stop the motor, potentially move the arm foward or back
     // to level the bot well
 

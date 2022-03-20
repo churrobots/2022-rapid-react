@@ -12,8 +12,8 @@ public final class Tunables {
   public static final TunableDouble slewRateForDrivetrain = new TunableDouble("slewRateForDrivetrain", 3.75);
   public static final TunableBoolean useAntiTipping = new TunableBoolean("useAntiTipping", false);
 
-  public static final TunableDouble minTippingIntegral = new TunableDouble("minTippingIntegral", 50.0);
-  public static final TunableDouble maxTippingIntegral = new TunableDouble("maxTippingIntegral", 250.0);
+  public static final TunableDouble minDangerLevel = new TunableDouble("minDangerLevel", 50.0);
+  public static final TunableDouble maxDangerLevel = new TunableDouble("maxDangerLevel", 250.0);
 
   public static final TunableDouble maxSteeringRadiansPerSecond = new TunableDouble("maxSteeringRadiansPerSecond", 2.0);
   public static final TunableDouble maxDriveMetersPerSecond = new TunableDouble("maxDriveMetersPerSecond",
@@ -23,4 +23,9 @@ public final class Tunables {
     
   public static final TunableInteger armDownSensorCounts = new TunableInteger("armUpSensorCounts", -44000);
 
+  public static final TunableInteger armClimberSensorCounts = new TunableInteger("armClimberSensorCounts", -22000);
+
+  public static final TunableDouble driveTrainClimbingSpeed = new TunableDouble("driveTrainClimbingSpeed", 1.0);
+
+  public static final TunableDouble climbingPitchValue = new TunableDouble("climbingPitchValue", 26.0);
 }

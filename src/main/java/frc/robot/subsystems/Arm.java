@@ -74,10 +74,10 @@ public class Arm extends SubsystemBase {
     isCalibrating = false; 
   }
 
-  public void moveToPosition(int i) {
+  public void moveToPosition(int sensorCountsFromUp) {
     if (!isCalibrating) {
-      this.armMotor.set(TalonFXControlMode.MotionMagic, i);
-      inspector.set("moveToPosition", i);
+      this.armMotor.set(TalonFXControlMode.MotionMagic, sensorCountsFromUp);
+      inspector.set("moveToPosition", sensorCountsFromUp);
     }
   }
 

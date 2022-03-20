@@ -3,13 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
-
-import java.util.LinkedList;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.Tunables;
-import frc.robot.helpers.Tuner.TunableInteger;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 

@@ -8,11 +8,11 @@ import frc.robot.Tunables;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 
-public class AutoClimb extends CommandBase {
+public class AssistedClimb extends CommandBase {
   protected final Arm armSubsystem;
   protected final Drivetrain drivetrain;
   
-  public AutoClimb(Arm armsubsystem, Drivetrain drivetrain) {
+  public AssistedClimb(Arm armsubsystem, Drivetrain drivetrain) {
     this.armSubsystem = armsubsystem;
     this.drivetrain = drivetrain;
     this.addRequirements(this.drivetrain);

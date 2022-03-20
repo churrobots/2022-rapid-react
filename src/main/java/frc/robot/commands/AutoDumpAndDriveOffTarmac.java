@@ -6,9 +6,9 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class AutoDriveOffTarmac extends CommandBase {
-  /** Creates a new AutoDriveOffTarmac. */
-  public AutoDriveOffTarmac() {
+public class AutoDumpAndDriveOffTarmac extends CommandBase {
+  /** Creates a new AutoDumpAndDriveOffTarmac. */
+  public AutoDumpAndDriveOffTarmac() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

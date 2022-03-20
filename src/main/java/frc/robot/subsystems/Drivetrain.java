@@ -193,6 +193,8 @@ public class Drivetrain extends SubsystemBase {
     inspector.set("pitch", pigeonGyro.getPitch());
     inspector.set("dangerLevel", dangerDetector.getDangerLevel());
     inspector.set("tippingAdjustmentPercentage", getTippingAdjustmentPercentage());
+    inspector.set("leftVoltage", leftLeader.getMotorOutputVoltage());
+    inspector.set("rightVoltage", rightLeader.getMotorOutputVoltage());
   }
 
   public Pose2d getPose() {

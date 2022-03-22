@@ -44,12 +44,12 @@ public final class Constants {
   public static final double armCalibrationSpeedPercentage = 0.15;
 
 
-  // // From the System Identification for Connie
+  // From the System Identification for Connie
   // public static final double driveGearRatio = 7.31;
-  // public static final double kS = .64142; 
-  // public static final double kV = 1.604;
-  // public static final double kA = 0.19999; 
-  // public static final double kP = 2.1274;
+  // public static final double kS = .70274; 
+  // public static final double kV = 1.578;
+  // public static final double kA = 0.17267; 
+  // public static final double kP = 2.4936;
   // public static final double kD = 0.0;
 
   // From the System Identification for Ponyo

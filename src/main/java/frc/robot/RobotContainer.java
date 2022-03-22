@@ -19,7 +19,7 @@ import frc.robot.subsystems.IntakeLeft;
 import frc.robot.subsystems.IntakeRight;
 import frc.robot.commands.AssistedClimb;
 import frc.robot.commands.AutoDriveOffTarmac;
-import frc.robot.commands.AutoDumpAndDriveOffTarmac;
+import frc.robot.commands.AutoDump;
 import frc.robot.commands.Calibrating;
 import frc.robot.helpers.Gamepad;
 import edu.wpi.first.cameraserver.CameraServer;
@@ -68,9 +68,11 @@ public class RobotContainer {
     operatorGamepad.povDown.whenPressed(new MoveArmDown(muscleArm));
 
     // Set the options for autonomous.
-    autonomousChooser.setDefaultOption("Drive off tarmac", new AutoDriveOffTarmac());
-    autonomousChooser.addOption("Dump cargo and drive off tarmac", new AutoDumpAndDriveOffTarmac());
-    autonomousChooser.addOption("Drive some crazy trajectory", drivetrain.getTrajectoryCommand());
+    Command dump = new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000);
+    Command drive = new AutoDriveOffTarmac(drivetrain);
+    autonomousChooser.setDefaultOption("Dump", dump);
+    autonomousChooser.addOption("Drive", drive);
+    autonomousChooser.addOption("Dump and Drive", dump.andThen(drive));
     SmartDashboard.putData(autonomousChooser);
 
     // Show all the subsystems in the smartdashboard.

@@ -6,16 +6,29 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.Constants;
+import frc.robot.Tunables;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.IntakeLeft;
+import frc.robot.subsystems.IntakeRight;
 
-public class AutoDriveOffTarmac extends CommandBase {
-  protected final Drivetrain drivetrain;
+
+public class AutoDump extends CommandBase {
+  /** Creates a new EverythingAuto. */
+  protected final IntakeRight rightWay;
+  protected final IntakeLeft leftway;
+  protected final Arm armSubsystem;
   protected final Timer timer = new Timer();
-  /** Creates a new AutoDriveOffTarmac. */
-  public AutoDriveOffTarmac(Drivetrain drivetrain) {
-    this.drivetrain = drivetrain;
+
+  public AutoDump(Arm armSubsystem, IntakeLeft lefteject, IntakeRight righteject) {
+    this.armSubsystem = armSubsystem;
+    this.leftway = lefteject;
+    this.rightWay = righteject;
+
     // Use addRequirements() here to declare subsystem dependencies.
-    this.addRequirements(drivetrain);
+    this.addRequirements(armSubsystem);
+    this.addRequirements(lefteject);
+    this.addRequirements(righteject);
   }
 
   // Called when the command is initially scheduled.
@@ -28,13 +41,16 @@ public class AutoDriveOffTarmac extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    this.drivetrain.driveWithMetersPerSecond(1.0, 1.0);
+    armSubsystem.moveToPosition(Tunables.armUpSensorCounts.get());
+    leftway.leftejection();
+    rightWay.rightejection();
   }
-
+    
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    this.drivetrain.driveWithMetersPerSecond(0, 0);
+    leftway.leftstopRollers();
+    rightWay.rightstopRollers();
   }
 
   // Returns true when the command should end.

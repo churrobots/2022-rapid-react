@@ -70,9 +70,10 @@ public class RobotContainer {
     // Set the options for autonomous.
     Command dump = new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000);
     Command drive = new AutoDriveOffTarmac(drivetrain);
+    Command dumpAndDrive = (new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)).andThen(new AutoDriveOffTarmac(drivetrain));
     autonomousChooser.setDefaultOption("Dump", dump);
     autonomousChooser.addOption("Drive", drive);
-    autonomousChooser.addOption("Dump and Drive", dump.andThen(drive));
+    autonomousChooser.addOption("Dump and Drive", dumpAndDrive);
     SmartDashboard.putData(autonomousChooser);
 
     // Show all the subsystems in the smartdashboard.

@@ -24,6 +24,7 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -60,6 +61,7 @@ public class Drivetrain extends SubsystemBase {
 
   private SlewRateLimiter leftMetersPerSecondFilter = new SlewRateLimiter(Tunables.maxDriveAcceleration.get());
   private SlewRateLimiter rightMetersPerSecondFilter = new SlewRateLimiter(Tunables.maxDriveAcceleration.get());
+  private SlewRateLimiter curvatureThrottleFilter = new SlewRateLimiter(Tunables.maxDriveAcceleration.get());
 
   // TODO: figure out what these constants mean
   private final PIDController leftPIDController = new PIDController(Constants.kP, 0, Constants.kD);
@@ -71,9 +73,13 @@ public class Drivetrain extends SubsystemBase {
   private final DifferentialDriveOdometry odometry;
   private final Field2d field = new Field2d();
 
+  private final DifferentialDrive differentialDrive = new DifferentialDrive(leftLeader, rightLeader);
+
   public Drivetrain() {
 
     SmartDashboard.putData("Field", field);
+
+    differentialDrive.setMaxOutput(Constants.maxSafeDriveVolage);
 
     leftLeader.configFactoryDefault();
     leftLeader.setInverted(Constants.leftFalconsAreInverted);
@@ -125,7 +131,12 @@ public class Drivetrain extends SubsystemBase {
     return pitch;
 
   }
-    
+
+  public void driveWithCurvature(double throttlePercent, double curvaturePercentage, boolean allowSpinning) {
+    var smoothedThrottlePercent = curvatureThrottleFilter.calculate(throttlePercent);
+    differentialDrive.curvatureDrive(smoothedThrottlePercent, curvaturePercentage, allowSpinning);
+  }
+
   public void driveWithThrottleAndSteering(double throttleMetersPerSecond, double steeringRotationRadiansPerSecond) {
     var wheelSpeeds = kinematics.toWheelSpeeds(new ChassisSpeeds(throttleMetersPerSecond, 0.0, steeringRotationRadiansPerSecond));
     driveWithMetersPerSecond(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);

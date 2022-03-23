@@ -7,7 +7,7 @@
 
 package frc.robot;
 
-import frc.robot.commands.DriveManually;
+import frc.robot.commands.DriveWithSteering;
 import frc.robot.commands.EjectLeft;
 import frc.robot.commands.EjectRight;
 import frc.robot.commands.MoveArmDown;
@@ -21,6 +21,7 @@ import frc.robot.commands.AssistedClimb;
 import frc.robot.commands.AutoDriveOffTarmac;
 import frc.robot.commands.AutoDump;
 import frc.robot.commands.Calibrating;
+import frc.robot.commands.DriveWithCurvature;
 import frc.robot.helpers.Gamepad;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -56,8 +57,10 @@ public class RobotContainer {
     CameraServer.startAutomaticCapture();
 
     // Wire up commands to the controllers.
-    drivetrain.setDefaultCommand(new DriveManually(drivetrain, driverGamepad.leftYAxis, driverGamepad.rightYAxis,
-        driverGamepad.rightXAxis));
+    // drivetrain.setDefaultCommand(new DriveWithSteering(drivetrain, driverGamepad.leftYAxis, driverGamepad.rightYAxis,
+    //     driverGamepad.rightXAxis));
+    drivetrain.setDefaultCommand(new DriveWithCurvature(drivetrain, driverGamepad.leftYAxis,
+        driverGamepad.rightXAxis, driverGamepad.rightBumper));
     driverGamepad.aButton.whileHeld(new AssistedClimb(muscleArm, drivetrain));
     operatorGamepad.getDualButton(operatorGamepad.startButton, operatorGamepad.backButton)
         .whileHeld(new Calibrating(muscleArm));

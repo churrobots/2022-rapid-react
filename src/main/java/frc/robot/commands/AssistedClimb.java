@@ -35,14 +35,14 @@ public class AssistedClimb extends CommandBase {
     double distanceFromDesiredArmPosition = Math.abs(armSubsystem.getCurrentPosition() - desiredArmPosition);
     boolean isSafeToDriveUnder = distanceFromDesiredArmPosition < 300;
     if (isSafeToDriveUnder) {
-      double metersPerSecond = Tunables.driveTrainClimbingSpeed.get();
-      drivetrain.driveWithMetersPerSecond(metersPerSecond, metersPerSecond);
+      double percentageThrottle = Tunables.driveTrainClimbingSpeed.get() / Tunables.maxDriveMetersPerSecond.get();
+      drivetrain.driveWithCurvature(percentageThrottle, 0, false);
     }
 
     // Detect when we hang and try to pitch forward when needed.
     double pitch_value = drivetrain.getPitch();
     if (pitch_value > Tunables.maxPitchForClimb.get()) {
-      drivetrain.driveWithMetersPerSecond(0, 0);
+      drivetrain.stopDriving();
       armSubsystem.moveToPosition(Tunables.armDownSensorCounts.get());
     }      
   }
@@ -51,7 +51,7 @@ public class AssistedClimb extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     armSubsystem.moveToPosition(Tunables.armDownSensorCounts.get());
-    drivetrain.driveWithMetersPerSecond(0, 0);
+    drivetrain.stopDriving();
   }
 
   // Returns true when the command should end.

@@ -28,13 +28,13 @@ public class AutoDriveOffTarmac extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    this.drivetrain.driveWithMetersPerSecond(-1.0, -1.0);
+    this.drivetrain.driveWithCurvature(-1.0, 0, false);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    this.drivetrain.driveWithMetersPerSecond(0, 0);
+    this.drivetrain.stopDriving();
   }
 
   // Returns true when the command should end.

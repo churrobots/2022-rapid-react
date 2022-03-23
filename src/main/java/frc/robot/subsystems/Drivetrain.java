@@ -110,7 +110,7 @@ public class Drivetrain extends SubsystemBase {
     resetOdometry(initialPosition);
   }
   
-  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+  private DifferentialDriveWheelSpeeds getWheelSpeeds() {
     double leftSensorUnitsPer100ms = leftLeader.getSelectedSensorVelocity();
     double rightSensorUnitsPer100ms = rightLeader.getSelectedSensorVelocity();
     double leftMetersPer100ms = convertSensorCountsToDistanceInMeters(leftSensorUnitsPer100ms);
@@ -120,7 +120,7 @@ public class Drivetrain extends SubsystemBase {
     return new DifferentialDriveWheelSpeeds(leftMetersPerSecond, rightMetersPerSecond);
   }
 
-  public void resetOdometry(Pose2d pose) {
+  private void resetOdometry(Pose2d pose) {
     leftLeader.setSelectedSensorPosition(0);
     rightLeader.setSelectedSensorPosition(0);
     odometry.resetPosition(pose, getHeadingInRotation2d());
@@ -135,34 +135,6 @@ public class Drivetrain extends SubsystemBase {
   public void driveWithCurvature(double throttlePercent, double curvaturePercentage, boolean allowSpinning) {
     var smoothedThrottlePercent = curvatureThrottleFilter.calculate(throttlePercent);
     differentialDrive.curvatureDrive(smoothedThrottlePercent, curvaturePercentage, allowSpinning);
-  }
-
-  public void driveWithThrottleAndSteering(double throttleMetersPerSecond, double steeringRotationRadiansPerSecond) {
-    var wheelSpeeds = kinematics.toWheelSpeeds(new ChassisSpeeds(throttleMetersPerSecond, 0.0, steeringRotationRadiansPerSecond));
-    driveWithMetersPerSecond(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);
-  }
-
-  public void driveWithMetersPerSecond(double leftTargetMetersPerSecond, double rightTargetMetersPerSecond) {
-
-    // Adjust for tipping.
-    leftTargetMetersPerSecond *= getTippingAdjustmentPercentage();
-    rightTargetMetersPerSecond *= getTippingAdjustmentPercentage();
-
-    double smoothedLeftMetersPerSecond = leftMetersPerSecondFilter.calculate(leftTargetMetersPerSecond);
-    double leftFeedforward = feedforward.calculate(smoothedLeftMetersPerSecond);
-    double leftActualSensorCountsPerSecond = leftLeader.getSelectedSensorVelocity();
-    double leftActualMetersPerSecond = convertSensorCountsToDistanceInMeters(leftActualSensorCountsPerSecond);
-    double leftFeedback = leftPIDController.calculate(leftActualMetersPerSecond, smoothedLeftMetersPerSecond);
-    double leftVoltage = leftFeedback + leftFeedforward;
-    leftLeader.setVoltage(leftVoltage);
-
-    double smoothedRightMetersPerSecond = rightMetersPerSecondFilter.calculate(rightTargetMetersPerSecond);
-    double rightFeedforward = feedforward.calculate(smoothedRightMetersPerSecond);
-    double rightActualSensorCountsPerSecond = rightLeader.getSelectedSensorVelocity();
-    double rightActualMetersPerSecond = convertSensorCountsToDistanceInMeters(rightActualSensorCountsPerSecond);
-    double rightFeedback = rightPIDController.calculate(rightActualMetersPerSecond, smoothedRightMetersPerSecond);
-    double rightVoltage = rightFeedback + rightFeedforward;
-    rightLeader.setVoltage(rightVoltage);
   }
 
   @Override
@@ -212,9 +184,13 @@ public class Drivetrain extends SubsystemBase {
     return odometry.getPoseMeters();
   }
 
-  public void tankDriveVolts(double leftVolts, double rightVolts) {
-    leftLeader.setVoltage(leftVolts);
-    rightLeader.setVoltage(rightVolts);
+  public void stopDriving() {
+    driveWithCurvature(0, 0, false);
+  }
+  private void tankDriveVolts(double leftVolts, double rightVolts) {
+    throw new Error("needs to be checked for interaction with differentialDrive");
+    // leftLeader.setVoltage(leftVolts);
+    // rightLeader.setVoltage(rightVolts);
   }
   
   public double getHeading() {

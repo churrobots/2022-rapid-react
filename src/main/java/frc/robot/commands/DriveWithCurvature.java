@@ -47,6 +47,7 @@ public class DriveWithCurvature extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
+    this.drivetrainSubsystem.stopDriving();
   }
 
   @Override

@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import frc.robot.commands.DriveWithSteering;
 import frc.robot.commands.EjectLeft;
 import frc.robot.commands.EjectRight;
 import frc.robot.commands.MoveArmDown;
@@ -57,8 +56,6 @@ public class RobotContainer {
     CameraServer.startAutomaticCapture();
 
     // Wire up commands to the controllers.
-    // drivetrain.setDefaultCommand(new DriveWithSteering(drivetrain, driverGamepad.leftYAxis, driverGamepad.rightYAxis,
-    //     driverGamepad.rightXAxis));
     drivetrain.setDefaultCommand(new DriveWithCurvature(drivetrain, driverGamepad.leftYAxis,
         driverGamepad.rightXAxis, driverGamepad.rightBumper));
     driverGamepad.aButton.whileHeld(new AssistedClimb(muscleArm, drivetrain));

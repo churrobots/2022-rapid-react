@@ -181,7 +181,7 @@ public class Drivetrain extends SubsystemBase {
     Rotation2d heading = getHeadingInRotation2d();
     double leftDistanceInMeters = convertSensorCountsToDistanceInMeters(leftLeader.getSelectedSensorPosition());
     double rightDistanceInMeters = convertSensorCountsToDistanceInMeters(rightLeader.getSelectedSensorPosition());
-    odometry.update(heading, -leftDistanceInMeters, -rightDistanceInMeters);
+    odometry.update(heading, leftDistanceInMeters, rightDistanceInMeters);
 
     // Show debug information in NetworkTables
     Pose2d pose = odometry.getPoseMeters();

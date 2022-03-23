@@ -12,7 +12,7 @@ public final class Tunables {
   public static final TunableInteger armCruiseVelocityInSensorUnits = new TunableInteger("armCruiseVelocityInSensorUnits", 12000);
   public static final TunableInteger armAccelerationInSensorUnits = new TunableInteger("armAccelerationInSensorUnits", 4000);
 
-  public static final TunableDouble maxDriveAcceleration = new TunableDouble("maxDriveAcceleration", 3.75);
+  public static final TunableDouble maxDriveAcceleration = new TunableDouble("maxDriveAcceleration", 2.5);
   public static final TunableBoolean useAntiTipping = new TunableBoolean("useAntiTipping", false);
 
   public static final TunableDouble minDangerLevel = new TunableDouble("minDangerLevel", 50.0);
@@ -31,4 +31,6 @@ public final class Tunables {
   public static final TunableDouble driveTrainClimbingSpeed = new TunableDouble("driveTrainClimbingSpeed", 1.0);
 
   public static final TunableDouble maxPitchForClimb = new TunableDouble("maxPitchForClimb", 22.0);
+
+  public static final TunableDouble maxSafeDriveVolage = new TunableDouble("maxSafeDriveVolage", 0.51);
 }

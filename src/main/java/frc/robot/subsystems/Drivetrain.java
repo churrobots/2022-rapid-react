@@ -79,8 +79,6 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putData("Field", field);
 
-    differentialDrive.setMaxOutput(Constants.maxSafeDriveVolage);
-
     leftLeader.configFactoryDefault();
     leftLeader.setInverted(Constants.leftFalconsAreInverted);
     leftLeader.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
@@ -133,6 +131,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void driveWithCurvature(double throttlePercent, double curvaturePercentage, boolean allowSpinning) {
+    throttlePercent *= getTippingAdjustmentPercentage();
     var smoothedThrottlePercent = curvatureThrottleFilter.calculate(throttlePercent);
     differentialDrive.curvatureDrive(smoothedThrottlePercent, curvaturePercentage, allowSpinning);
   }
@@ -145,6 +144,8 @@ public class Drivetrain extends SubsystemBase {
       leftMetersPerSecondFilter = new SlewRateLimiter(Tunables.maxDriveAcceleration.get());
       rightMetersPerSecondFilter = new SlewRateLimiter(Tunables.maxDriveAcceleration.get());
     }
+
+    differentialDrive.setMaxOutput(Tunables.maxSafeDriveVolage.get());
 
     // Coast when disabled
     if (RobotState.isDisabled()) {

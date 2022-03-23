@@ -7,21 +7,21 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 public class Gamepad {
 
-  public final Button aButton;
-  public final Button bButton;
-  public final Button xButton;
-  public final Button yButton;
+  public final JoystickButton aButton;
+  public final JoystickButton bButton;
+  public final JoystickButton xButton;
+  public final JoystickButton yButton;
 
-  public final Button povUp;
-  public final Button povDown;
-  public final Button povLeft;
-  public final Button povRight;
+  public final POVButton povUp;
+  public final POVButton povDown;
+  public final POVButton povLeft;
+  public final POVButton povRight;
 
-  public final Button backButton;
-  public final Button startButton;
+  public final JoystickButton backButton;
+  public final JoystickButton startButton;
 
-  public final Button leftBumper;
-  public final Button rightBumper;
+  public final JoystickButton leftBumper;
+  public final JoystickButton rightBumper;
 
   public final Axis leftYAxis;
   public final Axis leftXAxis;

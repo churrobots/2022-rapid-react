@@ -148,7 +148,7 @@ public class Drivetrain extends SubsystemBase {
   public boolean isDoneWithMotionMagic() {
     var deltaLeft = Math.abs(leftLeader.getSelectedSensorPosition() - mostRecentLeftSensorCountTarget);
     var deltaRight = Math.abs(rightLeader.getSelectedSensorPosition() - mostRecentRightSensorCountTarget);
-    var isFinished = (deltaLeft + deltaRight) < 2000;
+    var isFinished = deltaLeft < 918 && deltaRight < 918;
     return isFinished;
   }
 

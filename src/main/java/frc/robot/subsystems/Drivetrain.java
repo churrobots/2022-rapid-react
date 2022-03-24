@@ -171,6 +171,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     var maxVoltagePercentage = Tunables.maxSafeDriveVolage.get();
+    differentialDrive.setMaxOutput(Tunables.maxSafeDriveVolage.get());
     leftLeader.configPeakOutputForward(maxVoltagePercentage);
     leftLeader.configPeakOutputReverse(-maxVoltagePercentage);
     rightLeader.configPeakOutputForward(maxVoltagePercentage);

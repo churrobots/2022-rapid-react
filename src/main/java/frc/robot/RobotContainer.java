@@ -19,8 +19,11 @@ import frc.robot.subsystems.IntakeRight;
 import frc.robot.commands.AssistedClimb;
 import frc.robot.commands.AutoBackAwayFromHubOffTarmac;
 import frc.robot.commands.AutoDriveToTheHub;
+import frc.robot.commands.AutoDriveWithSensorUnits;
 import frc.robot.commands.AutoDump;
+import frc.robot.commands.AutoReadyToScore;
 import frc.robot.commands.AutoResetEncoders;
+import frc.robot.commands.AutoVacuum;
 import frc.robot.commands.AutoBackOutOfEdgeOfTarmac;
 import frc.robot.commands.Calibrating;
 import frc.robot.commands.DriveWithCurvature;
@@ -30,6 +33,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 /**
@@ -71,24 +75,49 @@ public class RobotContainer {
     operatorGamepad.povUp.whenPressed(new MoveArmUp(muscleArm));
     operatorGamepad.povDown.whenPressed(new MoveArmDown(muscleArm));
 
+    
     // Set the options for autonomous.
-    Command dump =
-        (new AutoResetEncoders(drivetrain))
-            .andThen(new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000));
-    Command backAway =
-        (new AutoResetEncoders(drivetrain))
-            .andThen(new AutoBackAwayFromHubOffTarmac(drivetrain));
-    Command dumpAndBackAway =
-        (new AutoResetEncoders(drivetrain))
-            .andThen(new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000))
-            .andThen(new AutoBackAwayFromHubOffTarmac(drivetrain));
-    Command waitForTeammate =
-        (new AutoResetEncoders(drivetrain))
-            .andThen(new AutoBackOutOfEdgeOfTarmac(drivetrain))
-            .andThen(new WaitCommand(3))
-            .andThen(new AutoDriveToTheHub(drivetrain))
-            .andThen(new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000));
-    autonomousChooser.setDefaultOption("Drive, Wait, Dump", waitForTeammate);
+    Command dump = new SequentialCommandGroup(
+      new AutoResetEncoders(drivetrain),
+      new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
+    );
+    Command backAway = new SequentialCommandGroup(
+      new AutoResetEncoders(drivetrain),
+      new AutoBackAwayFromHubOffTarmac(drivetrain)
+    );
+    Command dumpAndBackAway = new SequentialCommandGroup(
+      new AutoResetEncoders(drivetrain),
+      new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000),
+      new AutoBackAwayFromHubOffTarmac(drivetrain)
+    );
+    Command waitForTeammate = new SequentialCommandGroup(
+      new AutoResetEncoders(drivetrain),
+      new AutoBackOutOfEdgeOfTarmac(drivetrain),
+      new WaitCommand(3),
+      new AutoDriveToTheHub(drivetrain),
+      new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
+    );
+    Command twoBallAutoWallTarmac = new SequentialCommandGroup(
+      new AutoResetEncoders(drivetrain),
+      new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000),
+      new AutoDriveWithSensorUnits(drivetrain, 29000, 29000),
+      new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
+      new AutoDriveWithSensorUnits(drivetrain, 31726, -31726),
+      new AutoDriveWithSensorUnits(drivetrain, 57000, 45000),
+      new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
+    );
+    Command twoBallAutoHangarTarmac = new SequentialCommandGroup(
+      new AutoResetEncoders(drivetrain),
+      new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000),
+      new AutoDriveWithSensorUnits(drivetrain, 29000, 29000),
+      new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
+      new AutoDriveWithSensorUnits(drivetrain, 31726, -31726),
+      new AutoDriveWithSensorUnits(drivetrain,45000, 57000),
+      new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
+    );
+    autonomousChooser.setDefaultOption("Two Ball Auto (Hangar Tarmac)", twoBallAutoHangarTarmac);
+    autonomousChooser.addOption("Two Ball Auto (Wall Tarmac)", twoBallAutoWallTarmac);
+    autonomousChooser.addOption("Drive, Wait, Dump", waitForTeammate);
     autonomousChooser.addOption("Dump and backoff (must start at Hub instead)", dumpAndBackAway);
     autonomousChooser.addOption("Dump only (must start at Hub instead)", dump);
     autonomousChooser.addOption("Backoff only (must start at Hub instead)", backAway);

@@ -76,8 +76,8 @@ public class Drivetrain extends SubsystemBase {
   private final Field2d field = new Field2d();
 
   private final DifferentialDrive differentialDrive = new DifferentialDrive(leftLeader, rightLeader);
-  private Double mostRecentLeftSensorCountTarget = null;
-  private Double mostRecentRightSensorCountTarget = null;
+  private double mostRecentLeftSensorCountTarget = 0;
+  private double mostRecentRightSensorCountTarget = 0;
 
   public Drivetrain() {
 

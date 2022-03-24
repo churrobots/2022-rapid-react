@@ -81,8 +81,8 @@ public class RobotContainer {
             .andThen(new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000));
     autonomousChooser.setDefaultOption("Drive, Wait, Dump", waitForTeammate);
     autonomousChooser.addOption("Dump and Drive (must start at Hub instead)", dumpAndDrive);
-    autonomousChooser.addOption("Dump (must start at Hub instead)", dump);
-    autonomousChooser.addOption("Drive (must start at Hub instead)", drive);
+    autonomousChooser.addOption("Dump only (must start at Hub instead)", dump);
+    autonomousChooser.addOption("Drive only (must start at Hub instead)", drive);
     SmartDashboard.putData(autonomousChooser);
 
     // Show all the subsystems in the smartdashboard.

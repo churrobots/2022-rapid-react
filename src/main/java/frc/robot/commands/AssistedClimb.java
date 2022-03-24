@@ -29,7 +29,7 @@ public class AssistedClimb extends CommandBase {
   public void execute() {
     // Tuck the arm under the bar
     int desiredArmPosition = Tunables.armClimbUnderBarSensorCounts.get();
-    armSubsystem.moveToPosition(desiredArmPosition);
+    armSubsystem.moveToPositionWithMotionMagic(desiredArmPosition);
 
     // Drive forward when it's safe
     double distanceFromDesiredArmPosition = Math.abs(armSubsystem.getCurrentPosition() - desiredArmPosition);
@@ -42,14 +42,14 @@ public class AssistedClimb extends CommandBase {
     double pitch_value = drivetrain.getPitch();
     if (pitch_value > Tunables.maxPitchForClimb.get()) {
       drivetrain.stopDriving();
-      armSubsystem.moveToPosition(Tunables.armDownSensorCounts.get());
+      armSubsystem.moveToPositionWithMotionMagic(Tunables.armDownSensorCounts.get());
     }      
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    armSubsystem.moveToPosition(Tunables.armDownSensorCounts.get());
+    armSubsystem.moveToPositionWithMotionMagic(Tunables.armDownSensorCounts.get());
     drivetrain.stopDriving();
   }
 

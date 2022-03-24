@@ -23,7 +23,9 @@ public class Arm extends SubsystemBase {
   private final DigitalInput armSensor = new DigitalInput(Constants.armSensorDIO);
   private boolean isCalibrating = true;
 
+
   private final SubsystemInspector inspector = new SubsystemInspector("Arm");
+  private double mostRecentArmSensorCountTarget = 0;
 
   /** Creates a new Arm. */
   public Arm() {
@@ -62,6 +64,8 @@ public class Arm extends SubsystemBase {
     
     armMotor.configPeakOutputForward(0.4);
     armMotor.configPeakOutputReverse(-0.4);
+
+
   }
 
   public void beginCalibration() {
@@ -78,10 +82,11 @@ public class Arm extends SubsystemBase {
     return armMotor.getSelectedSensorPosition();
   }
 
-  public void moveToPosition(int sensorCountsFromUp) {
+  public void moveToPositionWithMotionMagic(int sensorCountsFromUp) {
     if (!isCalibrating) {
       this.armMotor.set(TalonFXControlMode.MotionMagic, sensorCountsFromUp);
       inspector.set("moveToPosition", sensorCountsFromUp);
+      mostRecentArmSensorCountTarget = sensorCountsFromUp;
     }
   }
 
@@ -100,7 +105,7 @@ public class Arm extends SubsystemBase {
     // Coast when disabled, and also make sure arm freshly moves to the upward position upon enabling
     if (RobotState.isDisabled()) {
       armMotor.setNeutralMode(NeutralMode.Coast);
-      moveToPosition(Tunables.armUpSensorCounts.get());
+      moveToPositionWithMotionMagic(Tunables.armUpSensorCounts.get());
     } else {
       armMotor.setNeutralMode(NeutralMode.Brake);
     }
@@ -108,6 +113,12 @@ public class Arm extends SubsystemBase {
     inspector.set("isCalibrating", isCalibrating);
     inspector.set("sensorCount", this.armMotor.getSelectedSensorPosition());
     inspector.set("statorCurrent", armMotor.getStatorCurrent());
+  }
+
+  public boolean isDoneWithMotionMagic() {
+    var deltaArm = Math.abs(armMotor.getSelectedSensorPosition() - mostRecentArmSensorCountTarget);
+    var isFinished = deltaArm < 2000;
+    return isFinished;
   }
 
   private void calibrateIfNeeded() {

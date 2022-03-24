@@ -20,6 +20,7 @@ import frc.robot.commands.AssistedClimb;
 import frc.robot.commands.AutoBackAwayFromHubOffTarmac;
 import frc.robot.commands.AutoDriveToTheHub;
 import frc.robot.commands.AutoDump;
+import frc.robot.commands.AutoResetEncoders;
 import frc.robot.commands.AutoBackOutOfEdgeOfTarmac;
 import frc.robot.commands.Calibrating;
 import frc.robot.commands.DriveWithCurvature;
@@ -29,6 +30,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -70,19 +72,26 @@ public class RobotContainer {
     operatorGamepad.povDown.whenPressed(new MoveArmDown(muscleArm));
 
     // Set the options for autonomous.
-    Command dump = new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000);
-    Command drive = new AutoBackAwayFromHubOffTarmac(drivetrain);
-    Command dumpAndDrive =
-      (new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000))
-      .andThen(new AutoBackAwayFromHubOffTarmac(drivetrain));
+    Command dump =
+        (new AutoResetEncoders(drivetrain))
+            .andThen(new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000));
+    Command backAway =
+        (new AutoResetEncoders(drivetrain))
+            .andThen(new AutoBackAwayFromHubOffTarmac(drivetrain));
+    Command dumpAndBackAway =
+        (new AutoResetEncoders(drivetrain))
+            .andThen(new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000))
+            .andThen(new AutoBackAwayFromHubOffTarmac(drivetrain));
     Command waitForTeammate =
-      (new AutoBackOutOfEdgeOfTarmac(drivetrain))
-            .andThen(new AutoDriveToTheHub(drivetrain)) 
+        (new AutoResetEncoders(drivetrain))
+            .andThen(new AutoBackOutOfEdgeOfTarmac(drivetrain))
+            .andThen(new WaitCommand(3))
+            .andThen(new AutoDriveToTheHub(drivetrain))
             .andThen(new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000));
     autonomousChooser.setDefaultOption("Drive, Wait, Dump", waitForTeammate);
-    autonomousChooser.addOption("Dump and Drive (must start at Hub instead)", dumpAndDrive);
+    autonomousChooser.addOption("Dump and backoff (must start at Hub instead)", dumpAndBackAway);
     autonomousChooser.addOption("Dump only (must start at Hub instead)", dump);
-    autonomousChooser.addOption("Drive only (must start at Hub instead)", drive);
+    autonomousChooser.addOption("Backoff only (must start at Hub instead)", backAway);
     SmartDashboard.putData(autonomousChooser);
 
     // Show all the subsystems in the smartdashboard.
@@ -94,7 +103,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    drivetrain.resetEncoders();
     return autonomousChooser.getSelected();
   }
 

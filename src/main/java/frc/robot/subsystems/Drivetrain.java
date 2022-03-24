@@ -14,7 +14,6 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
@@ -61,8 +60,6 @@ public class Drivetrain extends SubsystemBase {
 
   private final DangerDetector dangerDetector = new DangerDetector();
 
-  private SlewRateLimiter leftMetersPerSecondFilter = new SlewRateLimiter(Tunables.maxDriveAcceleration.get());
-  private SlewRateLimiter rightMetersPerSecondFilter = new SlewRateLimiter(Tunables.maxDriveAcceleration.get());
   private SlewRateLimiter curvatureThrottleFilter = new SlewRateLimiter(Tunables.maxDriveAcceleration.get());
 
   // TODO: figure out what these constants mean
@@ -167,8 +164,7 @@ public class Drivetrain extends SubsystemBase {
 
     // Allow tuning
     if (Tunables.maxDriveAcceleration.didChange()) {
-      leftMetersPerSecondFilter = new SlewRateLimiter(Tunables.maxDriveAcceleration.get());
-      rightMetersPerSecondFilter = new SlewRateLimiter(Tunables.maxDriveAcceleration.get());
+      curvatureThrottleFilter = new SlewRateLimiter(Tunables.maxDriveAcceleration.get());
     }
 
     var maxVoltagePercentage = Tunables.maxSafeDriveVolage.get();

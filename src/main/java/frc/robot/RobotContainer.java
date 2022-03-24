@@ -79,10 +79,10 @@ public class RobotContainer {
       (new AutoBackOutOfEdgeOfTarmac(drivetrain))
             .andThen(new AutoDriveToTheHub(drivetrain)) 
             .andThen(new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000));
-    autonomousChooser.setDefaultOption("Dump", dump);
-    autonomousChooser.addOption("Drive", drive);
-    autonomousChooser.addOption("Dump and Drive", dumpAndDrive);
-    autonomousChooser.addOption("Wait for Teammate", waitForTeammate);
+    autonomousChooser.setDefaultOption("Drive, Wait, Dump", waitForTeammate);
+    autonomousChooser.addOption("Dump and Drive (must start at Hub instead)", dumpAndDrive);
+    autonomousChooser.addOption("Dump (must start at Hub instead)", dump);
+    autonomousChooser.addOption("Drive (must start at Hub instead)", drive);
     SmartDashboard.putData(autonomousChooser);
 
     // Show all the subsystems in the smartdashboard.
@@ -94,7 +94,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // TODO: allow Shuffleboard to choose the auto mode
     drivetrain.resetEncoders();
     return autonomousChooser.getSelected();
   }

@@ -36,6 +36,8 @@ import java.util.List;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
@@ -74,6 +76,8 @@ public class Drivetrain extends SubsystemBase {
   private final Field2d field = new Field2d();
 
   private final DifferentialDrive differentialDrive = new DifferentialDrive(leftLeader, rightLeader);
+  private Double mostRecentLeftSensorCountTarget = null;
+  private Double mostRecentRightSensorCountTarget = null;
 
   public Drivetrain() {
 
@@ -97,6 +101,9 @@ public class Drivetrain extends SubsystemBase {
     rightFollower.follow(rightLeader);
     rightFollower.setInverted(InvertType.FollowMaster);
 
+    configureMotionMagic(leftLeader);
+    configureMotionMagic(rightLeader);
+
     pigeonGyro.configFactoryDefault();
     pigeonGyro.reset();
 
@@ -118,9 +125,13 @@ public class Drivetrain extends SubsystemBase {
     return new DifferentialDriveWheelSpeeds(leftMetersPerSecond, rightMetersPerSecond);
   }
 
-  private void resetOdometry(Pose2d pose) {
+  public void resetEncoders() {
     leftLeader.setSelectedSensorPosition(0);
     rightLeader.setSelectedSensorPosition(0);
+  }
+
+  private void resetOdometry(Pose2d pose) {
+    resetEncoders();
     odometry.resetPosition(pose, getHeadingInRotation2d());
   }
 
@@ -128,6 +139,20 @@ public class Drivetrain extends SubsystemBase {
     double pitch = pigeonGyro.getPitch();
     return pitch;
 
+  }
+
+  public void driveWithMotionMagic(double leftSensorCounts, double rightSensorCounts) {
+    mostRecentLeftSensorCountTarget = leftSensorCounts;
+    mostRecentRightSensorCountTarget = rightSensorCounts;
+    leftLeader.set(TalonFXControlMode.MotionMagic, leftSensorCounts);
+    rightLeader.set(TalonFXControlMode.MotionMagic, rightSensorCounts);
+  }
+
+  public boolean isDoneWithMotionMagic() {
+    var deltaLeft = Math.abs(leftLeader.getSelectedSensorPosition() - mostRecentLeftSensorCountTarget);
+    var deltaRight = Math.abs(rightLeader.getSelectedSensorPosition() - mostRecentRightSensorCountTarget);
+    var isFinished = (deltaLeft + deltaRight) < 2000;
+    return isFinished;
   }
 
   public void driveWithCurvature(double throttlePercent, double curvaturePercentage, boolean allowSpinning) {
@@ -145,7 +170,11 @@ public class Drivetrain extends SubsystemBase {
       rightMetersPerSecondFilter = new SlewRateLimiter(Tunables.maxDriveAcceleration.get());
     }
 
-    differentialDrive.setMaxOutput(Tunables.maxSafeDriveVolage.get());
+    var maxVoltagePercentage = Tunables.maxSafeDriveVolage.get();
+    leftLeader.configPeakOutputForward(maxVoltagePercentage);
+    leftLeader.configPeakOutputReverse(-maxVoltagePercentage);
+    rightLeader.configPeakOutputForward(maxVoltagePercentage);
+    rightLeader.configPeakOutputReverse(-maxVoltagePercentage);
 
     // Coast when disabled
     if (RobotState.isDisabled()) {
@@ -179,6 +208,9 @@ public class Drivetrain extends SubsystemBase {
     inspector.set("tippingAdjustmentPercentage", getTippingAdjustmentPercentage());
     inspector.set("leftVoltage", leftLeader.getMotorOutputVoltage());
     inspector.set("rightVoltage", rightLeader.getMotorOutputVoltage());
+    inspector.set("leftSensor", leftLeader.getSelectedSensorPosition());
+    inspector.set("rightSensor", rightLeader.getSelectedSensorPosition());
+    inspector.set("isDoneWithMotionMagic", isDoneWithMotionMagic());
   }
 
   public Pose2d getPose() {
@@ -269,6 +301,35 @@ public class Drivetrain extends SubsystemBase {
 
     // Run path following command, then stop at the end.
     return ramseteCommand.andThen(() -> this.tankDriveVolts(0, 0));
+  }
+
+  private void configureMotionMagic(WPI_TalonFX motor) {
+    // This sets a lot of the defaults that the example code seems to require
+    // for full functioning of the Falcon500s. Cargo culting FTW.
+    // https://github.com/CrossTheRoadElec/Phoenix-Examples-Languages/blob/master/Java%20Talon%20FX%20(Falcon%20500)/MotionMagic/src/main/java/frc/robot/Robot.java
+    // TODO: calculate or characterize these values? why would you ever not use the 0th slots?
+    int fakeSlot = 0;
+    int fakePIDSlot = 0;
+    int fakeTimeoutMilliseconds = 30;
+    double fakeKP = Tunables.kP.get();
+    double fakeKI = 0.0;
+    double fakeKD = 0.0;
+    double fakeKF = Tunables.kF.get();
+
+    motor.configNeutralDeadband(0.001); // really low deadzone
+
+    motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, fakeTimeoutMilliseconds);
+		motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, fakeTimeoutMilliseconds);
+
+		motor.selectProfileSlot(fakeSlot, fakePIDSlot);
+		motor.config_kF(fakeSlot, fakeKF, fakeTimeoutMilliseconds);
+		motor.config_kP(fakeSlot, fakeKP, fakeTimeoutMilliseconds);
+		motor.config_kI(fakeSlot, fakeKI, fakeTimeoutMilliseconds);
+		motor.config_kD(fakeSlot, fakeKD, fakeTimeoutMilliseconds);
+
+		motor.configMotionCruiseVelocity(12000, fakeTimeoutMilliseconds);
+		motor.configMotionAcceleration(3000, fakeTimeoutMilliseconds);
+    motor.configMotionSCurveStrength(4);
   }
 
 }

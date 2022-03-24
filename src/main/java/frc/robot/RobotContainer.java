@@ -17,8 +17,10 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeLeft;
 import frc.robot.subsystems.IntakeRight;
 import frc.robot.commands.AssistedClimb;
-import frc.robot.commands.AutoDriveOffTarmac;
+import frc.robot.commands.AutoBackAwayFromHubOffTarmac;
+import frc.robot.commands.AutoDriveToTheHub;
 import frc.robot.commands.AutoDump;
+import frc.robot.commands.AutoBackOutOfEdgeOfTarmac;
 import frc.robot.commands.Calibrating;
 import frc.robot.commands.DriveWithCurvature;
 import frc.robot.helpers.Gamepad;
@@ -69,11 +71,18 @@ public class RobotContainer {
 
     // Set the options for autonomous.
     Command dump = new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000);
-    Command drive = new AutoDriveOffTarmac(drivetrain);
-    Command dumpAndDrive = (new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)).andThen(new AutoDriveOffTarmac(drivetrain));
+    Command drive = new AutoBackAwayFromHubOffTarmac(drivetrain);
+    Command dumpAndDrive =
+      (new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000))
+      .andThen(new AutoBackAwayFromHubOffTarmac(drivetrain));
+    Command waitForTeammate =
+      (new AutoBackOutOfEdgeOfTarmac(drivetrain))
+            .andThen(new AutoDriveToTheHub(drivetrain)) 
+            .andThen(new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000));
     autonomousChooser.setDefaultOption("Dump", dump);
     autonomousChooser.addOption("Drive", drive);
     autonomousChooser.addOption("Dump and Drive", dumpAndDrive);
+    autonomousChooser.addOption("Wait for Teammate", waitForTeammate);
     SmartDashboard.putData(autonomousChooser);
 
     // Show all the subsystems in the smartdashboard.
@@ -86,6 +95,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // TODO: allow Shuffleboard to choose the auto mode
+    drivetrain.resetEncoders();
     return autonomousChooser.getSelected();
   }
 

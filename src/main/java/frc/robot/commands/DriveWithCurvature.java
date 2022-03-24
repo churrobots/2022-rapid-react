@@ -41,7 +41,7 @@ public class DriveWithCurvature extends CommandBase {
   public void execute() {
     double throttlePercentage = -1 * leftAxis.get() * Math.abs(leftAxis.get());
     double curvaturePercentage = rightHorizontalAxis.get() * Math.abs(rightHorizontalAxis.get());;
-    boolean allowSpinning = spinButton.get();
+    boolean allowSpinning = true;
     this.drivetrainSubsystem.driveWithCurvature(throttlePercentage, curvaturePercentage, allowSpinning);
   }
 

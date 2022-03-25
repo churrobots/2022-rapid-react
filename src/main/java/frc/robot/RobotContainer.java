@@ -103,26 +103,19 @@ public class RobotContainer {
         ),
         new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
     );
-    // Command twoBallAutoWallTarmac = new SequentialCommandGroup(
-    //     new AutoResetEncoders(drivetrain),
-    //     new ParallelRaceGroup(
-    //         new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000),
-    //         new SequentialCommandGroup(
-    //           new WaitCommand(1),
-    //           new AutoDriveWithSensorUnits(drivetrain, 29000, 29000)
-    //         )
-    //     ),
-    //     new AutoResetEncoders(drivetrain),
-    //     new ParallelCommandGroup(
-    //       new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
-    //       new AutoDriveWithSensorUnits(drivetrain, 32000, -32000)
-    //     ),
-    //     new ParallelRaceGroup(
-    //       new WaitCommand(4),
-    //       new AutoDriveWithSensorUnits(drivetrain, 57000, 45000)
-    //     ),
-    //     new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
-    // );
+    Command twoBallAutoWallTarmac = new SequentialCommandGroup(
+        new AutoResetEncoders(drivetrain),
+        new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000), // drop arm and start intaking
+        new AutoDriveWithSensorUnits(drivetrain, 31000, 31000), // drive to pickup
+        new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000), // pull arm up
+        new AutoDriveWithSensorUnits(drivetrain, 40000, 40000),
+        new AutoDriveWithSensorUnits(drivetrain, 15489, 78149), // Sonic spin
+        new ParallelRaceGroup(
+          new WaitCommand(4),
+          new AutoDriveWithSensorUnits(drivetrain, 102473, 157143)
+        ),
+        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
+    );
     // Command twoBallAutoHangarTarmac = new SequentialCommandGroup(
     //   new AutoResetEncoders(drivetrain),
     //   new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000),
@@ -132,9 +125,9 @@ public class RobotContainer {
     //   new AutoDriveWithSensorUnits(drivetrain, 45000, 57000),
     //   new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
     // );
-    autonomousChooser.setDefaultOption("Drive, Wait, Dump", waitForTeammate);
+    autonomousChooser.setDefaultOption("1-ball Auto: Drive, Wait, Dump", waitForTeammate);
     // autonomousChooser.addOption("Two Ball Auto (Hangar Tarmac)", twoBallAutoHangarTarmac);
-    // autonomousChooser.addOption("Two Ball Auto (Wall Tarmac)", twoBallAutoWallTarmac);
+    autonomousChooser.addOption("2-ball Auto: From Wall Tarmac", twoBallAutoWallTarmac);
     autonomousChooser.addOption("Dump and backoff (must start at Hub instead)", dumpAndBackAway);
     autonomousChooser.addOption("Dump only (must start at Hub instead)", dump);
     autonomousChooser.addOption("Backoff only (must start at Hub instead)", backAway);

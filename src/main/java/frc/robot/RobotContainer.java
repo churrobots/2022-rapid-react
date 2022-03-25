@@ -102,7 +102,7 @@ public class RobotContainer {
       new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000),
       new AutoDriveWithSensorUnits(drivetrain, 29000, 29000),
       new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
-      new AutoDriveWithSensorUnits(drivetrain, 31726, -31726),
+      new AutoDriveWithSensorUnits(drivetrain, 29000 + 31726, 29000 + -31726),
       new AutoDriveWithSensorUnits(drivetrain, 57000, 45000),
       new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
     );

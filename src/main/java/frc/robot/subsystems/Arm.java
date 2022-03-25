@@ -87,7 +87,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void moveToPositionWithMotionMagic(int sensorCountsFromUp) {
-    if (!isCalibrating) {
+    if (!isCalibrating && !isEstop){
       this.armMotor.set(TalonFXControlMode.MotionMagic, sensorCountsFromUp);
       inspector.set("moveToPosition", sensorCountsFromUp);
       mostRecentArmSensorCountTarget = sensorCountsFromUp;
@@ -119,6 +119,7 @@ public class Arm extends SubsystemBase {
     inspector.set("isCalibrating", isCalibrating);
     inspector.set("sensorCount", this.armMotor.getSelectedSensorPosition());
     inspector.set("statorCurrent", armMotor.getStatorCurrent());
+    inspector.set("Emergency stop", isEstop);
   }
 
   private void makeItSafePlease() {

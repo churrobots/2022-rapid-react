@@ -24,7 +24,7 @@ public final class Tunables {
 
   public static final TunableInteger armUpSensorCounts = new TunableInteger("armUpSensorCounts", 500);
     
-  public static final TunableInteger armDownSensorCounts = new TunableInteger("armDownSensorCounts", -44000);
+  public static final TunableInteger armDownSensorCounts = new TunableInteger("armDownSensorCounts", -43000);
 
   public static final TunableInteger armClimbUnderBarSensorCounts = new TunableInteger("armClimbUnderBarSensorCounts", -22000);
 

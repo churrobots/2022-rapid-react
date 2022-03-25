@@ -40,8 +40,6 @@ public class AutoVacuum extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    leftway.leftstopRollers();
-    rightway.rightstopRollers();
   }
 
   // Returns true when the command should end.

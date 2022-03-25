@@ -28,7 +28,7 @@ public class AssistedClimb extends CommandBase {
   @Override
   public void execute() {
     // Tuck the arm under the bar
-    int desiredArmPosition = Tunables.armDownSensorCounts.get();
+    int desiredArmPosition = Tunables.armClimbUnderBarSensorCounts.get();
     armSubsystem.moveToPositionWithMotionMagic(desiredArmPosition);
 
     // Drive forward when it's safe
@@ -42,15 +42,14 @@ public class AssistedClimb extends CommandBase {
     double pitch_value = drivetrain.getPitch();
     if (pitch_value > Tunables.maxPitchForClimb.get()) {
       drivetrain.stopDriving();
-      armSubsystem.moveToPositionWithMotionMagic(Tunables.armDownSensorCounts.get());
     }      
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    armSubsystem.moveToPositionWithMotionMagic(Tunables.armDownSensorCounts.get());
     drivetrain.stopDriving();
+    armSubsystem.moveToPositionWithMotionMagic(Tunables.armUpSensorCounts.get());
   }
 
   // Returns true when the command should end.

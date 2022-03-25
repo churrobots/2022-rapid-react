@@ -12,17 +12,20 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Tunables;
 import frc.robot.helpers.SubsystemInspector;
+import frc.robot.helpers.Tuner.TunableDouble;
 
 public class Arm extends SubsystemBase {
   
   private final WPI_TalonFX armMotor = new WPI_TalonFX(Constants.falconArmCAN);
   private final DigitalInput armSensor = new DigitalInput(Constants.armSensorDIO);
   private boolean isCalibrating = true;
-
+  private Timer timer = new Timer();
+  private boolean isEstop = false;
 
   private final SubsystemInspector inspector = new SubsystemInspector("Arm");
   private double mostRecentArmSensorCountTarget = 0;
@@ -70,6 +73,7 @@ public class Arm extends SubsystemBase {
 
   public void beginCalibration() {
     isCalibrating = true;
+    isEstop = false;
   }
 
   public void finishCalibration() {
@@ -98,9 +102,11 @@ public class Arm extends SubsystemBase {
         || Tunables.armSmoothingStrength.didChange()
         || Tunables.armAccelerationInSensorUnits.didChange()
         || Tunables.armCruiseVelocityInSensorUnits.didChange()
-      ) {
+    ) {
       configureMotionMagic();
     }
+    
+    makeItSafePlease();
 
     // Coast when disabled, and also make sure arm freshly moves to the upward position upon enabling
     if (RobotState.isDisabled()) {
@@ -113,6 +119,22 @@ public class Arm extends SubsystemBase {
     inspector.set("isCalibrating", isCalibrating);
     inspector.set("sensorCount", this.armMotor.getSelectedSensorPosition());
     inspector.set("statorCurrent", armMotor.getStatorCurrent());
+  }
+
+  private void makeItSafePlease() {
+    double current = armMotor.getStatorCurrent();
+    if (current > Tunables.maxArmCurrent.get()) {
+      timer.start();
+      if (timer.get() > Tunables.maxArmSeconds.get()) {
+        isEstop = true;
+      }
+    }
+    else {
+      timer.reset();
+    }
+    if (isEstop) {
+      armMotor.stopMotor();
+    }
   }
 
   public boolean isDoneWithMotionMagic() {

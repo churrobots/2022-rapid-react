@@ -35,4 +35,8 @@ public final class Tunables {
   public static final TunableDouble maxSafeDriveVolage = new TunableDouble("maxSafeDriveVolage", 0.51);
   public static final TunableDouble driveTrainClimbingPercentage = new TunableDouble("driveTrainClimbingPercentage",
       0.7);
+
+  public static final TunableDouble maxArmCurrent = new TunableDouble("maxArmCurrent", 8.0);
+  public static final TunableDouble maxArmSeconds = new TunableDouble("maxArmSeconds", 3.0);
 }
+

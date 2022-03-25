@@ -44,8 +44,8 @@ public final class Tuner {
   }
 
   public static class TunableDouble extends TunableEntry<Double> {
-    public TunableDouble(String name, Double defaultValue) {
-      super(name, defaultValue);
+    public TunableDouble(String name, double d) {
+      super(name, d);
     }
 
 

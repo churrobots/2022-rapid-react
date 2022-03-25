@@ -94,11 +94,14 @@ public class RobotContainer {
       new AutoBackAwayFromHubOffTarmac(drivetrain)
     );
     Command waitForTeammate = new SequentialCommandGroup(
-      new AutoResetEncoders(drivetrain),
-      new AutoBackOutOfEdgeOfTarmac(drivetrain),
-      new WaitCommand(3),
-      new AutoDriveToTheHub(drivetrain),
-      new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
+        new AutoResetEncoders(drivetrain),
+        new AutoBackOutOfEdgeOfTarmac(drivetrain),
+        new WaitCommand(3),
+        new ParallelRaceGroup(
+          new WaitCommand(4),
+          new AutoDriveToTheHub(drivetrain)
+        ),
+        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
     );
     // Command twoBallAutoWallTarmac = new SequentialCommandGroup(
     //     new AutoResetEncoders(drivetrain),

@@ -28,7 +28,7 @@ public class AssistedClimb extends CommandBase {
   @Override
   public void execute() {
     // Tuck the arm under the bar
-    int desiredArmPosition = Tunables.armClimbUnderBarSensorCounts.get();
+    int desiredArmPosition = Tunables.armDownSensorCounts.get();
     armSubsystem.moveToPositionWithMotionMagic(desiredArmPosition);
 
     // Drive forward when it's safe

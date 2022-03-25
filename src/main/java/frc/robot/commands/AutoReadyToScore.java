@@ -33,17 +33,18 @@ public class AutoReadyToScore extends CommandBase {
   @Override
   public void execute() {
     armSubsystem.moveToPositionWithMotionMagic(Tunables.armUpSensorCounts.get());
-    leftway.leftstopRollers();
-    rightway.rightstopRollers();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    leftway.leftstopRollers();
+    rightway.rightstopRollers();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return armSubsystem.isDoneWithMotionMagic();
   }
 }

@@ -117,18 +117,24 @@ public class RobotContainer {
         ),
         new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
     );
-    // Command twoBallAutoHangarTarmac = new SequentialCommandGroup(
-    //   new AutoResetEncoders(drivetrain),
-    //   new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000),
-    //   new AutoDriveWithSensorUnits(drivetrain, 29000, 29000),
-    //   new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
-    //   new AutoDriveWithSensorUnits(drivetrain, 29000 + 31726, 29000 + -31726),
-    //   new AutoDriveWithSensorUnits(drivetrain, 45000, 57000),
-    //   new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
-    // );
+    Command twoBallAutoHangerTarmac = new SequentialCommandGroup(
+      new AutoResetEncoders(drivetrain),
+      new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000), // drop arm and start intaking
+      new AutoDriveWithSensorUnits(drivetrain, 32000, 32000), // drive to pickup
+      new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000), // pull arm up
+      new AutoDriveWithSensorUnits(drivetrain, 38000, 38000), // get off the tarmac
+      new AutoDriveWithSensorUnits(drivetrain, 28000, 28000), // move back to prevent bumper crash
+      new AutoDriveWithSensorUnits(drivetrain, 62000, 1924), // Sonic spin
+      new ParallelRaceGroup(
+        new WaitCommand(4),
+        new AutoDriveWithSensorUnits(drivetrain, 118148, 50000)
+      ),
+      new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
+  );
+  
     autonomousChooser.setDefaultOption("1-ball Auto: Drive, Wait, Dump", waitForTeammate);
-    // autonomousChooser.addOption("Two Ball Auto (Hangar Tarmac)", twoBallAutoHangarTarmac);
-    autonomousChooser.addOption("2-ball Auto: From Wall Tarmac", twoBallAutoWallTarmac);
+    autonomousChooser.addOption("2-ball Auto: From WALL Tarmac", twoBallAutoWallTarmac);
+    autonomousChooser.addOption("2-ball Auto: From HANGAR Tarmac", twoBallAutoHangerTarmac);
     autonomousChooser.addOption("Dump and backoff (must start at Hub instead)", dumpAndBackAway);
     autonomousChooser.addOption("Dump only (must start at Hub instead)", dump);
     autonomousChooser.addOption("Backoff only (must start at Hub instead)", backAway);

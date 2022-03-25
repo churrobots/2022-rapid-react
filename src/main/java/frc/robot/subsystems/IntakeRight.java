@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Tunables;
 
 public class IntakeRight extends SubsystemBase {
   private final WPI_VictorSPX rightRollerMotor = new WPI_VictorSPX(Constants.rightRollerMotorCAN);
@@ -24,7 +25,7 @@ public class IntakeRight extends SubsystemBase {
   }
 
   public void rightejection() {
-    this.rightRollerMotor.set(Constants.ejectionSpeedPercentage);
+    this.rightRollerMotor.set(Tunables.ejectionSpeedPercentage.get());
 
   }
 

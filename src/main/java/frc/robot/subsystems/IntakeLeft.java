@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Tunables;
 
 public class IntakeLeft extends SubsystemBase {
   private final WPI_VictorSPX leftRollerMotor = new WPI_VictorSPX(Constants.leftRollerMotorCAN);
@@ -23,7 +24,7 @@ public class IntakeLeft extends SubsystemBase {
   }
   
   public void leftejection() {
-    this.leftRollerMotor.set(Constants.ejectionSpeedPercentage);
+    this.leftRollerMotor.set(Tunables.ejectionSpeedPercentage.get());
   }
 
   public void leftstopRollers() {

@@ -28,7 +28,6 @@ public final class Constants {
   public static final boolean leftRollerMotorIsInverted = true;
   public static final boolean rightRollerMotorIsInverted = false;
   public static final double collectionSpeedPercentage = 0.75;
-  public static final double ejectionSpeedPercentage = -0.75;
 
   public static final double maxSpeedInMetersPerSecond = 2.0;
   public static final double maxAccelerationinMetersPerSecondSquared = 0.5;

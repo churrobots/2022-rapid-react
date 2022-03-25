@@ -21,12 +21,14 @@ public final class Tunables {
   public static final TunableDouble maxSteeringRadiansPerSecond = new TunableDouble("maxSteeringRadiansPerSecond", 2.0);
   public static final TunableDouble maxDriveMetersPerSecond = new TunableDouble("maxDriveMetersPerSecond",
       Constants.maxSpeedInMetersPerSecond);
+  public static final TunableDouble ejectionSpeedPercentage = new TunableDouble("ejectionSpeedPercentage", -0.9);  
+
 
   public static final TunableInteger armUpSensorCounts = new TunableInteger("armUpSensorCounts", 500);
     
   public static final TunableInteger armDownSensorCounts = new TunableInteger("armDownSensorCounts", -43000);
 
-  public static final TunableInteger armClimbUnderBarSensorCounts = new TunableInteger("armClimbUnderBarSensorCounts", -22000);
+  public static final TunableInteger armClimbUnderBarSensorCounts = new TunableInteger("armClimbUnderBarSensorCounts", -33000);
 
   // public static final TunableDouble driveTrainClimbingSpeed = new TunableDouble("driveTrainClimbingSpeed", 1.0);
 

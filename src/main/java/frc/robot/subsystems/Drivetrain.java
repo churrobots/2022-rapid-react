@@ -125,6 +125,8 @@ public class Drivetrain extends SubsystemBase {
   public void resetEncoders() {
     leftLeader.setSelectedSensorPosition(0);
     rightLeader.setSelectedSensorPosition(0);
+    leftLeader.stopMotor();
+    rightLeader.stopMotor();
   }
 
   private void resetOdometry(Pose2d pose) {

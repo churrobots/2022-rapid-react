@@ -33,6 +33,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
@@ -97,27 +100,38 @@ public class RobotContainer {
       new AutoDriveToTheHub(drivetrain),
       new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
     );
-    Command twoBallAutoWallTarmac = new SequentialCommandGroup(
-      new AutoResetEncoders(drivetrain),
-      new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000),
-      new AutoDriveWithSensorUnits(drivetrain, 29000, 29000),
-      new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
-      new AutoDriveWithSensorUnits(drivetrain, 29000 + 31726, 29000 + -31726),
-      new AutoDriveWithSensorUnits(drivetrain, 57000, 45000),
-      new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
-    );
-    Command twoBallAutoHangarTarmac = new SequentialCommandGroup(
-      new AutoResetEncoders(drivetrain),
-      new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000),
-      new AutoDriveWithSensorUnits(drivetrain, 29000, 29000),
-      new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
-      new AutoDriveWithSensorUnits(drivetrain, 31726, -31726),
-      new AutoDriveWithSensorUnits(drivetrain,45000, 57000),
-      new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
-    );
-    autonomousChooser.setDefaultOption("Two Ball Auto (Hangar Tarmac)", twoBallAutoHangarTarmac);
-    autonomousChooser.addOption("Two Ball Auto (Wall Tarmac)", twoBallAutoWallTarmac);
-    autonomousChooser.addOption("Drive, Wait, Dump", waitForTeammate);
+    // Command twoBallAutoWallTarmac = new SequentialCommandGroup(
+    //     new AutoResetEncoders(drivetrain),
+    //     new ParallelRaceGroup(
+    //         new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000),
+    //         new SequentialCommandGroup(
+    //           new WaitCommand(1),
+    //           new AutoDriveWithSensorUnits(drivetrain, 29000, 29000)
+    //         )
+    //     ),
+    //     new AutoResetEncoders(drivetrain),
+    //     new ParallelCommandGroup(
+    //       new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
+    //       new AutoDriveWithSensorUnits(drivetrain, 32000, -32000)
+    //     ),
+    //     new ParallelRaceGroup(
+    //       new WaitCommand(4),
+    //       new AutoDriveWithSensorUnits(drivetrain, 57000, 45000)
+    //     ),
+    //     new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
+    // );
+    // Command twoBallAutoHangarTarmac = new SequentialCommandGroup(
+    //   new AutoResetEncoders(drivetrain),
+    //   new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000),
+    //   new AutoDriveWithSensorUnits(drivetrain, 29000, 29000),
+    //   new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
+    //   new AutoDriveWithSensorUnits(drivetrain, 29000 + 31726, 29000 + -31726),
+    //   new AutoDriveWithSensorUnits(drivetrain, 45000, 57000),
+    //   new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
+    // );
+    autonomousChooser.setDefaultOption("Drive, Wait, Dump", waitForTeammate);
+    // autonomousChooser.addOption("Two Ball Auto (Hangar Tarmac)", twoBallAutoHangarTarmac);
+    // autonomousChooser.addOption("Two Ball Auto (Wall Tarmac)", twoBallAutoWallTarmac);
     autonomousChooser.addOption("Dump and backoff (must start at Hub instead)", dumpAndBackAway);
     autonomousChooser.addOption("Dump only (must start at Hub instead)", dump);
     autonomousChooser.addOption("Backoff only (must start at Hub instead)", backAway);

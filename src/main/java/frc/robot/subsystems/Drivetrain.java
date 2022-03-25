@@ -330,4 +330,22 @@ public class Drivetrain extends SubsystemBase {
     motor.configMotionSCurveStrength(4);
   }
 
+
+  // public void driveWithMetersPerSecond(double leftTargetMetersPerSecond, double rightTargetMetersPerSecond) {
+
+  //   double leftFeedforward = feedforward.calculate(smoothedLeftMetersPerSecond);
+  //   double leftActualSensorCountsPerSecond = leftLeader.getSelectedSensorVelocity();
+  //   double leftActualMetersPerSecond = convertSensorCountsToDistanceInMeters(leftActualSensorCountsPerSecond);
+  //   double leftFeedback = leftPIDController.calculate(leftActualMetersPerSecond, smoothedLeftMetersPerSecond);
+  //   double leftVoltage = leftFeedback + leftFeedforward;
+  //   leftLeader.setVoltage(leftVoltage);
+
+  //   double smoothedRightMetersPerSecond = rightMetersPerSecondFilter.calculate(rightTargetMetersPerSecond);
+  //   double rightFeedforward = feedforward.calculate(smoothedRightMetersPerSecond);
+  //   double rightActualSensorCountsPerSecond = rightLeader.getSelectedSensorVelocity();
+  //   double rightActualMetersPerSecond = convertSensorCountsToDistanceInMeters(rightActualSensorCountsPerSecond);
+  //   double rightFeedback = rightPIDController.calculate(rightActualMetersPerSecond, smoothedRightMetersPerSecond);
+  //   double rightVoltage = rightFeedback + rightFeedforward;
+  //   rightLeader.setVoltage(rightVoltage);
+  // }
 }

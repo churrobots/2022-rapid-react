@@ -106,13 +106,14 @@ public class RobotContainer {
     Command twoBallAutoWallTarmac = new SequentialCommandGroup(
         new AutoResetEncoders(drivetrain),
         new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000), // drop arm and start intaking
-        new AutoDriveWithSensorUnits(drivetrain, 31000, 31000), // drive to pickup
+        new AutoDriveWithSensorUnits(drivetrain, 32000, 32000), // drive to pickup
         new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000), // pull arm up
-        new AutoDriveWithSensorUnits(drivetrain, 40000, 40000),
-        new AutoDriveWithSensorUnits(drivetrain, 15489, 78149), // Sonic spin
+        new AutoDriveWithSensorUnits(drivetrain, 38000, 38000), // get off the tarmac
+        new AutoDriveWithSensorUnits(drivetrain, 28000, 28000), // move back to prevent bumper crash
+        new AutoDriveWithSensorUnits(drivetrain, 1924, 62000), // Sonic spin
         new ParallelRaceGroup(
           new WaitCommand(4),
-          new AutoDriveWithSensorUnits(drivetrain, 102473, 157143)
+          new AutoDriveWithSensorUnits(drivetrain, 50000, 118148)
         ),
         new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
     );

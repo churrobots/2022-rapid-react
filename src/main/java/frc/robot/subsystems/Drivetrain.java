@@ -52,8 +52,6 @@ public class Drivetrain extends SubsystemBase {
 
   private final WPI_Pigeon2 pigeonGyro = new WPI_Pigeon2(Constants.pigeonCAN);
 
-  private final DangerDetector dangerDetector = new DangerDetector();
-
   private SlewRateLimiter curvatureThrottleFilter = new SlewRateLimiter(Tunables.maxDriveAcceleration.get());
 
   // TODO: figure out what these constants mean
@@ -149,7 +147,6 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void driveWithCurvature(double throttlePercent, double curvaturePercentage, boolean allowSpinning) {
-    throttlePercent *= getTippingAdjustmentPercentage();
     var smoothedThrottlePercent = curvatureThrottleFilter.calculate(throttlePercent);
     differentialDrive.curvatureDrive(smoothedThrottlePercent, curvaturePercentage, allowSpinning);
   }
@@ -163,8 +160,8 @@ public class Drivetrain extends SubsystemBase {
       curvatureThrottleFilter = new SlewRateLimiter(Tunables.maxDriveAcceleration.get());
     }
 
-    var maxVoltagePercentage = Tunables.maxSafeDriveVolage.get();
-    differentialDrive.setMaxOutput(Tunables.maxSafeDriveVolage.get());
+    var maxVoltagePercentage = Tunables.maxDriveVoltage.get();
+    differentialDrive.setMaxOutput(Tunables.maxDriveVoltage.get());
     leftLeader.configPeakOutputForward(maxVoltagePercentage);
     leftLeader.configPeakOutputReverse(-maxVoltagePercentage);
     rightLeader.configPeakOutputForward(maxVoltagePercentage);
@@ -178,11 +175,6 @@ public class Drivetrain extends SubsystemBase {
       leftLeader.setNeutralMode(NeutralMode.Brake);
       rightLeader.setNeutralMode(NeutralMode.Brake);
     }
-
-    // Watch tipping behavior.
-    double pitch = pigeonGyro.getPitch();
-    double roll = pigeonGyro.getRoll();
-    dangerDetector.update(pitch, roll);
 
     // Update odometry
     Rotation2d heading = getHeadingInRotation2d();
@@ -198,8 +190,6 @@ public class Drivetrain extends SubsystemBase {
     inspector.set("y", pose.getY());
     inspector.set("roll", pigeonGyro.getRoll());
     inspector.set("pitch", pigeonGyro.getPitch());
-    inspector.set("dangerLevel", dangerDetector.getDangerLevel());
-    inspector.set("tippingAdjustmentPercentage", getTippingAdjustmentPercentage());
     inspector.set("leftVoltage", leftLeader.getMotorOutputVoltage());
     inspector.set("rightVoltage", rightLeader.getMotorOutputVoltage());
     inspector.set("leftSensor", leftLeader.getSelectedSensorPosition());
@@ -234,21 +224,6 @@ public class Drivetrain extends SubsystemBase {
     return Units.inchesToMeters(inchesOfRotation);
   }
 
-  private double getTippingAdjustmentPercentage() {
-    if (Tunables.useAntiTipping.get() == false) {
-      return 1.0;
-    }
-    double percentageAdjustment = 1.0;
-    double dangerLevel = dangerDetector.getDangerLevel();
-    double minDangerLevel = Tunables.minDangerLevel.get();
-    double maxDangerLevel = Tunables.maxDangerLevel.get();
-    if (dangerLevel > minDangerLevel) {
-      percentageAdjustment = 1
-          - (dangerLevel - minDangerLevel) / (maxDangerLevel - minDangerLevel);
-    }
-    return percentageAdjustment;
-  }
-
   public Command getTrajectoryCommand(Trajectory trajectory) {
 
     RamseteCommand ramseteCommand = new RamseteCommand(
@@ -276,25 +251,21 @@ public class Drivetrain extends SubsystemBase {
     // TODO: calculate or characterize these values? why would you ever not use the 0th slots?
     int fakeSlot = 0;
     int fakePIDSlot = 0;
-    int fakeTimeoutMilliseconds = 30;
-    double fakeKP = Tunables.kP.get();
-    double fakeKI = 0.0;
-    double fakeKD = 0.0;
-    double fakeKF = Tunables.kF.get();
+    int timeoutMilliseconds = 30;
 
     motor.configNeutralDeadband(0.001); // really low deadzone
 
-    motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, fakeTimeoutMilliseconds);
-		motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, fakeTimeoutMilliseconds);
+    motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, timeoutMilliseconds);
+		motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, timeoutMilliseconds);
 
 		motor.selectProfileSlot(fakeSlot, fakePIDSlot);
-		motor.config_kF(fakeSlot, fakeKF, fakeTimeoutMilliseconds);
-		motor.config_kP(fakeSlot, fakeKP, fakeTimeoutMilliseconds);
-		motor.config_kI(fakeSlot, fakeKI, fakeTimeoutMilliseconds);
-		motor.config_kD(fakeSlot, fakeKD, fakeTimeoutMilliseconds);
+		motor.config_kF(fakeSlot, Tunables.armKF.get(), timeoutMilliseconds);
+		motor.config_kP(fakeSlot, Tunables.armKP.get(), timeoutMilliseconds);
+		motor.config_kI(fakeSlot, 0.0, timeoutMilliseconds);
+		motor.config_kD(fakeSlot, 0.0, timeoutMilliseconds);
 
-		motor.configMotionCruiseVelocity(12000, fakeTimeoutMilliseconds);
-		motor.configMotionAcceleration(3000, fakeTimeoutMilliseconds);
+		motor.configMotionCruiseVelocity(12000, timeoutMilliseconds);
+		motor.configMotionAcceleration(3000, timeoutMilliseconds);
     motor.configMotionSCurveStrength(4);
   }
 

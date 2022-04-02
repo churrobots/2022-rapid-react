@@ -35,7 +35,7 @@ public class AssistedClimb extends CommandBase {
     double distanceFromDesiredArmPosition = Math.abs(armSubsystem.getCurrentPosition() - desiredArmPosition);
     boolean isSafeToDriveUnder = distanceFromDesiredArmPosition < 300;
     if (isSafeToDriveUnder) {
-      drivetrain.driveWithCurvature(Tunables.driveTrainClimbingPercentage.get(), 0, false);
+      drivetrain.driveWithCurvature(Tunables.climbingDriveVoltage.get(), 0, false);
     }
 
     // Detect when we hang and try to pitch forward when needed.

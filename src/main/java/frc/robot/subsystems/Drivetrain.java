@@ -17,8 +17,6 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -252,23 +250,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public Command getTrajectoryCommand(Trajectory trajectory) {
-    // Create a voltage constraint to ensure we don't accelerate too fast
-    var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-        feedforward,
-        kinematics,
-        10);
 
-    // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(
-        Constants.maxSpeedInMetersPerSecond,
-        Constants.maxAccelerationinMetersPerSecondSquared)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(kinematics)
-            // Apply the voltage constraint
-            .addConstraint(autoVoltageConstraint);
-
-    // An example trajectory to follow. All units in meters.
-    
     RamseteCommand ramseteCommand = new RamseteCommand(
         trajectory,
         this::getPose,

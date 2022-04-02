@@ -13,13 +13,11 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotState;
@@ -29,8 +27,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
@@ -129,7 +125,7 @@ public class Drivetrain extends SubsystemBase {
     rightLeader.stopMotor();
   }
 
-  private void resetOdometry(Pose2d pose) {
+  public void resetOdometry(Pose2d pose) {
     resetEncoders();
     odometry.resetPosition(pose, getHeadingInRotation2d());
   }
@@ -221,9 +217,8 @@ public class Drivetrain extends SubsystemBase {
     driveWithCurvature(0, 0, false);
   }
   private void tankDriveVolts(double leftVolts, double rightVolts) {
-    throw new Error("needs to be checked for interaction with differentialDrive");
-    // leftLeader.setVoltage(leftVolts);
-    // rightLeader.setVoltage(rightVolts);
+    leftLeader.setVoltage(leftVolts);
+    rightLeader.setVoltage(rightVolts);
   }
   
   public double getHeading() {
@@ -256,10 +251,7 @@ public class Drivetrain extends SubsystemBase {
     return percentageAdjustment;
   }
 
-  public Command getTrajectoryCommand() {
-    // maybe?
-    resetOdometry(new Pose2d(0, 0, getHeadingInRotation2d()));
-
+  public Command getTrajectoryCommand(Trajectory trajectory) {
     // Create a voltage constraint to ensure we don't accelerate too fast
     var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
         feedforward,
@@ -267,24 +259,18 @@ public class Drivetrain extends SubsystemBase {
         10);
 
     // Create config for trajectory
-    double slowdownPercent = 0.22;
     TrajectoryConfig config = new TrajectoryConfig(
-        slowdownPercent * Constants.maxSpeedInMetersPerSecond,
-        slowdownPercent * Constants.maxAccelerationinMetersPerSecondSquared)
+        Constants.maxSpeedInMetersPerSecond,
+        Constants.maxAccelerationinMetersPerSecondSquared)
             // Add kinematics to ensure max speed is actually obeyed
             .setKinematics(kinematics)
             // Apply the voltage constraint
             .addConstraint(autoVoltageConstraint);
 
     // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        new Pose2d(0, 0, new Rotation2d(0)),
-        List.of(new Translation2d(10, 0)),
-        new Pose2d(25, 0, new Rotation2d(0)),
-        config);
-
+    
     RamseteCommand ramseteCommand = new RamseteCommand(
-        exampleTrajectory,
+        trajectory,
         this::getPose,
         new RamseteController(),
         feedforward,
@@ -296,8 +282,6 @@ public class Drivetrain extends SubsystemBase {
         this::tankDriveVolts,
         this);
 
-    // Reset odometry to the starting pose of the trajectory.
-    this.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
     return ramseteCommand.andThen(() -> this.tankDriveVolts(0, 0));

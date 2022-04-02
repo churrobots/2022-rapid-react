@@ -23,18 +23,26 @@ import frc.robot.commands.AutoDriveWithSensorUnits;
 import frc.robot.commands.AutoDump;
 import frc.robot.commands.AutoReadyToScore;
 import frc.robot.commands.AutoResetEncoders;
+import frc.robot.commands.AutoResetOdometry;
 import frc.robot.commands.AutoVacuum;
 import frc.robot.commands.AutoBackOutOfEdgeOfTarmac;
 import frc.robot.commands.Calibrating;
 import frc.robot.commands.DriveWithCurvature;
 import frc.robot.helpers.Gamepad;
+
+import java.io.IOException;
+import java.nio.file.Path;
+
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -62,7 +70,7 @@ public class RobotContainer {
   SendableChooser<Command> autonomousChooser = new SendableChooser<Command>();
 
   public RobotContainer() {
-  
+
     // Enable the camera.
     CameraServer.startAutomaticCapture();
 
@@ -130,7 +138,26 @@ public class RobotContainer {
         new AutoDriveWithSensorUnits(drivetrain, 118148, 50000)
       ),
       new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
-  );
+    );
+
+    String trajectoryJSON = "paths/test.wpilib.json";
+    Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+    Trajectory trajectory = new Trajectory();
+    try {
+      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+    } catch(IOException err) {
+      DriverStation.reportError("broken!!!", err.getStackTrace());
+    }
+
+    Command terminator = new SequentialCommandGroup(
+        new AutoResetOdometry(drivetrain, trajectory.getInitialPose()),
+        new ParallelCommandGroup(
+          new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000),  
+          drivetrain.getTrajectoryCommand(trajectory)
+        ),
+        new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
+        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
+      );
   
     autonomousChooser.setDefaultOption("1-ball Auto: Drive, Wait, Dump", waitForTeammate);
     autonomousChooser.addOption("2-ball Auto: From WALL Tarmac", twoBallAutoWallTarmac);
@@ -138,6 +165,7 @@ public class RobotContainer {
     autonomousChooser.addOption("Dump and backoff (must start at Hub instead)", dumpAndBackAway);
     autonomousChooser.addOption("Dump only (must start at Hub instead)", dump);
     autonomousChooser.addOption("Backoff only (must start at Hub instead)", backAway);
+    autonomousChooser.addOption("Terminator", terminator);
     SmartDashboard.putData(autonomousChooser);
 
     // Show all the subsystems in the smartdashboard.

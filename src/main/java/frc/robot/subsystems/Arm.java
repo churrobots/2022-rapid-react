@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Tunables;
 import frc.robot.helpers.SubsystemInspector;
-import frc.robot.helpers.Tuner.TunableDouble;
 
 public class Arm extends SubsystemBase {
   

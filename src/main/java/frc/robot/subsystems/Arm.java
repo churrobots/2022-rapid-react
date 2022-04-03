@@ -44,10 +44,10 @@ public class Arm extends SubsystemBase {
     int fakeSlot = 0;
     int fakePIDSlot = 0;
     int fakeTimeoutMilliseconds = 30;
-    double fakeKP = Tunables.kP.get();
+    double fakeKP = Tunables.armKP.get();
     double fakeKI = 0.0;
     double fakeKD = 0.0;
-    double fakeKF = Tunables.kF.get();
+    double fakeKF = Tunables.armKF.get();
 
     armMotor.configNeutralDeadband(0.001); // really low deadzone
 
@@ -96,8 +96,8 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     calibrateIfNeeded();
-    if (Tunables.kF.didChange()
-        || Tunables.kP.didChange()
+    if (Tunables.armKF.didChange()
+        || Tunables.armKP.didChange()
         || Tunables.armSmoothingStrength.didChange()
         || Tunables.armAccelerationInSensorUnits.didChange()
         || Tunables.armCruiseVelocityInSensorUnits.didChange()
@@ -110,7 +110,7 @@ public class Arm extends SubsystemBase {
     // Coast when disabled, and also make sure arm freshly moves to the upward position upon enabling
     if (RobotState.isDisabled()) {
       armMotor.setNeutralMode(NeutralMode.Coast);
-      moveToPositionWithMotionMagic(Tunables.armUpSensorCounts.get());
+      moveToPositionWithMotionMagic(Tunables.armScorePositionSensorCounts.get());
     } else {
       armMotor.setNeutralMode(NeutralMode.Brake);
     }

@@ -49,7 +49,7 @@ public class AssistedClimb extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     drivetrain.stopDriving();
-    armSubsystem.moveToPositionWithMotionMagic(Tunables.armUpSensorCounts.get());
+    armSubsystem.moveToPositionWithMotionMagic(Tunables.armScorePositionSensorCounts.get());
   }
 
   // Returns true when the command should end.

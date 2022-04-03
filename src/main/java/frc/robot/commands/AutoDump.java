@@ -40,7 +40,7 @@ public class AutoDump extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.moveToPositionWithMotionMagic(Tunables.armUpSensorCounts.get());
+    armSubsystem.moveToPositionWithMotionMagic(Tunables.armScorePositionSensorCounts.get());
     leftway.leftejection();
     rightWay.rightejection();
   }

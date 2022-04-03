@@ -32,7 +32,7 @@ public class AutoVacuum extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.moveToPositionWithMotionMagic(Tunables.armDownSensorCounts.get());
+    armSubsystem.moveToPositionWithMotionMagic(Tunables.armVacuumPositionSensorCounts.get());
     leftway.collectballs();
     rightway.collectballs();
   }

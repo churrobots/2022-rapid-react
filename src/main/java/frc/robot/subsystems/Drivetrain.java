@@ -46,15 +46,13 @@ public class Drivetrain extends SubsystemBase {
   private final WPI_TalonFX leftFollower = new WPI_TalonFX(Constants.falconRearLeftCAN);
   private final WPI_TalonFX leftLeader = new WPI_TalonFX(Constants.falconFrontLeftCAN);
 
-  // made the RearRight the leader, FrontRight Encoder is broken 
-  private final WPI_TalonFX rightFollower = new WPI_TalonFX(Constants.falconFrontRightCAN);
-  private final WPI_TalonFX rightLeader = new WPI_TalonFX(Constants.falconRearRightCAN);
+  private final WPI_TalonFX rightFollower = new WPI_TalonFX(Constants.falconRearRightCAN);
+  private final WPI_TalonFX rightLeader = new WPI_TalonFX(Constants.falconFrontRightCAN);
 
   private final WPI_Pigeon2 pigeonGyro = new WPI_Pigeon2(Constants.pigeonCAN);
 
   private SlewRateLimiter curvatureThrottleFilter = new SlewRateLimiter(Tunables.maxDriveAcceleration.get());
 
-  // TODO: figure out what these constants mean
   private final PIDController leftPIDController = new PIDController(Constants.kP, 0, Constants.kD);
   private final PIDController rightPIDController = new PIDController(Constants.kP, 0, Constants.kD);
   private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.kS, Constants.kV, Constants.kA);

@@ -94,7 +94,7 @@ public class RobotContainer {
         new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
         new ParallelCommandGroup(
           new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
-          new EjectLeft(polterLeftGust3000)
+          new EjectRight(polterRightGust3000)
         )
     ));
 

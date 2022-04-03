@@ -16,7 +16,6 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeLeft;
 import frc.robot.subsystems.IntakeRight;
-import frc.robot.commands.AssistedClimb;
 import frc.robot.commands.AutoBackAwayFromHubOffTarmac;
 import frc.robot.commands.AutoDriveToTheHub;
 import frc.robot.commands.AutoDriveWithSensorUnits;
@@ -77,7 +76,6 @@ public class RobotContainer {
     // Wire up commands to the controllers.
     drivetrain.setDefaultCommand(new DriveWithCurvature(drivetrain, driverGamepad.leftYAxis,
         driverGamepad.rightXAxis, driverGamepad.rightBumper));
-    driverGamepad.aButton.whileHeld(new AssistedClimb(muscleArm, drivetrain));
     operatorGamepad.getDualButton(operatorGamepad.startButton, operatorGamepad.backButton)
         .whileHeld(new Calibrating(muscleArm));
     operatorGamepad.yButton.whenHeld(new Vacuum(polterLeftGust3000, polterRightGust3000));

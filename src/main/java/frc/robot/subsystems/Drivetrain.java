@@ -37,7 +37,6 @@ import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import frc.robot.Constants;
 import frc.robot.Tunables;
 import frc.robot.helpers.SubsystemInspector;
-import frc.robot.helpers.DangerDetector;
 
 public class Drivetrain extends SubsystemBase {
 
@@ -94,10 +93,7 @@ public class Drivetrain extends SubsystemBase {
     pigeonGyro.configFactoryDefault();
     pigeonGyro.reset();
 
-    // TODO: pass in the initial position based on which autonomous routine we choose
     Pose2d initialPosition = new Pose2d(0.0, 0.0, getHeadingInRotation2d());
-
-    // FIXME: need set an initial Pose based on which starting position we chose
     odometry = new DifferentialDriveOdometry(getHeadingInRotation2d());
     resetOdometry(initialPosition);
   }

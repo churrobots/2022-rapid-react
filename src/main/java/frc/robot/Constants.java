@@ -38,12 +38,12 @@ public final class Constants {
   // https://docs.ctre-phoenix.com/en/latest/ch14_MCSensor.html#sensor-resolution
   public static final int sensorUnitsPerRevolution = 2048;
   public static final double driveWheelRadiusInInches = 3;
-  public static final double trackWidthInInches = 22.0;
   public static final double drivetrainNeutralDeadbandPercentage = 0.08;
   public static final double armCalibrationSpeedPercentage = 0.15;
 
 
   // From the System Identification for Connie
+  // public static final double trackWidthInInches = 22.0;
   // public static final double driveGearRatio = 7.31;
   // public static final double kS = .70274; 
   // public static final double kV = 1.578;
@@ -52,6 +52,7 @@ public final class Constants {
   // public static final double kD = 0.0;
 
   // From the System Identification for Ponyo
+  public static final double trackWidthInInches = 27.25;
   public static final double driveGearRatio = 8.45;
   public static final double kS = 0.693;
   public static final double kV = 0.748;

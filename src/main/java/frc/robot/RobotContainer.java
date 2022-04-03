@@ -10,9 +10,6 @@ package frc.robot;
 import frc.robot.commands.EjectLeft;
 import frc.robot.commands.EjectRight;
 import frc.robot.commands.HoldArmForDriving;
-import frc.robot.commands.MoveArmDown;
-import frc.robot.commands.MoveArmUp;
-import frc.robot.commands.Vacuum;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeLeft;
@@ -76,7 +73,7 @@ public class RobotContainer {
 
     // Default commands
     drivetrain.setDefaultCommand(new DriveWithCurvature(drivetrain, driverGamepad.leftYAxis,
-        driverGamepad.rightXAxis, driverGamepad.rightBumper));
+        driverGamepad.rightXAxis));
     muscleArm.setDefaultCommand(new HoldArmForDriving(muscleArm));
 
     // Wire up commands to the controllers.

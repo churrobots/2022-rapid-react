@@ -20,12 +20,10 @@ public class DriveWithCurvature extends CommandBase {
   protected final Drivetrain drivetrainSubsystem;
   protected final Axis leftAxis;
   protected final Axis rightHorizontalAxis;
-  protected final JoystickButton spinButton;
 
-  public DriveWithCurvature(Drivetrain drivetrainSubsystem, Axis leftAxis, Axis rightHorizontalAxis, JoystickButton spinButton) {
+  public DriveWithCurvature(Drivetrain drivetrainSubsystem, Axis leftAxis, Axis rightHorizontalAxis) {
     this.drivetrainSubsystem = drivetrainSubsystem;
     this.leftAxis = leftAxis;
-    this.spinButton = spinButton;
     this.rightHorizontalAxis = rightHorizontalAxis;
     this.addRequirements(this.drivetrainSubsystem);
   }

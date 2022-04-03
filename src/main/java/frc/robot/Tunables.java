@@ -7,9 +7,9 @@ public final class Tunables {
 
   public static final TunableDouble armKF = new TunableDouble("armKF", 0.2);
   public static final TunableDouble armKP = new TunableDouble("armKP", 0.2);
-  public static final TunableInteger armSmoothingStrength = new TunableInteger("armSmoothingStrength", 4);
-  public static final TunableInteger armCruiseVelocityInSensorUnits = new TunableInteger("armCruiseVelocityInSensorUnits", 16000);
-  public static final TunableInteger armAccelerationInSensorUnits = new TunableInteger("armAccelerationInSensorUnits", 7000);
+  public static final TunableInteger armSmoothingStrength = new TunableInteger("armSmoothingStrength", 3);
+  public static final TunableInteger armCruiseVelocityInSensorUnits = new TunableInteger("armCruiseVelocityInSensorUnits", 18000);
+  public static final TunableInteger armAccelerationInSensorUnits = new TunableInteger("armAccelerationInSensorUnits", 8000);
 
   public static final TunableDouble maxDriveVoltage = new TunableDouble("maxDriveVoltage", 0.80);
   public static final TunableDouble maxDriveAcceleration = new TunableDouble("maxDriveAcceleration", 2.3);

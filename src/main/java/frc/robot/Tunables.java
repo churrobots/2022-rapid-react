@@ -1,5 +1,6 @@
 package frc.robot;
 
+import frc.robot.helpers.Tuner.TunableBoolean;
 import frc.robot.helpers.Tuner.TunableDouble;
 import frc.robot.helpers.Tuner.TunableInteger;
 
@@ -13,16 +14,15 @@ public final class Tunables {
 
   public static final TunableDouble maxDriveVoltage = new TunableDouble("maxDriveVoltage", 0.80);
   public static final TunableDouble maxDriveAcceleration = new TunableDouble("maxDriveAcceleration", 2.3);
+  public static final TunableDouble maxDriveMetersPerSecond = new TunableDouble("maxDriveMetersPerSecond", 3.0);
+
+  public static final TunableBoolean driveWithMetersPerSecond = new TunableBoolean("driveWithMetersPerSecond", false);
 
   public static final TunableDouble ejectionSpeedPercentage = new TunableDouble("ejectionSpeedPercentage", -1.0);  
 
-  public static final TunableInteger armScorePositionSensorCounts = new TunableInteger("armUpSensorCounts", 500);
-  public static final TunableInteger armVacuumPositionSensorCounts = new TunableInteger("armDownSensorCounts", -43000);
-  public static final TunableInteger armDrivingPositionSensorCounts = new TunableInteger("armDownSensorCounts", -22000);
-
-  public static final TunableDouble climbingDriveVoltage = new TunableDouble("climbingDriveVoltage", 0.55);
-  public static final TunableInteger armClimbUnderBarSensorCounts = new TunableInteger("armClimbUnderBarSensorCounts", -33000);
-  public static final TunableDouble maxPitchForClimb = new TunableDouble("maxPitchForClimb", 22.0);
+  public static final TunableInteger armScorePositionSensorCounts = new TunableInteger("armScorePositionSensorCounts", 500);
+  public static final TunableInteger armVacuumPositionSensorCounts = new TunableInteger("armVacuumPositionSensorCounts", -43000);
+  public static final TunableInteger armDrivingPositionSensorCounts = new TunableInteger("armDrivingPositionSensorCounts", -22000);
 
   public static final TunableDouble maxArmCurrent = new TunableDouble("maxArmCurrent", 15.0);
   public static final TunableDouble maxArmSeconds = new TunableDouble("maxArmSeconds", 3.0);

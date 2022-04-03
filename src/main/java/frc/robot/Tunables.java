@@ -14,7 +14,7 @@ public final class Tunables {
   public static final TunableDouble maxDriveVoltage = new TunableDouble("maxDriveVoltage", 0.80);
   public static final TunableDouble maxDriveAcceleration = new TunableDouble("maxDriveAcceleration", 2.3);
 
-  public static final TunableDouble ejectionSpeedPercentage = new TunableDouble("ejectionSpeedPercentage", -0.9);  
+  public static final TunableDouble ejectionSpeedPercentage = new TunableDouble("ejectionSpeedPercentage", -1.0);  
 
   public static final TunableInteger armScorePositionSensorCounts = new TunableInteger("armUpSensorCounts", 500);
   public static final TunableInteger armVacuumPositionSensorCounts = new TunableInteger("armDownSensorCounts", -43000);

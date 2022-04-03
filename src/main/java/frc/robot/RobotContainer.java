@@ -9,6 +9,7 @@ package frc.robot;
 
 import frc.robot.commands.EjectLeft;
 import frc.robot.commands.EjectRight;
+import frc.robot.commands.HoldArmForDriving;
 import frc.robot.commands.MoveArmDown;
 import frc.robot.commands.MoveArmUp;
 import frc.robot.commands.Vacuum;
@@ -73,16 +74,29 @@ public class RobotContainer {
     // Enable the camera.
     CameraServer.startAutomaticCapture();
 
-    // Wire up commands to the controllers.
+    // Default commands
     drivetrain.setDefaultCommand(new DriveWithCurvature(drivetrain, driverGamepad.leftYAxis,
         driverGamepad.rightXAxis, driverGamepad.rightBumper));
+    muscleArm.setDefaultCommand(new HoldArmForDriving(muscleArm));
+
+    // Wire up commands to the controllers.
     operatorGamepad.getDualButton(operatorGamepad.startButton, operatorGamepad.backButton)
         .whileHeld(new Calibrating(muscleArm));
-    operatorGamepad.yButton.whenHeld(new Vacuum(polterLeftGust3000, polterRightGust3000));
-    operatorGamepad.leftBumper.whenHeld(new EjectLeft(polterLeftGust3000));
-    operatorGamepad.rightBumper.whenHeld(new EjectRight(polterRightGust3000));
-    operatorGamepad.povUp.whenPressed(new MoveArmUp(muscleArm));
-    operatorGamepad.povDown.whenPressed(new MoveArmDown(muscleArm));
+    operatorGamepad.yButton.whenHeld(new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000));
+    operatorGamepad.leftBumper.whenHeld(new SequentialCommandGroup(
+        new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
+        new ParallelCommandGroup(
+          new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
+          new EjectLeft(polterLeftGust3000)
+        )
+    ));
+    operatorGamepad.rightBumper.whenHeld(new SequentialCommandGroup(
+        new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
+        new ParallelCommandGroup(
+          new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
+          new EjectLeft(polterLeftGust3000)
+        )
+    ));
 
     
     // Set the options for autonomous.

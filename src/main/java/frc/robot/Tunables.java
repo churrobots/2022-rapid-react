@@ -18,6 +18,7 @@ public final class Tunables {
 
   public static final TunableInteger armScorePositionSensorCounts = new TunableInteger("armUpSensorCounts", 500);
   public static final TunableInteger armVacuumPositionSensorCounts = new TunableInteger("armDownSensorCounts", -43000);
+  public static final TunableInteger armDrivingPositionSensorCounts = new TunableInteger("armDownSensorCounts", -22000);
 
   public static final TunableDouble climbingDriveVoltage = new TunableDouble("climbingDriveVoltage", 0.55);
   public static final TunableInteger armClimbUnderBarSensorCounts = new TunableInteger("armClimbUnderBarSensorCounts", -33000);

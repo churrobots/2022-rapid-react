@@ -45,7 +45,7 @@ public final class Constants {
 
 
   // From the System Identification for Connie
-  // public static final double trackWidthInInches = 22.0;
+  // public static final double trackWidthInInches = 19.0;
   // public static final double driveGearRatio = 7.31;
   // public static final double kS = .70274; 
   // public static final double kV = 1.578;
@@ -54,7 +54,7 @@ public final class Constants {
   // public static final double kD = 0.0;
 
   // From the System Identification for Ponyo
-  public static final double trackWidthInInches = 27.25;
+  public static final double trackWidthInInches = 22.0;
   public static final double driveGearRatio = 8.45;
   public static final double kS = 0.693;
   public static final double kV = 0.748;

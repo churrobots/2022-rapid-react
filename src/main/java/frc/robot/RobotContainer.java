@@ -144,32 +144,24 @@ public class RobotContainer {
       new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
     );
 
-    String trajectoryJSON = "paths/test.wpilib.json";
-    Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-    Trajectory trajectory = new Trajectory();
-    try {
-      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-    } catch(IOException err) {
-      DriverStation.reportError("broken!!!", err.getStackTrace());
-    }
-
-    Command terminator = new SequentialCommandGroup(
-        new AutoResetOdometry(drivetrain, trajectory.getInitialPose()),
+    Trajectory testTrajectory = getTrajectory("paths/test.wpilib.json");
+    Command testAutoTrajectory = new SequentialCommandGroup(
+        new AutoResetOdometry(drivetrain, testTrajectory.getInitialPose()),
         new ParallelCommandGroup(
           new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000),  
-          drivetrain.getTrajectoryCommand(trajectory)
+          drivetrain.getTrajectoryCommand(testTrajectory)
         ),
         new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
         new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
-      );
-  
+    );
+
     autonomousChooser.setDefaultOption("1-ball Auto: Drive, Wait, Dump", waitForTeammate);
     autonomousChooser.addOption("2-ball Auto: From WALL Tarmac", twoBallAutoWallTarmac);
     autonomousChooser.addOption("2-ball Auto: From HANGAR Tarmac", twoBallAutoHangerTarmac);
     autonomousChooser.addOption("Dump and backoff (must start at Hub instead)", dumpAndBackAway);
     autonomousChooser.addOption("Dump only (must start at Hub instead)", dump);
     autonomousChooser.addOption("Backoff only (must start at Hub instead)", backAway);
-    autonomousChooser.addOption("Terminator", terminator);
+    autonomousChooser.addOption("Test Trajectory", testAutoTrajectory);
     SmartDashboard.putData(autonomousChooser);
 
     // Show all the subsystems in the smartdashboard.
@@ -182,6 +174,18 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return autonomousChooser.getSelected();
+  }
+
+  public Trajectory getTrajectory(String trajectoryJSON) {
+
+    Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+    Trajectory trajectory = new Trajectory();
+    try {
+      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+    } catch (IOException err) {
+      DriverStation.reportError("broken!!!", err.getStackTrace());
+    }
+    return trajectory;
   }
 
 }

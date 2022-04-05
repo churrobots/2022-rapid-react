@@ -14,15 +14,15 @@ public final class Tunables {
 
   public static final TunableDouble maxDriveVoltage = new TunableDouble("maxDriveVoltage", 0.80);
   public static final TunableDouble maxDriveAcceleration = new TunableDouble("maxDriveAcceleration", 2.3);
-  public static final TunableDouble maxDriveMetersPerSecond = new TunableDouble("maxDriveMetersPerSecond", 3.0);
+  public static final TunableDouble maxDriveMetersPerSecond = new TunableDouble("maxDriveMetersPerSecond", 2.0);
 
-  public static final TunableBoolean driveWithMetersPerSecond = new TunableBoolean("driveWithMetersPerSecond", false);
+  public static final TunableBoolean driveWithMetersPerSecond = new TunableBoolean("driveWithMetersPerSecond", true);
 
   public static final TunableDouble ejectionSpeedPercentage = new TunableDouble("ejectionSpeedPercentage", -1.0);  
 
   public static final TunableInteger armScorePositionSensorCounts = new TunableInteger("armScorePositionSensorCounts", 500);
   public static final TunableInteger armVacuumPositionSensorCounts = new TunableInteger("armVacuumPositionSensorCounts", -43000);
-  public static final TunableInteger armDrivingPositionSensorCounts = new TunableInteger("armDrivingPositionSensorCounts", -22000);
+  public static final TunableInteger armDrivingPositionSensorCounts = new TunableInteger("armDrivingPositionSensorCounts", -17000);
 
   public static final TunableDouble maxArmCurrent = new TunableDouble("maxArmCurrent", 15.0);
   public static final TunableDouble maxArmSeconds = new TunableDouble("maxArmSeconds", 3.0);

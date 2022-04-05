@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -20,6 +21,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -142,7 +144,17 @@ public class Drivetrain extends SubsystemBase {
 
   public void driveWithCurvature(double throttlePercent, double curvaturePercentage, boolean allowSpinning) {
     var smoothedThrottlePercent = curvatureThrottleFilter.calculate(throttlePercent);
-    differentialDrive.curvatureDrive(smoothedThrottlePercent, curvaturePercentage, allowSpinning);
+    if (Tunables.driveWithMetersPerSecond.get() == true) {
+      smoothedThrottlePercent = MathUtil.applyDeadband(smoothedThrottlePercent, Constants.joystickDeadband);
+      curvaturePercentage = MathUtil.applyDeadband(curvaturePercentage, Constants.joystickDeadband);
+      WheelSpeeds speeds = DifferentialDrive.curvatureDriveIK(smoothedThrottlePercent, curvaturePercentage,
+          allowSpinning);
+      var leftMetersPerSecond = speeds.left * Tunables.maxDriveMetersPerSecond.get();
+      var rightMetersPerSecond = speeds.right * Tunables.maxDriveMetersPerSecond.get();
+      this.driveWithMetersPerSecond(leftMetersPerSecond, rightMetersPerSecond);
+    } else {
+      differentialDrive.curvatureDrive(smoothedThrottlePercent, curvaturePercentage, allowSpinning);
+    }
   }
 
   @Override

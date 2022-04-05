@@ -7,31 +7,39 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Tunables;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.IntakeRight;
 
-public class HoldArmForDriving extends CommandBase {
-
+public class ScoreRight extends CommandBase {
   Arm arm;
-  /** Creates a new HoldArmForDriving. */
-  public HoldArmForDriving(Arm arm) {
+  IntakeRight intakeRight;
+  /** Creates a new Score. */
+  public ScoreRight(Arm arm, IntakeRight intakeRight) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.arm = arm;
+    this.intakeRight = intakeRight;
     addRequirements(arm);
+    addRequirements(intakeRight);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    arm.moveToPositionWithMotionMagic(Tunables.armScorePositionSensorCounts.get());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    arm.moveToPositionWithMotionMagic(Tunables.armDrivingPositionSensorCounts.get());
+    if (arm.isDoneWithMotionMagic()) {
+      intakeRight.rightejection();
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    intakeRight.rightstopRollers();
+  }
 
   // Returns true when the command should end.
   @Override

@@ -10,6 +10,10 @@ package frc.robot;
 import frc.robot.commands.EjectLeft;
 import frc.robot.commands.EjectRight;
 import frc.robot.commands.HoldArmForDriving;
+import frc.robot.commands.ScoreBoth;
+import frc.robot.commands.ScoreLeft;
+import frc.robot.commands.ScoreRight;
+import frc.robot.commands.Vacuum;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeLeft;
@@ -79,21 +83,12 @@ public class RobotContainer {
     // Wire up commands to the controllers.
     operatorGamepad.getDualButton(operatorGamepad.startButton, operatorGamepad.backButton)
         .whileHeld(new Calibrating(muscleArm));
-    operatorGamepad.yButton.whenHeld(new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000));
-    operatorGamepad.leftBumper.whenHeld(new SequentialCommandGroup(
-        new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
-        new ParallelCommandGroup(
-          new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
-          new EjectLeft(polterLeftGust3000)
-        )
-    ));
-    operatorGamepad.rightBumper.whenHeld(new SequentialCommandGroup(
-        new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
-        new ParallelCommandGroup(
-          new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
-          new EjectRight(polterRightGust3000)
-        )
-    ));
+    operatorGamepad.yButton.whileHeld(new Vacuum(muscleArm, polterLeftGust3000, polterRightGust3000));
+    operatorGamepad.leftBumper.whileHeld(new ScoreLeft(muscleArm, polterLeftGust3000));
+    operatorGamepad.rightBumper.whileHeld(new ScoreRight(muscleArm, polterRightGust3000));
+    operatorGamepad.getDualButton(operatorGamepad.leftBumper, operatorGamepad.rightBumper)
+        .whileHeld(new ScoreBoth(muscleArm, polterLeftGust3000, polterRightGust3000));
+    // TODO: Make sure we raise our arm after climb so we don't hit a partner in front of us
 
     
     // Set the options for autonomous.

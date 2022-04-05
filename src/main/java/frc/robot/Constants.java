@@ -13,6 +13,8 @@ package frc.robot;
  */
 public final class Constants {
 
+  public static final double joystickDeadband = 0.02;
+
   public static final int falconRearLeftCAN = 1;
   public static final int falconFrontLeftCAN = 4;
   public static final int falconRearRightCAN = 2;

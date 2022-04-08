@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -35,19 +36,24 @@ public class Climber extends SubsystemBase {
       climberMotor.setSelectedSensorPosition(0);
     }
     inspector.set("currentPosition", getCurrentPosition());
+    inspector.set("currentCommand", this.getCurrentCommand());
   }
 
   public void moveUp() {
     var hitUpperLimit = getCurrentPosition() < -228000;
-    if (!hitUpperLimit) {
-      climberMotor.setVoltage(-0.5);
+    if (hitUpperLimit) {
+      stop();
+    } else {
+      climberMotor.set(ControlMode.PercentOutput, -0.5);
     }
   }
 
   public void moveDown() {
     var hitlowerlimit = getCurrentPosition() > -4000;
-    if (!hitlowerlimit) {
-      climberMotor.setVoltage(0.5);
+    if (hitlowerlimit) {
+      stop();
+    } else {
+      climberMotor.set(ControlMode.PercentOutput, 0.5);
     }
   }
 

@@ -7,8 +7,6 @@
 
 package frc.robot;
 
-import frc.robot.commands.EjectLeft;
-import frc.robot.commands.EjectRight;
 import frc.robot.commands.HoldArmForDriving;
 import frc.robot.commands.ScoreBoth;
 import frc.robot.commands.ScoreLeft;
@@ -96,7 +94,6 @@ public class RobotContainer {
         .whileHeld(new ScoreBoth(muscleArm, polterLeftGust3000, polterRightGust3000));
     // TODO: Make sure we raise our arm after climb so we don't hit a partner in front of us
 
-    
     // Set the options for autonomous.
     Command dump = new SequentialCommandGroup(
       new AutoResetEncoders(drivetrain),

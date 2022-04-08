@@ -15,6 +15,7 @@ import frc.robot.commands.ScoreLeft;
 import frc.robot.commands.ScoreRight;
 import frc.robot.commands.Vacuum;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeLeft;
 import frc.robot.subsystems.IntakeRight;
@@ -28,6 +29,8 @@ import frc.robot.commands.AutoResetOdometry;
 import frc.robot.commands.AutoVacuum;
 import frc.robot.commands.AutoBackOutOfEdgeOfTarmac;
 import frc.robot.commands.Calibrating;
+import frc.robot.commands.ClimbDown;
+import frc.robot.commands.ClimbUp;
 import frc.robot.commands.DriveWithCurvature;
 import frc.robot.helpers.Gamepad;
 
@@ -66,6 +69,7 @@ public class RobotContainer {
   IntakeLeft polterLeftGust3000 = new IntakeLeft();
   IntakeRight polterRightGust3000 = new IntakeRight();
   Arm muscleArm = new Arm();
+  Climber climber = new Climber();
 
   // Create the autonomous chooser.
   SendableChooser<Command> autonomousChooser = new SendableChooser<Command>();
@@ -83,6 +87,8 @@ public class RobotContainer {
     // Wire up commands to the controllers.
     operatorGamepad.getDualButton(operatorGamepad.startButton, operatorGamepad.backButton)
         .whileHeld(new Calibrating(muscleArm));
+    operatorGamepad.leftAnalogTrigger.asButton(0.90).whileHeld(new ClimbDown(climber));
+    operatorGamepad.rightAnalogTrigger.asButton(0.90).whileHeld(new ClimbUp(climber));
     operatorGamepad.yButton.whileHeld(new Vacuum(muscleArm, polterLeftGust3000, polterRightGust3000));
     operatorGamepad.leftBumper.whileHeld(new ScoreLeft(muscleArm, polterLeftGust3000));
     operatorGamepad.rightBumper.whileHeld(new ScoreRight(muscleArm, polterRightGust3000));

@@ -72,6 +72,27 @@ public class Gamepad {
     return dualButton;
   }
 
+  protected static class AxisButton extends Button {
+
+    Axis axis;
+    double threshold;
+
+    public AxisButton(Axis axis, double threshold) {
+      this.axis = axis;
+      this.threshold = threshold;
+    }
+
+    @Override
+    public boolean get() {
+      if (this.threshold < 0) {
+        return this.axis.get() < this.threshold;
+      } else {
+        return this.axis.get() > this.threshold;
+      }
+    }
+
+  }
+
   // We found this suggestion from the forums:
   // https://www.chiefdelphi.com/t/can-you-bind-a-command-to-only-activate-when-2-buttons-are-held/347368/4
   protected static class DualButton extends Button {
@@ -103,6 +124,11 @@ public class Gamepad {
 
     public double get() {
       return _gamepad.getRawAxis(_axis);
+    }
+
+    public Button asButton(double threshold) {
+      Button axisButton = new AxisButton(this, threshold);
+      return axisButton;
     }
 
   }

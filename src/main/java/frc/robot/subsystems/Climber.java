@@ -22,6 +22,7 @@ public class Climber extends SubsystemBase {
    public Climber() {
     climberMotor.configFactoryDefault();
     climberMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    climberMotor.setNeutralMode(NeutralMode.Brake);
   }
 
   private double getCurrentPosition() {
@@ -32,9 +33,6 @@ public class Climber extends SubsystemBase {
   public void periodic() {
     if (RobotState.isDisabled()) {
       climberMotor.setSelectedSensorPosition(0);
-      climberMotor.setNeutralMode(NeutralMode.Coast);
-    } else {
-      climberMotor.setNeutralMode(NeutralMode.Brake);
     }
     inspector.set("currentPosition", getCurrentPosition());
   }

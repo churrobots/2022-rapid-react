@@ -11,8 +11,10 @@ import frc.robot.commands.HoldArmForDriving;
 import frc.robot.commands.ScoreBoth;
 import frc.robot.commands.ScoreLeft;
 import frc.robot.commands.ScoreRight;
+import frc.robot.commands.UnleashTheUltimateButterDuster;
 import frc.robot.commands.Vacuum;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.ButterDuster;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeLeft;
@@ -68,6 +70,7 @@ public class RobotContainer {
   IntakeRight polterRightGust3000 = new IntakeRight();
   Arm muscleArm = new Arm();
   Climber climber = new Climber();
+  ButterDuster butterDuster = new ButterDuster();
 
   // Create the autonomous chooser.
   SendableChooser<Command> autonomousChooser = new SendableChooser<Command>();
@@ -104,6 +107,11 @@ public class RobotContainer {
     Command backAway = new SequentialCommandGroup(
       new AutoResetEncoders(drivetrain),
       new AutoBackAwayFromHubOffTarmac(drivetrain)
+    );
+    Command dustAndBackAway = new SequentialCommandGroup(
+      new AutoResetEncoders(drivetrain),
+      new UnleashTheUltimateButterDuster(butterDuster), // DUSTED
+      new AutoDriveWithSensorUnits(drivetrain, 38000, 38000) // get off the tarmac
     );
     Command dumpAndBackAway = new SequentialCommandGroup(
       new AutoResetEncoders(drivetrain),
@@ -166,7 +174,7 @@ public class RobotContainer {
     autonomousChooser.addOption("Dump and backoff (must start at Hub instead)", dumpAndBackAway);
     autonomousChooser.addOption("Dump only (must start at Hub instead)", dump);
     autonomousChooser.addOption("Backoff only (must start at Hub instead)", backAway);
-    autonomousChooser.addOption("Test Trajectory", testAutoTrajectory);
+    autonomousChooser.addOption("DUST YUR BUTTERS", dustAndBackAway);
     SmartDashboard.putData(autonomousChooser);
 
     // Show all the subsystems in the smartdashboard.

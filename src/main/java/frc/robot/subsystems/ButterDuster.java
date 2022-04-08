@@ -32,6 +32,7 @@ public class ButterDuster extends SubsystemBase {
 
   @Override
   public void periodic() {
+    timer.start();
     inspector.set("currentCommand", this.getCurrentCommand());
   }
 

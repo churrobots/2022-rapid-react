@@ -97,6 +97,8 @@ public class RobotContainer {
     operatorGamepad.rightBumper.whileHeld(new ScoreRight(muscleArm, polterRightGust3000));
     operatorGamepad.getDualButton(operatorGamepad.leftBumper, operatorGamepad.rightBumper)
         .whileHeld(new ScoreBoth(muscleArm, polterLeftGust3000, polterRightGust3000));
+
+    driverGamepad.rightBumper.whileHeld(new Tuck(muscleArm));
     // TODO: Make sure we raise our arm after climb so we don't hit a partner in front of us
 
     // Set the options for autonomous.

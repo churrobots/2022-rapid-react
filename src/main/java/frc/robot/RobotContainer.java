@@ -150,7 +150,7 @@ public class RobotContainer {
       new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000), // drop arm and start intaking
       new AutoDriveWithSensorUnits(drivetrain, 32000, 32000), // drive to pickup
       new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000), // pull arm up
-      new AutoDriveWithSensorUnits(drivetrain, 38000, 38000), // get off the tarmac
+      new AutoDriveWithSensorUnits(drivetrain, 45000, 45000), // get off the tarmac
       new AutoDriveWithSensorUnits(drivetrain, 28000, 28000), // move back to prevent bumper crash
       new AutoDriveWithSensorUnits(drivetrain, 62000, 1924), // Sonic spin
       new ParallelRaceGroup(

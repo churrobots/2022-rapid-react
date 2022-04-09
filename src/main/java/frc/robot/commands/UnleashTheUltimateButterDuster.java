@@ -32,7 +32,7 @@ public class UnleashTheUltimateButterDuster extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (timer.get() > 0.5) {
+    if (timer.get() > 0.25) {
       butterDuster.contain();
     }
   }

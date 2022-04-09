@@ -109,9 +109,10 @@ public class RobotContainer {
       new AutoBackAwayFromHubOffTarmac(drivetrain)
     );
     Command dustAndBackAway = new SequentialCommandGroup(
-      new AutoResetEncoders(drivetrain),
-      new UnleashTheUltimateButterDuster(butterDuster), // DUSTED
-      new AutoDriveWithSensorUnits(drivetrain, 38000, 38000) // get off the tarmac
+        new UnleashTheUltimateButterDuster(butterDuster), // DUSTED
+        new AutoResetEncoders(drivetrain),
+        new WaitCommand(2),
+        new AutoDriveWithSensorUnits(drivetrain, 47000, 47000) // get off the tarmac
     );
     Command dumpAndBackAway = new SequentialCommandGroup(
       new AutoResetEncoders(drivetrain),

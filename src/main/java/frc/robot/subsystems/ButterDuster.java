@@ -29,7 +29,7 @@ public class ButterDuster extends SubsystemBase {
   }
 
   public void unleash() {
-    butterDusterMotor.set(ControlMode.PercentOutput, 0.30);
+    butterDusterMotor.set(ControlMode.PercentOutput, 0.60);
   }
 
   public void contain() {

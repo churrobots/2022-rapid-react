@@ -180,7 +180,7 @@ public class RobotContainer {
     autonomousChooser.addOption("Dump only (must start at Hub instead)", dump);
     autonomousChooser.addOption("Backoff only (must start at Hub instead)", backAway);
     autonomousChooser.addOption("DUST YUR BUTTERS", dustAndBackAway);
-    autonomousChooser.addOption("TheClassicOneBallRunAndDump", testAutoTrajectory);
+    // autonomousChooser.addOption("TheClassicOneBallRunAndDump", testAutoTrajectory);
     SmartDashboard.putData(autonomousChooser);
 
     // Show all the subsystems in the smartdashboard.

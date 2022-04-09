@@ -44,7 +44,7 @@ public class Climber extends SubsystemBase {
     if (hitUpperLimit) {
       stop();
     } else {
-      climberMotor.set(ControlMode.PercentOutput, -0.5);
+      climberMotor.set(ControlMode.PercentOutput, -1.00);
     }
   }
 

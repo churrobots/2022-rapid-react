@@ -23,6 +23,7 @@ public final class Tunables {
   public static final TunableInteger armScorePositionSensorCounts = new TunableInteger("armScorePositionSensorCounts", 500);
   public static final TunableInteger armVacuumPositionSensorCounts = new TunableInteger("armVacuumPositionSensorCounts", -43000);
   public static final TunableInteger armDrivingPositionSensorCounts = new TunableInteger("armDrivingPositionSensorCounts", 500);
+  public static final TunableInteger armTuckingPositionSensorCounts = new TunableInteger("armTuckingPositionSensorCounts", -17000);
 
   public static final TunableDouble maxArmCurrent = new TunableDouble("maxArmCurrent", 15.0);
   public static final TunableDouble maxArmSeconds = new TunableDouble("maxArmSeconds", 3.0);

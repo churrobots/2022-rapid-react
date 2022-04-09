@@ -11,6 +11,7 @@ import frc.robot.commands.HoldArmForDriving;
 import frc.robot.commands.ScoreBoth;
 import frc.robot.commands.ScoreLeft;
 import frc.robot.commands.ScoreRight;
+import frc.robot.commands.Tuck;
 import frc.robot.commands.UnleashTheUltimateButterDuster;
 import frc.robot.commands.Vacuum;
 import frc.robot.subsystems.Arm;
@@ -88,9 +89,8 @@ public class RobotContainer {
     // Wire up commands to the controllers.
     operatorGamepad.getDualButton(operatorGamepad.startButton, operatorGamepad.backButton)
         .whileHeld(new Calibrating(muscleArm));
-    // operatorGamepad.leftAnalogTrigger.asButton(0.90).whileHeld(new ClimbDown(climber));
-    // operatorGamepad.rightAnalogTrigger.asButton(0.90).whileHeld(new ClimbUp(climber));
     operatorGamepad.bButton.whileHeld(new ClimbDown(climber));
+    operatorGamepad.xButton.whileHeld(new Tuck(muscleArm));
     operatorGamepad.aButton.whileHeld(new ClimbUp(climber));
     operatorGamepad.yButton.whileHeld(new Vacuum(muscleArm, polterLeftGust3000, polterRightGust3000));
     operatorGamepad.leftBumper.whileHeld(new ScoreLeft(muscleArm, polterLeftGust3000));

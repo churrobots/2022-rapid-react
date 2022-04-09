@@ -89,9 +89,9 @@ public class RobotContainer {
     // Wire up commands to the controllers.
     operatorGamepad.getDualButton(operatorGamepad.startButton, operatorGamepad.backButton)
         .whileHeld(new Calibrating(muscleArm));
-    operatorGamepad.bButton.whileHeld(new ClimbDown(climber));
+    operatorGamepad.povDown.whileHeld(new ClimbDown(climber));
     operatorGamepad.xButton.whileHeld(new Tuck(muscleArm));
-    operatorGamepad.aButton.whileHeld(new ClimbUp(climber));
+    operatorGamepad.povUp.whileHeld(new ClimbUp(climber));
     operatorGamepad.yButton.whileHeld(new Vacuum(muscleArm, polterLeftGust3000, polterRightGust3000));
     operatorGamepad.leftBumper.whileHeld(new ScoreLeft(muscleArm, polterLeftGust3000));
     operatorGamepad.rightBumper.whileHeld(new ScoreRight(muscleArm, polterRightGust3000));

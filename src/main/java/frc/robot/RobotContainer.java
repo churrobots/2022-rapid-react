@@ -160,14 +160,16 @@ public class RobotContainer {
       new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
     );
 
-    Trajectory testTrajectory = getTrajectory("paths/test.wpilib.json");
+    Trajectory FirstPart = getTrajectory("pathplanner/generatedJSON/TheBoringOneBallPart1.wpilib.json");
+    Trajectory SecondPart = getTrajectory("pathplanner/generatedJSON/TheBoringOneBallPart2.wpilib.json");
     Command testAutoTrajectory = new SequentialCommandGroup(
-        new AutoResetOdometry(drivetrain, testTrajectory.getInitialPose()),
+        new AutoResetOdometry(drivetrain, FirstPart.getInitialPose()),
         new ParallelCommandGroup(
           new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000),  
-          drivetrain.getTrajectoryCommand(testTrajectory)
+          drivetrain.getTrajectoryCommand(FirstPart)
         ),
         new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
+        drivetrain.getTrajectoryCommand(SecondPart),
         new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
     );
 
@@ -178,6 +180,7 @@ public class RobotContainer {
     autonomousChooser.addOption("Dump only (must start at Hub instead)", dump);
     autonomousChooser.addOption("Backoff only (must start at Hub instead)", backAway);
     autonomousChooser.addOption("DUST YUR BUTTERS", dustAndBackAway);
+    autonomousChooser.addOption("TheClassicOneBallRunAndDump", testAutoTrajectory);
     SmartDashboard.putData(autonomousChooser);
 
     // Show all the subsystems in the smartdashboard.

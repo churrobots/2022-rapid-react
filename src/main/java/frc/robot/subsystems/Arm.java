@@ -92,7 +92,7 @@ public class Arm extends SubsystemBase {
       mostRecentArmSensorCountTarget = sensorCountsFromUp;
     }
   }
-
+ 
   @Override
   public void periodic() {
     calibrateIfNeeded();
@@ -105,11 +105,11 @@ public class Arm extends SubsystemBase {
       configureMotionMagic();
     }
     
-    makeItSafePlease();
+    makeItSafePlease(); //no -Maynor
 
     // Coast when disabled, and also make sure arm freshly moves to the upward position upon enabling
     if (RobotState.isDisabled()) {
-      armMotor.setNeutralMode(NeutralMode.Coast);
+      armMotor.setNeutralMode(NeutralMode.Brake);
       moveToPositionWithMotionMagic(Tunables.armScorePositionSensorCounts.get());
     } else {
       armMotor.setNeutralMode(NeutralMode.Brake);

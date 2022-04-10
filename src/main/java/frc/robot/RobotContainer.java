@@ -116,6 +116,23 @@ public class RobotContainer {
         new WaitCommand(2),
         new AutoDriveWithSensorUnits(drivetrain, 47000, 47000) // get off the tarmac
     );
+
+    Command dustAndScore = new SequentialCommandGroup(
+        new UnleashTheUltimateButterDuster(butterDuster), // DUSTED
+        new AutoResetEncoders(drivetrain),
+        new WaitCommand(2),
+        new AutoDriveWithSensorUnits(drivetrain, 47000, 47000), // get off the tarmac
+        new AutoDriveWithSensorUnits(drivetrain, 0, 0), //go back to tarmac
+        new AutoDriveWithSensorUnits(drivetrain, -516, 15688), //trun toward ball
+        new ParallelCommandGroup(
+          new AutoDriveWithSensorUnits(drivetrain, 29346, 46507), //drive to ball
+          new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000)//Intake the Ball
+        ),
+        new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),//Puts arm up
+        new AutoDriveWithSensorUnits(drivetrain, 8573, 79277), //turn to Hub
+        new AutoDriveWithSensorUnits(drivetrain, 70847, 141684), //drive to hub
+        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
+    );
     Command dumpAndBackAway = new SequentialCommandGroup(
       new AutoResetEncoders(drivetrain),
       new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000),
@@ -186,6 +203,8 @@ public class RobotContainer {
     autonomousChooser.addOption("Dump only (must start at Hub instead)", dump);
     autonomousChooser.addOption("Backoff only (must start at Hub instead)", backAway);
     autonomousChooser.addOption("DUST YUR BUTTERS", dustAndBackAway);
+    autonomousChooser.addOption("DUST YUR BUTTERS AND SCORE A FRESH ONE", dustAndScore);
+
     // autonomousChooser.addOption("TheClassicOneBallRunAndDump", testAutoTrajectory);
     // autonomousChooser.addOption("test trajectory", testTrajectoryCommand2);
     SmartDashboard.putData(autonomousChooser);

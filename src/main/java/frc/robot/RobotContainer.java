@@ -173,6 +173,12 @@ public class RobotContainer {
         new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
     );
 
+    Trajectory trajectory2 = getTrajectory("pathplanner/generatedJSON/LoopTest.wpilib.json");
+    Command testTrajectoryCommand2 = new SequentialCommandGroup(
+      new AutoResetOdometry(drivetrain, trajectory2.getInitialPose()),
+      drivetrain.getTrajectoryCommand(trajectory2)
+    );
+
     autonomousChooser.setDefaultOption("1-ball Auto: Drive, Wait, Dump", waitForTeammate);
     autonomousChooser.addOption("2-ball Auto: From WALL Tarmac", twoBallAutoWallTarmac);
     autonomousChooser.addOption("2-ball Auto: From HANGAR Tarmac", twoBallAutoHangerTarmac);
@@ -181,6 +187,7 @@ public class RobotContainer {
     autonomousChooser.addOption("Backoff only (must start at Hub instead)", backAway);
     autonomousChooser.addOption("DUST YUR BUTTERS", dustAndBackAway);
     // autonomousChooser.addOption("TheClassicOneBallRunAndDump", testAutoTrajectory);
+    // autonomousChooser.addOption("test trajectory", testTrajectoryCommand2);
     SmartDashboard.putData(autonomousChooser);
 
     // Show all the subsystems in the smartdashboard.

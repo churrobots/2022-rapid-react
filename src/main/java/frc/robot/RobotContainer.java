@@ -8,6 +8,7 @@
 package frc.robot;
 
 import frc.robot.commands.HoldArmForDriving;
+import frc.robot.commands.LedCommand;
 import frc.robot.commands.ScoreBoth;
 import frc.robot.commands.ScoreLeft;
 import frc.robot.commands.ScoreRight;
@@ -72,6 +73,7 @@ public class RobotContainer {
   Arm muscleArm = new Arm();
   Climber climber = new Climber();
   ButterDuster butterDuster = new ButterDuster();
+  LedCommand ledCommand = new LedCommand();
 
   // Create the autonomous chooser.
   SendableChooser<Command> autonomousChooser = new SendableChooser<Command>();
@@ -97,6 +99,7 @@ public class RobotContainer {
     operatorGamepad.rightBumper.whileHeld(new ScoreRight(muscleArm, polterRightGust3000));
     operatorGamepad.getDualButton(operatorGamepad.leftBumper, operatorGamepad.rightBumper)
         .whileHeld(new ScoreBoth(muscleArm, polterLeftGust3000, polterRightGust3000));
+    operatorGamepad.aButton.whileHeld(ledCommand);
 
     driverGamepad.rightBumper.whileHeld(new Tuck(muscleArm));
     // TODO: Make sure we raise our arm after climb so we don't hit a partner in front of us

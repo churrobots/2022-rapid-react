@@ -8,7 +8,7 @@
 package frc.robot;
 
 import frc.robot.commands.HoldArmForDriving;
-import frc.robot.commands.LedCommand;
+import frc.robot.commands.LightChaser;
 import frc.robot.commands.ScoreBoth;
 import frc.robot.commands.ScoreLeft;
 import frc.robot.commands.ScoreRight;
@@ -21,6 +21,7 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeLeft;
 import frc.robot.subsystems.IntakeRight;
+import frc.robot.subsystems.TheShow;
 import frc.robot.commands.AutoBackAwayFromHubOffTarmac;
 import frc.robot.commands.AutoDriveToTheHub;
 import frc.robot.commands.AutoDriveWithSensorUnits;
@@ -73,7 +74,7 @@ public class RobotContainer {
   Arm muscleArm = new Arm();
   Climber climber = new Climber();
   ButterDuster butterDuster = new ButterDuster();
-  LedCommand ledCommand = new LedCommand();
+  TheShow theShow = new TheShow();
 
   // Create the autonomous chooser.
   SendableChooser<Command> autonomousChooser = new SendableChooser<Command>();
@@ -87,6 +88,7 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(new DriveWithCurvature(drivetrain, driverGamepad.leftYAxis,
         driverGamepad.rightXAxis));
     muscleArm.setDefaultCommand(new HoldArmForDriving(muscleArm));
+    theShow.setDefaultCommand(new LightChaser(theShow));
 
     // Wire up commands to the controllers.
     operatorGamepad.getDualButton(operatorGamepad.startButton, operatorGamepad.backButton)
@@ -99,7 +101,6 @@ public class RobotContainer {
     operatorGamepad.rightBumper.whileHeld(new ScoreRight(muscleArm, polterRightGust3000));
     operatorGamepad.getDualButton(operatorGamepad.leftBumper, operatorGamepad.rightBumper)
         .whileHeld(new ScoreBoth(muscleArm, polterLeftGust3000, polterRightGust3000));
-    operatorGamepad.aButton.whileHeld(ledCommand);
 
     driverGamepad.rightBumper.whileHeld(new Tuck(muscleArm));
     // TODO: Make sure we raise our arm after climb so we don't hit a partner in front of us

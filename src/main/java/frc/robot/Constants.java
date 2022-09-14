@@ -25,6 +25,7 @@ public final class Constants {
   public static final int rightRollerMotorCAN = 8;
   public static final int falconClimberCAN = 9;
   public static final int butterDusterCAN = 10;
+  public static final int lightsPWM = 9;
 
   public static final boolean leftFalconsAreInverted = false;
   public static final boolean rightFalconsAreInverted = true;

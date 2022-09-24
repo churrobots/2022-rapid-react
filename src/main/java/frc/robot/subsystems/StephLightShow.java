@@ -50,6 +50,16 @@ public class StephLightShow extends SubsystemBase {
     leds.setData(pixels);
   }
 
+  public void fillPercentage(double redPercent, double greenPercent, double bluePercent) {
+    int red = (int) Math.floor(redPercent * 255);
+    int green = (int) Math.floor(greenPercent * 255);
+    int blue = (int) Math.floor(bluePercent * 255);
+    for (int i = 0; i < PIXELS; i++) {
+      pixels.setRGB(i, red, green, blue);
+    }
+    leds.setData(pixels);
+  }
+
   public void setPixels(AddressableLEDBuffer buffer) {
     boolean isError = buffer.getLength() != PIXELS;
     if (isError) {
@@ -60,23 +70,25 @@ public class StephLightShow extends SubsystemBase {
     leds.setData(buffer);
     // }
   }
-  
-  public void setSpeed(double drivetrainSpeed) {
-    if (Math.abs(drivetrainSpeed) < 0.1) {
-      fill(30, 0, 0);
-    }
-   
-    else if (Math.abs(drivetrainSpeed) < 0.8) {
-      fill(30, 20, 0);
 
+
+  
+  public void setSpeed(double drivetrainSpeedPercentage) {
+    double brightness = 1.0;
+    if (Math.abs(drivetrainSpeedPercentage) < 0.1) {
+      fillPercentage(brightness, 0, 0);
     }
-    else if (Math.abs(drivetrainSpeed) < 1.2) {
-      fill(0, 30, 0);
+
+    else if (Math.abs(drivetrainSpeedPercentage) < 0.8) {
+      fillPercentage(brightness, 0.66 * brightness, 0);
+
+    } else if (Math.abs(drivetrainSpeedPercentage) < 1.2) {
+      fillPercentage(0, brightness, 0);
+    } else {
+      fill(brightness, 0.20 * brightness, 0.20 * brightness);
     }
-    else {
-      fill(20, 5, 5);
-    }
-    }
+  }
+  
   @Override
   public void periodic() {
     if (RobotState.isDisabled()) {

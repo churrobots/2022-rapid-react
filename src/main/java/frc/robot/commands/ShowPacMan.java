@@ -9,25 +9,26 @@ package frc.robot.commands;
 
 import frc.robot.helpers.Gamepad.Axis;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.PacManLights;
 import frc.robot.subsystems.StephLightShow;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
  * An example command that uses an example subsystem.
  */
-public class DriveWithCurvature extends CommandBase {
+public class ShowPacMan extends CommandBase {
 
   protected final Drivetrain drivetrainSubsystem;
-  protected final StephLightShow stephLightShow;
+  protected final PacManLights pacManLights;
   protected final Axis leftAxis;
   protected final Axis rightHorizontalAxis;
 
-  public DriveWithCurvature(Drivetrain drivetrainSubsystem, StephLightShow stephLightShow ,Axis leftAxis, Axis rightHorizontalAxis) {
+  public ShowPacMan(Drivetrain drivetrainSubsystem, PacManLights pacManLights ,Axis leftAxis, Axis rightHorizontalAxis) {
     this.drivetrainSubsystem = drivetrainSubsystem;
-    this.stephLightShow = stephLightShow;
+    this.pacManLights = pacManLights;
     this.leftAxis = leftAxis;
     this.rightHorizontalAxis = rightHorizontalAxis;
-    this.addRequirements(this.stephLightShow);
+    this.addRequirements(this.pacManLights);
     this.addRequirements(this.drivetrainSubsystem);
   }
 
@@ -40,7 +41,7 @@ public class DriveWithCurvature extends CommandBase {
     double throttlePercentage = -1 * leftAxis.get() * Math.abs(leftAxis.get());
     double curvaturePercentage = rightHorizontalAxis.get() * Math.abs(rightHorizontalAxis.get());;
     boolean allowSpinning = true;
-    this.stephLightShow.setSpeed(throttlePercentage);
+    this.pacManLights.setSpeed(throttlePercentage);
     this.drivetrainSubsystem.driveWithCurvature(throttlePercentage, curvaturePercentage, allowSpinning);
   }
 

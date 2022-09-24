@@ -12,6 +12,7 @@ import frc.robot.commands.LightChaser;
 import frc.robot.commands.ScoreBoth;
 import frc.robot.commands.ScoreLeft;
 import frc.robot.commands.ScoreRight;
+import frc.robot.commands.ShowPacMan;
 import frc.robot.commands.Tuck;
 import frc.robot.commands.UnleashTheUltimateButterDuster;
 import frc.robot.commands.Vacuum;
@@ -21,7 +22,8 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeLeft;
 import frc.robot.subsystems.IntakeRight;
-import frc.robot.subsystems.TheShow;
+import frc.robot.subsystems.StephLightShow;
+// import frc.robot.subsystems.PacManLights;
 import frc.robot.commands.AutoBackAwayFromHubOffTarmac;
 import frc.robot.commands.AutoDriveToTheHub;
 import frc.robot.commands.AutoDriveWithSensorUnits;
@@ -35,6 +37,7 @@ import frc.robot.commands.Calibrating;
 import frc.robot.commands.ClimbDown;
 import frc.robot.commands.ClimbUp;
 import frc.robot.commands.DriveWithCurvature;
+// import frc.robot.commands.ShowPacMan;
 import frc.robot.helpers.Gamepad;
 
 import java.io.IOException;
@@ -74,7 +77,10 @@ public class RobotContainer {
   Arm muscleArm = new Arm();
   Climber climber = new Climber();
   ButterDuster butterDuster = new ButterDuster();
-  TheShow theShow = new TheShow();
+  //TheShow theShow = new TheShow();
+  StephLightShow stephLightShow = new StephLightShow();
+  // PacManLights pacManLights = new PacManLights();
+
 
   // Create the autonomous chooser.
   SendableChooser<Command> autonomousChooser = new SendableChooser<Command>();
@@ -85,10 +91,10 @@ public class RobotContainer {
     CameraServer.startAutomaticCapture();
 
     // Default commands
-    drivetrain.setDefaultCommand(new DriveWithCurvature(drivetrain, driverGamepad.leftYAxis,
+    drivetrain.setDefaultCommand(new DriveWithCurvature(drivetrain, stephLightShow,driverGamepad.leftYAxis,
         driverGamepad.rightXAxis));
     muscleArm.setDefaultCommand(new HoldArmForDriving(muscleArm));
-    theShow.setDefaultCommand(new LightChaser(theShow));
+    stephLightShow.setDefaultCommand(new LightChaser(stephLightShow));
 
     // Wire up commands to the controllers.
     operatorGamepad.getDualButton(operatorGamepad.startButton, operatorGamepad.backButton)
@@ -200,6 +206,9 @@ public class RobotContainer {
       drivetrain.getTrajectoryCommand(trajectory2)
     );
 
+    // Command showPacManCommand = new ShowPacMan(drivetrain, pacManLights, driverGamepad.leftYAxis,
+    //     driverGamepad.rightXAxis);
+
     autonomousChooser.setDefaultOption("1-ball Auto: Drive, Wait, Dump", waitForTeammate);
     autonomousChooser.addOption("2-ball Auto: From WALL Tarmac", twoBallAutoWallTarmac);
     autonomousChooser.addOption("2-ball Auto: From HANGAR Tarmac", twoBallAutoHangerTarmac);
@@ -208,6 +217,7 @@ public class RobotContainer {
     autonomousChooser.addOption("Backoff only (must start at Hub instead)", backAway);
     autonomousChooser.addOption("DUST YUR BUTTERS", dustAndBackAway);
     autonomousChooser.addOption("DUST YUR BUTTERS AND SCORE A FRESH ONE", dustAndScore);
+    // autonomousChooser.addOption("PAC MAN LIGHTS", showPacManCommand);
 
     // autonomousChooser.addOption("TheClassicOneBallRunAndDump", testAutoTrajectory);
     // autonomousChooser.addOption("test trajectory", testTrajectoryCommand2);

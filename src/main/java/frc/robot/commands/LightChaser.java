@@ -2,17 +2,17 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.TheShow;
+import frc.robot.subsystems.StephLightShow;
 
 public class LightChaser extends CommandBase {
-  TheShow theShow;
+  StephLightShow stephLighShow;
   AddressableLEDBuffer led_Buffer;
   int litLight;
 
-  public LightChaser(TheShow theShow) {
-    this.theShow = theShow;
-    this.led_Buffer = new AddressableLEDBuffer(theShow.getPixelCount());
-    addRequirements(this.theShow);
+  public LightChaser(StephLightShow stephLighShow) {
+    this.stephLighShow = stephLighShow;
+    this.led_Buffer = new AddressableLEDBuffer(stephLighShow.getPixelCount());
+    addRequirements(this.stephLighShow);
   }
 
   @Override
@@ -30,12 +30,12 @@ public class LightChaser extends CommandBase {
     }
    
    
-   theShow.setPixels(led_Buffer);
+   stephLighShow.setPixels(led_Buffer);
   }
 
   @Override
   public void end(boolean interrupted) {
-    theShow.clearPixels();
+    stephLighShow.clearPixels();
   }
 
 

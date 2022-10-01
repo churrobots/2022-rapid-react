@@ -85,7 +85,7 @@ public class StephLightShow extends SubsystemBase {
     } else if (Math.abs(drivetrainSpeedPercentage) < 1.2) {
       fillPercentage(0, brightness, 0);
     } else {
-      fill(brightness, 0.20 * brightness, 0.20 * brightness);
+      fillPercentage(brightness, 0.20 * brightness, 0.20 * brightness);
     }
   }
   

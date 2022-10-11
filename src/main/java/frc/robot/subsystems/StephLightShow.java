@@ -74,25 +74,29 @@ public class StephLightShow extends SubsystemBase {
 
   
   public void setSpeed(double drivetrainSpeedPercentage) {
-    double brightness = 1.0;
     if (Math.abs(drivetrainSpeedPercentage) < 0.1) {
-      fillPercentage(brightness, 0, 0);
+      fillPercentage(5, 0, 0);
     }
-
     else if (Math.abs(drivetrainSpeedPercentage) < 0.8) {
-      fillPercentage(brightness, 0.66 * brightness, 0);
-
+      fillPercentage(5, 5, 0);
     } else if (Math.abs(drivetrainSpeedPercentage) < 1.2) {
-      fillPercentage(0, brightness, 0);
+      fillPercentage(0, 5, 0);
     } else {
-      fillPercentage(brightness, 0.20 * brightness, 0.20 * brightness);
+      fillPercentage(5, 5, 5);
     }
   }
   
   @Override
   public void periodic() {
-    if (RobotState.isDisabled()) {
-      runDefaultLights();
+    if (RobotState.isDisabled() && RobotState.isTeleop()) {
+      runDefaultLights(10,10,10);
+    }
+    else if (RobotState.isAutonomous() && RobotState.isDisabled())
+    {
+      runDefaultLights(10, 0, 10);
+    }
+    else if (RobotState.isAutonomous() && RobotState.isEnabled()) {
+      runDefaultLights(20, 0, 0);
     }
       
 
@@ -100,7 +104,7 @@ public class StephLightShow extends SubsystemBase {
     // }
   }
 
-  private void runDefaultLights() {
-    this.fill(10, 10, 10);
+  private void runDefaultLights(int r, int g, int b) {
+    this.fill(r, g, b);
   }
 }

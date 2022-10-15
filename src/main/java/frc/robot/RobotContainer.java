@@ -133,14 +133,14 @@ public class RobotContainer {
         new WaitCommand(2),
         new AutoDriveWithSensorUnits(drivetrain, 47000, 47000), // get off the tarmac
         new AutoDriveWithSensorUnits(drivetrain, 0, 0), //go back to tarmac
-        new AutoDriveWithSensorUnits(drivetrain, -516, 15688), //trun toward ball
+        new AutoDriveWithSensorUnits(drivetrain, -516 + 200, 15688 + 200), //trun toward ball
         new ParallelCommandGroup(
           new AutoDriveWithSensorUnits(drivetrain, 29346, 46507), //drive to ball
           new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000)//Intake the Ball
         ),
         new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),//Puts arm up
         new AutoDriveWithSensorUnits(drivetrain, 8573, 79277), //turn to Hub
-        new AutoDriveWithSensorUnits(drivetrain, 70847, 141684), //drive to hub
+        new AutoDriveWithSensorUnits(drivetrain, 70847 - 1000, 141684 - 2000), //drive to hub
         new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
     );
     Command dumpAndBackAway = new SequentialCommandGroup(
@@ -200,12 +200,29 @@ public class RobotContainer {
         new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
     );
 
-    Trajectory trajectory2 = getTrajectory("pathplanner/generatedJSON/LoopTest.wpilib.json");
+    Trajectory driveBetweenBalls = getTrajectory("pathplanner/generatedJSON/DriveBetweenBalls.wpilib.json");
+    Trajectory grabFirstBall = getTrajectory("pathplanner/generatedJSON/PickupFirstBall.wpilib.json");
+    Trajectory grabSecondBall = getTrajectory("pathplanner/generatedJSON/PickupSecondBall.wpilib.json");
+    Trajectory scoreSecondBall = getTrajectory("pathplanner/generatedJSON/ScoreTheFreshOnes.wpilib.json");
+
     Command testTrajectoryCommand2 = new SequentialCommandGroup(
-      new AutoResetOdometry(drivetrain, trajectory2.getInitialPose()),
-      drivetrain.getTrajectoryCommand(trajectory2)
+      new AutoResetOdometry(drivetrain, driveBetweenBalls.getInitialPose()),
+      new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000),  
+      drivetrain.getTrajectoryCommand(driveBetweenBalls),
+        new ParallelCommandGroup(
+            drivetrain.getTrajectoryCommand(grabFirstBall),
+            new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000)
+        ),
+        new ParallelCommandGroup(
+            drivetrain.getTrajectoryCommand(grabSecondBall),
+            new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000)
+        ),
+        new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
+        drivetrain.getTrajectoryCommand(scoreSecondBall),
+        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
     );
 
+    
     // Command showPacManCommand = new ShowPacMan(drivetrain, pacManLights, driverGamepad.leftYAxis,
     //     driverGamepad.rightXAxis);
 
@@ -216,8 +233,8 @@ public class RobotContainer {
     autonomousChooser.addOption("Dump only (must start at Hub instead)", dump);
     autonomousChooser.addOption("Backoff only (must start at Hub instead)", backAway);
     autonomousChooser.addOption("DUST YUR BUTTERS", dustAndBackAway);
-    autonomousChooser.addOption("DUST YUR BUTTERS AND SCORE A FRESH ONE", dustAndScore);
     // autonomousChooser.addOption("PAC MAN LIGHTS", showPacManCommand);
+    autonomousChooser.addOption("Three Ball auto!!!!!", testTrajectoryCommand2);
 
     // autonomousChooser.addOption("TheClassicOneBallRunAndDump", testAutoTrajectory);
     // autonomousChooser.addOption("test trajectory", testTrajectoryCommand2);

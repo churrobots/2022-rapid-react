@@ -89,14 +89,14 @@ public class StephLightShow extends SubsystemBase {
   @Override
   public void periodic() {
     if (RobotState.isDisabled() && RobotState.isTeleop()) {
-      runDefaultLights(10,10,10);
+      runDefaultLights(1,1,1);
     }
     else if (RobotState.isAutonomous() && RobotState.isDisabled())
     {
-      runDefaultLights(10, 0, 10);
+      runDefaultLights(1, 0,1 );
     }
     else if (RobotState.isAutonomous() && RobotState.isEnabled()) {
-      runDefaultLights(20, 0, 0);
+      runDefaultLights(1, 0, 0);
     }
       
 

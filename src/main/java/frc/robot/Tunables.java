@@ -12,9 +12,9 @@ public final class Tunables {
   public static final TunableInteger armCruiseVelocityInSensorUnits = new TunableInteger("armCruiseVelocityInSensorUnits", 18000);
   public static final TunableInteger armAccelerationInSensorUnits = new TunableInteger("armAccelerationInSensorUnits", 8000);
 
-  public static final TunableDouble maxDriveVoltage = new TunableDouble("maxDriveVoltage", 0.80);
-  public static final TunableDouble maxDriveAcceleration = new TunableDouble("maxDriveAcceleration", 2.3);
-  public static final TunableDouble maxDriveMetersPerSecond = new TunableDouble("maxDriveMetersPerSecond", 2.0);
+  public static final TunableDouble maxDriveVoltage = new TunableDouble("maxDriveVoltage", 0.83);
+  public static final TunableDouble maxDriveAcceleration = new TunableDouble("maxDriveAcceleration", 2.4);
+  public static final TunableDouble maxDriveMetersPerSecond = new TunableDouble("maxDriveMetersPerSecond", 2.3);
 
   public static final TunableBoolean driveWithMetersPerSecond = new TunableBoolean("driveWithMetersPerSecond", true);
 

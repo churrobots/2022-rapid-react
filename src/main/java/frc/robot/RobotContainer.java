@@ -222,7 +222,52 @@ public class RobotContainer {
         new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
     );
 
-    
+    Trajectory moveToBall = getTrajectory("pathplanner/generatedJSON/AfterTheDust.wpilib.json");
+    Trajectory scoreBall = getTrajectory("pathplanner/generatedJSON/ScoreAfterDust.wpilib.json");
+
+    Command scoreAfterDust = new SequentialCommandGroup(
+        new AutoResetOdometry(drivetrain, moveToBall.getInitialPose()),
+        new UnleashTheUltimateButterDuster(butterDuster),
+        new AutoResetEncoders(drivetrain),
+        new WaitCommand(1),
+        new ParallelCommandGroup(
+          drivetrain.getTrajectoryCommand(moveToBall),
+          new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000)
+        ),
+        new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
+        drivetrain.getTrajectoryCommand(scoreBall),
+        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
+    );
+
+    Trajectory scorePreLoad = getTrajectory("pathplanner/generatedJSON/ScorePreLoadDust.wpilib.json");
+    Command scorePreLoadAfterDust = new SequentialCommandGroup(
+      new AutoResetOdometry(drivetrain, scorePreLoad.getInitialPose()),
+      new UnleashTheUltimateButterDuster(butterDuster),
+      new AutoResetEncoders(drivetrain),
+      new WaitCommand(1),
+      drivetrain.getTrajectoryCommand(scorePreLoad),
+      new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
+    );
+
+    Trajectory taxiOut = getTrajectory("pathplanner/generatedJSON/TaxiOut.wpilib.json");
+    Trajectory taxiDump = getTrajectory("pathplanner/generatedJSON/TaxiToDump.wpilib.json");
+
+    Command taxiWaitDump = new SequentialCommandGroup(
+        new AutoResetOdometry(drivetrain, taxiOut.getInitialPose()),
+        drivetrain.getTrajectoryCommand(taxiOut),
+        new WaitCommand(6),
+        drivetrain.getTrajectoryCommand(taxiDump),
+        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
+    );
+
+    Trajectory dumpTax = getTrajectory("pathplanner/generatedJSON/DumpToTaxi.wpilib.json");
+    Command dumpTaxi = new SequentialCommandGroup(
+        new AutoResetOdometry(drivetrain, dumpTax.getInitialPose()),
+        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000),
+        new WaitCommand(7),
+        drivetrain.getTrajectoryCommand(dumpTax)
+            );
+
     // Command showPacManCommand = new ShowPacMan(drivetrain, pacManLights, driverGamepad.leftYAxis,
     //     driverGamepad.rightXAxis);
 
@@ -234,7 +279,14 @@ public class RobotContainer {
     autonomousChooser.addOption("Backoff only (must start at Hub instead)", backAway);
     autonomousChooser.addOption("DUST YUR BUTTERS", dustAndBackAway);
     // autonomousChooser.addOption("PAC MAN LIGHTS", showPacManCommand);
-    autonomousChooser.addOption("Three Ball auto!!!!!", testTrajectoryCommand2);
+    // autonomousChooser.addOption("Three Ball auto(Trajectory)", testTrajectoryCommand2);
+    autonomousChooser.addOption("Dust and Score Preload (Trajectory)", scorePreLoadAfterDust);
+    autonomousChooser.addOption("Dust and Yoink Ball (Trajectory)", scoreAfterDust);
+    autonomousChooser.addOption("Taxi, Wait, Dump (Trajectory)", taxiWaitDump);
+    autonomousChooser.addOption("Dump, Taxi, Done (Trajectory)", dumpTaxi);
+
+
+
 
     // autonomousChooser.addOption("TheClassicOneBallRunAndDump", testAutoTrajectory);
     // autonomousChooser.addOption("test trajectory", testTrajectoryCommand2);

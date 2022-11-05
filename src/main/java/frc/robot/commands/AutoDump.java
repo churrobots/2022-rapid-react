@@ -41,8 +41,8 @@ public class AutoDump extends CommandBase {
   @Override
   public void execute() {
     armSubsystem.moveToPositionWithMotionMagic(Tunables.armScorePositionSensorCounts.get());
-    leftway.leftejection();
-    rightWay.rightejection();
+      leftway.leftejection();
+      rightWay.rightejection();
   }
     
   // Called once the command ends or is interrupted.

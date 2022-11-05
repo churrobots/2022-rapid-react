@@ -75,12 +75,12 @@ public class StephLightShow extends SubsystemBase {
   
   public void setSpeed(double drivetrainSpeedPercentage) {
     if (Math.abs(drivetrainSpeedPercentage) < 0.1) {
-      fillPercentage(1, 0, 0);
+      runDefaultLights(1, 0, 0);
     }
     else if (Math.abs(drivetrainSpeedPercentage) < 0.8) {
-      fillPercentage(1, 1, 0);
+      runDefaultLights(1, 1, 0);
     } else if (Math.abs(drivetrainSpeedPercentage) < 1.2) {
-      fillPercentage(0, 1, 0);
+      runDefaultLights(0, 1, 1);
     }
   }
   

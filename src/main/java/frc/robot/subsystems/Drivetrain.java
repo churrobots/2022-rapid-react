@@ -9,23 +9,18 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -61,7 +56,6 @@ public class Drivetrain extends SubsystemBase {
   private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
       Units.inchesToMeters(Constants.trackWidthInInches));
 
-  private final DifferentialDriveOdometry odometry;
   private Field2d field = new Field2d();
 
   private final DifferentialDrive differentialDrive = new DifferentialDrive(leftLeader, rightLeader);
@@ -97,8 +91,8 @@ public class Drivetrain extends SubsystemBase {
     pigeonGyro.reset();
 
     Pose2d initialPosition = new Pose2d(0.0, 0.0, getHeadingInRotation2d());
-    odometry = new DifferentialDriveOdometry(getHeadingInRotation2d());
-    resetOdometry(initialPosition);
+    // odometry = new DifferentialDriveOdometry(null,
+    // mostRecentLeftSensorCountTarget, mostRecentLeftSensorCountTarget);
   }
 
   private DifferentialDriveWheelSpeeds getWheelSpeeds() {
@@ -116,11 +110,6 @@ public class Drivetrain extends SubsystemBase {
     rightLeader.setSelectedSensorPosition(0);
     leftLeader.stopMotor();
     rightLeader.stopMotor();
-  }
-
-  public void resetOdometry(Pose2d pose) {
-    resetEncoders();
-    odometry.resetPosition(pose, getHeadingInRotation2d());
   }
 
   public double getPitch() {
@@ -183,18 +172,8 @@ public class Drivetrain extends SubsystemBase {
       rightLeader.setNeutralMode(NeutralMode.Brake);
     }
 
-    // Update odometry
-    Rotation2d heading = getHeadingInRotation2d();
-    double leftDistanceInMeters = convertSensorCountsToDistanceInMeters(leftLeader.getSelectedSensorPosition());
-    double rightDistanceInMeters = convertSensorCountsToDistanceInMeters(rightLeader.getSelectedSensorPosition());
-    odometry.update(heading, leftDistanceInMeters, rightDistanceInMeters);
-
     // Show debug information in NetworkTables
-    Pose2d pose = odometry.getPoseMeters();
-    field.setRobotPose(pose);
-    inspector.set("rotation", pose.getRotation().getDegrees());
-    inspector.set("x", pose.getX());
-    inspector.set("y", pose.getY());
+
     inspector.set("roll", pigeonGyro.getRoll());
     inspector.set("pitch", pigeonGyro.getPitch());
     inspector.set("leftVoltage", leftLeader.getMotorOutputVoltage());
@@ -202,10 +181,6 @@ public class Drivetrain extends SubsystemBase {
     inspector.set("leftSensor", leftLeader.getSelectedSensorPosition());
     inspector.set("rightSensor", rightLeader.getSelectedSensorPosition());
     inspector.set("isDoneWithMotionMagic", isDoneWithMotionMagic());
-  }
-
-  public Pose2d getPose() {
-    return odometry.getPoseMeters();
   }
 
   public void stopDriving() {
@@ -230,25 +205,6 @@ public class Drivetrain extends SubsystemBase {
     double wheelRotations = motorRotations / Constants.driveGearRatio;
     double inchesOfRotation = wheelRotations * 2 * Math.PI * Constants.driveWheelRadiusInInches;
     return Units.inchesToMeters(inchesOfRotation);
-  }
-
-  public Command getTrajectoryCommand(Trajectory trajectory) {
-
-    RamseteCommand ramseteCommand = new RamseteCommand(
-        trajectory,
-        this::getPose,
-        new RamseteController(),
-        feedforward,
-        kinematics,
-        this::getWheelSpeeds,
-        leftPIDController,
-        rightPIDController,
-        // RamseteCommand passes volts to the callback
-        this::tankDriveVolts,
-        this);
-
-    // Run path following command, then stop at the end.
-    return ramseteCommand.andThen(() -> this.tankDriveVolts(0, 0));
   }
 
   private void configureMotionMagic(WPI_TalonFX motor) {

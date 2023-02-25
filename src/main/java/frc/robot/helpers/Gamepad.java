@@ -1,8 +1,26 @@
 package frc.robot.helpers;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 public class Gamepad {
+
+  public final JoystickButton aButton;
+  public final JoystickButton bButton;
+  public final JoystickButton xButton;
+  public final JoystickButton yButton;
+
+  public final POVButton povUp;
+  public final POVButton povDown;
+  public final POVButton povLeft;
+  public final POVButton povRight;
+
+  public final JoystickButton backButton;
+  public final JoystickButton startButton;
+
+  public final JoystickButton leftBumper;
+  public final JoystickButton rightBumper;
 
   public final Axis leftYAxis;
   public final Axis leftXAxis;
@@ -19,6 +37,22 @@ public class Gamepad {
     // TODO: allow different gamepad types
     // if (gamepadType == "LogitechF310") {
 
+    aButton = new JoystickButton(gamepad, 1);
+    bButton = new JoystickButton(gamepad, 2);
+    xButton = new JoystickButton(gamepad, 3);
+    yButton = new JoystickButton(gamepad, 4);
+
+    backButton = new JoystickButton(gamepad, 7);
+    startButton = new JoystickButton(gamepad, 8);
+
+    povUp = new POVButton(gamepad, 0);
+    povDown = new POVButton(gamepad, 180);
+    povLeft = new POVButton(gamepad, 270);
+    povRight = new POVButton(gamepad, 90);
+
+    leftBumper = new JoystickButton(gamepad, 5);
+    rightBumper = new JoystickButton(gamepad, 6);
+
     leftXAxis = new Axis(gamepad, 0);
     leftYAxis = new Axis(gamepad, 1);
     rightXAxis = new Axis(gamepad, 4);
@@ -33,8 +67,6 @@ public class Gamepad {
 
   }
 
-  // We found this suggestion from the forums:
-  // https://www.chiefdelphi.com/t/can-you-bind-a-command-to-only-activate-when-2-buttons-are-held/347368/4
   public static class Axis {
 
     private Joystick _gamepad;

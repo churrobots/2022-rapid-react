@@ -7,8 +7,10 @@
 
 package frc.robot.commands;
 
+import frc.robot.helpers.Gamepad;
 import frc.robot.helpers.Gamepad.Axis;
 import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
@@ -17,14 +19,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class DriveWithCurvature extends CommandBase {
 
   protected final Drivetrain drivetrainSubsystem;
-  protected final Axis leftAxis;
-  protected final Axis rightHorizontalAxis;
+  protected final Gamepad controller;
 
-  public DriveWithCurvature(Drivetrain drivetrainSubsystem, Axis leftAxis,
-      Axis rightHorizontalAxis) {
+  public DriveWithCurvature(Drivetrain drivetrainSubsystem, Gamepad controller) {
     this.drivetrainSubsystem = drivetrainSubsystem;
-    this.leftAxis = leftAxis;
-    this.rightHorizontalAxis = rightHorizontalAxis;
+    this.controller = controller;
     this.addRequirements(this.drivetrainSubsystem);
   }
 
@@ -34,8 +33,8 @@ public class DriveWithCurvature extends CommandBase {
 
   @Override
   public void execute() {
-    double throttlePercentage = -1 * leftAxis.get() * Math.abs(leftAxis.get());
-    double curvaturePercentage = rightHorizontalAxis.get() * Math.abs(rightHorizontalAxis.get());
+    double throttlePercentage = -1 * controller.leftXAxis.get() * Math.abs(controller.leftXAxis.get());
+    double curvaturePercentage = controller.rightXAxis.get() * Math.abs(controller.rightXAxis.get());
     ;
     boolean allowSpinning = true;
     this.drivetrainSubsystem.driveWithCurvature(throttlePercentage, curvaturePercentage, allowSpinning);

@@ -31,39 +31,40 @@ public class Gamepad {
   public final Axis rightAnalogTrigger;
   // TODO: add other axes and buttons
 
-  public Gamepad(int driverStationPort)  {
+  public Gamepad(int driverStationPort) {
 
     Joystick gamepad = new Joystick(driverStationPort);
 
     // TODO: allow different gamepad types
     // if (gamepadType == "LogitechF310") {
 
-      aButton = new JoystickButton(gamepad, 1);
-      bButton = new JoystickButton(gamepad, 2);
-      xButton = new JoystickButton(gamepad, 3);
-      yButton = new JoystickButton(gamepad, 4);
+    aButton = new JoystickButton(gamepad, 1);
+    bButton = new JoystickButton(gamepad, 2);
+    xButton = new JoystickButton(gamepad, 3);
+    yButton = new JoystickButton(gamepad, 4);
 
-      backButton = new JoystickButton(gamepad, 7);
-      startButton = new JoystickButton(gamepad, 8);
+    backButton = new JoystickButton(gamepad, 7);
+    startButton = new JoystickButton(gamepad, 8);
 
-      povUp = new POVButton(gamepad, 0);
-      povDown = new POVButton(gamepad, 180);
-      povLeft = new POVButton(gamepad, 270);
-      povRight = new POVButton(gamepad, 90);
+    povUp = new POVButton(gamepad, 0);
+    povDown = new POVButton(gamepad, 180);
+    povLeft = new POVButton(gamepad, 270);
+    povRight = new POVButton(gamepad, 90);
 
-      leftBumper = new JoystickButton(gamepad, 5);
-      rightBumper = new JoystickButton(gamepad, 6);
+    leftBumper = new JoystickButton(gamepad, 5);
+    rightBumper = new JoystickButton(gamepad, 6);
 
-      leftXAxis = new Axis(gamepad, 0);
-      leftYAxis = new Axis(gamepad, 1);
-      rightXAxis = new Axis(gamepad, 4);
-      rightYAxis = new Axis(gamepad, 5);
+    leftXAxis = new Axis(gamepad, 0);
+    leftYAxis = new Axis(gamepad, 1);
+    rightXAxis = new Axis(gamepad, 4);
+    rightYAxis = new Axis(gamepad, 5);
 
-      leftAnalogTrigger = new Axis(gamepad, 2);
-      rightAnalogTrigger = new Axis(gamepad, 3);
+    leftAnalogTrigger = new Axis(gamepad, 2);
+    rightAnalogTrigger = new Axis(gamepad, 3);
     // }
 
-    // throw new InvalidGamepadTypeException(String.format("'%s' is not a recognized gamepad type", gamepadType));
+    // throw new InvalidGamepadTypeException(String.format("'%s' is not a recognized
+    // gamepad type", gamepadType));
 
   }
 

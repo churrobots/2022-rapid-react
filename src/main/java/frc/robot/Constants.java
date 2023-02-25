@@ -8,8 +8,10 @@
 package frc.robot;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. Do not put anything functional here.
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean
+ * constants. This class should not be used for any other purpose. Do not put
+ * anything functional here.
  */
 public final class Constants {
 
@@ -21,7 +23,7 @@ public final class Constants {
   public static final int falconFrontRightCAN = 3;
   public static final int pigeonCAN = 5;
   public static final int falconArmCAN = 6;
-  public static final int leftRollerMotorCAN= 7;
+  public static final int leftRollerMotorCAN = 7;
   public static final int rightRollerMotorCAN = 8;
   public static final int falconClimberCAN = 9;
   public static final int butterDusterCAN = 10;
@@ -39,20 +41,20 @@ public final class Constants {
 
   public static final int armSensorDIO = 9;
 
-  // The Falcon 500s have a Talon FX Integrated sensor, which is rated for 2048 units per rotation:
+  // The Falcon 500s have a Talon FX Integrated sensor, which is rated for 2048
+  // units per rotation:
   // https://docs.ctre-phoenix.com/en/latest/ch14_MCSensor.html#sensor-resolution
   public static final int sensorUnitsPerRevolution = 2048;
   public static final double driveWheelRadiusInInches = 3;
   public static final double drivetrainNeutralDeadbandPercentage = 0.08;
   public static final double armCalibrationSpeedPercentage = 0.15;
 
-
   // From the System Identification for Connie
   // public static final double trackWidthInInches = 19.0;
   // public static final double driveGearRatio = 7.31;
-  // public static final double kS = .70274; 
+  // public static final double kS = .70274;
   // public static final double kV = 1.578;
-  // public static final double kA = 0.17267; 
+  // public static final double kA = 0.17267;
   // public static final double kP = 2.4936;
   // public static final double kD = 0.0;
 

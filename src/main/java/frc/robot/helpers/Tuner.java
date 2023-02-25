@@ -38,6 +38,7 @@ public final class Tuner {
     protected void _syncDefault() {
       entry.setBoolean(defaultValue);
     }
+
     public Boolean get() {
       return entry.getBoolean(defaultValue);
     }
@@ -48,10 +49,10 @@ public final class Tuner {
       super(name, d);
     }
 
-
     protected void _syncDefault() {
       entry.setDouble(defaultValue);
     }
+
     public Double get() {
       return entry.getDouble(defaultValue);
     }
@@ -65,6 +66,7 @@ public final class Tuner {
     protected void _syncDefault() {
       entry.setDouble(defaultValue);
     }
+
     public Integer get() {
       return (int) Math.floor(entry.getDouble(defaultValue));
     }

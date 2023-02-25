@@ -67,7 +67,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 public class RobotContainer {
 
   // Connect to all the inputs (gamepads and shuffleboard).
-  Gamepad driverGamepad = new Gamepad(Constants.driverGamepadPort); 
+  Gamepad driverGamepad = new Gamepad(Constants.driverGamepadPort);
   Gamepad operatorGamepad = new Gamepad(Constants.operatorGamepadPort);
 
   // Connect to all the outputs.
@@ -77,10 +77,9 @@ public class RobotContainer {
   Arm muscleArm = new Arm();
   Climber climber = new Climber();
   ButterDuster butterDuster = new ButterDuster();
-  //TheShow theShow = new TheShow();
+  // TheShow theShow = new TheShow();
   StephLightShow stephLightShow = new StephLightShow();
   // PacManLights pacManLights = new PacManLights();
-
 
   // Create the autonomous chooser.
   SendableChooser<Command> autonomousChooser = new SendableChooser<Command>();
@@ -91,7 +90,7 @@ public class RobotContainer {
     CameraServer.startAutomaticCapture();
 
     // Default commands
-    drivetrain.setDefaultCommand(new DriveWithCurvature(drivetrain, stephLightShow,driverGamepad.leftYAxis,
+    drivetrain.setDefaultCommand(new DriveWithCurvature(drivetrain, stephLightShow, driverGamepad.leftYAxis,
         driverGamepad.rightXAxis));
     muscleArm.setDefaultCommand(new HoldArmForDriving(muscleArm));
     stephLightShow.setDefaultCommand(new LightChaser(stephLightShow));
@@ -109,17 +108,16 @@ public class RobotContainer {
         .whileHeld(new ScoreBoth(muscleArm, polterLeftGust3000, polterRightGust3000));
 
     driverGamepad.rightBumper.whileHeld(new Tuck(muscleArm));
-    // TODO: Make sure we raise our arm after climb so we don't hit a partner in front of us
+    // TODO: Make sure we raise our arm after climb so we don't hit a partner in
+    // front of us
 
     // Set the options for autonomous.
     Command dump = new SequentialCommandGroup(
-      new AutoResetEncoders(drivetrain),
-      new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
-    );
+        new AutoResetEncoders(drivetrain),
+        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000));
     Command backAway = new SequentialCommandGroup(
-      new AutoResetEncoders(drivetrain),
-      new AutoBackAwayFromHubOffTarmac(drivetrain)
-    );
+        new AutoResetEncoders(drivetrain),
+        new AutoBackAwayFromHubOffTarmac(drivetrain));
     Command dustAndBackAway = new SequentialCommandGroup(
         new UnleashTheUltimateButterDuster(butterDuster), // DUSTED
         new AutoResetEncoders(drivetrain),
@@ -132,32 +130,28 @@ public class RobotContainer {
         new AutoResetEncoders(drivetrain),
         new WaitCommand(2),
         new AutoDriveWithSensorUnits(drivetrain, 47000, 47000), // get off the tarmac
-        new AutoDriveWithSensorUnits(drivetrain, 0, 0), //go back to tarmac
-        new AutoDriveWithSensorUnits(drivetrain, -516 + 200, 15688 + 200), //trun toward ball
+        new AutoDriveWithSensorUnits(drivetrain, 0, 0), // go back to tarmac
+        new AutoDriveWithSensorUnits(drivetrain, -516 + 200, 15688 + 200), // trun toward ball
         new ParallelCommandGroup(
-          new AutoDriveWithSensorUnits(drivetrain, 29346, 46507), //drive to ball
-          new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000)//Intake the Ball
+            new AutoDriveWithSensorUnits(drivetrain, 29346, 46507), // drive to ball
+            new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000)// Intake the Ball
         ),
-        new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),//Puts arm up
-        new AutoDriveWithSensorUnits(drivetrain, 8573, 79277), //turn to Hub
-        new AutoDriveWithSensorUnits(drivetrain, 70847 - 1000, 141684 - 2000), //drive to hub
-        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
-    );
+        new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000), // Puts arm up
+        new AutoDriveWithSensorUnits(drivetrain, 8573, 79277), // turn to Hub
+        new AutoDriveWithSensorUnits(drivetrain, 70847 - 1000, 141684 - 2000), // drive to hub
+        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000));
     Command dumpAndBackAway = new SequentialCommandGroup(
-      new AutoResetEncoders(drivetrain),
-      new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000),
-      new AutoBackAwayFromHubOffTarmac(drivetrain)
-    );
+        new AutoResetEncoders(drivetrain),
+        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000),
+        new AutoBackAwayFromHubOffTarmac(drivetrain));
     Command waitForTeammate = new SequentialCommandGroup(
         new AutoResetEncoders(drivetrain),
         new AutoBackOutOfEdgeOfTarmac(drivetrain),
         new WaitCommand(3),
         new ParallelRaceGroup(
-          new WaitCommand(4),
-          new AutoDriveToTheHub(drivetrain)
-        ),
-        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
-    );
+            new WaitCommand(4),
+            new AutoDriveToTheHub(drivetrain)),
+        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000));
     Command twoBallAutoWallTarmac = new SequentialCommandGroup(
         new AutoResetEncoders(drivetrain),
         new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000), // drop arm and start intaking
@@ -167,38 +161,32 @@ public class RobotContainer {
         new AutoDriveWithSensorUnits(drivetrain, 28000, 28000), // move back to prevent bumper crash
         new AutoDriveWithSensorUnits(drivetrain, 1924, 62000), // Sonic spin
         new ParallelRaceGroup(
-          new WaitCommand(4),
-          new AutoDriveWithSensorUnits(drivetrain, 50000, 118148)
-        ),
-        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
-    );
+            new WaitCommand(4),
+            new AutoDriveWithSensorUnits(drivetrain, 50000, 118148)),
+        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000));
     Command twoBallAutoHangerTarmac = new SequentialCommandGroup(
-      new AutoResetEncoders(drivetrain),
-      new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000), // drop arm and start intaking
-      new AutoDriveWithSensorUnits(drivetrain, 32000, 32000), // drive to pickup
-      new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000), // pull arm up
-      new AutoDriveWithSensorUnits(drivetrain, 45000, 45000), // get off the tarmac
-      new AutoDriveWithSensorUnits(drivetrain, 28000, 28000), // move back to prevent bumper crash
-      new AutoDriveWithSensorUnits(drivetrain, 62000, 1924), // Sonic spin
-      new ParallelRaceGroup(
-        new WaitCommand(4),
-        new AutoDriveWithSensorUnits(drivetrain, 118148, 50000)
-      ),
-      new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
-    );
+        new AutoResetEncoders(drivetrain),
+        new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000), // drop arm and start intaking
+        new AutoDriveWithSensorUnits(drivetrain, 32000, 32000), // drive to pickup
+        new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000), // pull arm up
+        new AutoDriveWithSensorUnits(drivetrain, 45000, 45000), // get off the tarmac
+        new AutoDriveWithSensorUnits(drivetrain, 28000, 28000), // move back to prevent bumper crash
+        new AutoDriveWithSensorUnits(drivetrain, 62000, 1924), // Sonic spin
+        new ParallelRaceGroup(
+            new WaitCommand(4),
+            new AutoDriveWithSensorUnits(drivetrain, 118148, 50000)),
+        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000));
 
     Trajectory FirstPart = getTrajectory("pathplanner/generatedJSON/TheBoringOneBallPart1.wpilib.json");
     Trajectory SecondPart = getTrajectory("pathplanner/generatedJSON/TheBoringOneBallPart2.wpilib.json");
     Command testAutoTrajectory = new SequentialCommandGroup(
         new AutoResetOdometry(drivetrain, FirstPart.getInitialPose()),
         new ParallelCommandGroup(
-          new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000),  
-          drivetrain.getTrajectoryCommand(FirstPart)
-        ),
+            new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000),
+            drivetrain.getTrajectoryCommand(FirstPart)),
         new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
         drivetrain.getTrajectoryCommand(SecondPart),
-        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
-    );
+        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000));
 
     Trajectory driveBetweenBalls = getTrajectory("pathplanner/generatedJSON/DriveBetweenBalls.wpilib.json");
     Trajectory grabFirstBall = getTrajectory("pathplanner/generatedJSON/PickupFirstBall.wpilib.json");
@@ -206,21 +194,18 @@ public class RobotContainer {
     Trajectory scoreSecondBall = getTrajectory("pathplanner/generatedJSON/ScoreTheFreshOnes.wpilib.json");
 
     Command testTrajectoryCommand2 = new SequentialCommandGroup(
-      new AutoResetOdometry(drivetrain, driveBetweenBalls.getInitialPose()),
-      new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000),  
-      drivetrain.getTrajectoryCommand(driveBetweenBalls),
+        new AutoResetOdometry(drivetrain, driveBetweenBalls.getInitialPose()),
+        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000),
+        drivetrain.getTrajectoryCommand(driveBetweenBalls),
         new ParallelCommandGroup(
             drivetrain.getTrajectoryCommand(grabFirstBall),
-            new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000)
-        ),
+            new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000)),
         new ParallelCommandGroup(
             drivetrain.getTrajectoryCommand(grabSecondBall),
-            new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000)
-        ),
+            new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000)),
         new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
         drivetrain.getTrajectoryCommand(scoreSecondBall),
-        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
-    );
+        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000));
 
     Trajectory moveToBall = getTrajectory("pathplanner/generatedJSON/AfterTheDust.wpilib.json");
     Trajectory scoreBall = getTrajectory("pathplanner/generatedJSON/ScoreAfterDust.wpilib.json");
@@ -231,23 +216,20 @@ public class RobotContainer {
         new AutoResetEncoders(drivetrain),
         new WaitCommand(1),
         new ParallelCommandGroup(
-          drivetrain.getTrajectoryCommand(moveToBall),
-          new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000)
-        ),
+            drivetrain.getTrajectoryCommand(moveToBall),
+            new AutoVacuum(muscleArm, polterLeftGust3000, polterRightGust3000)),
         new AutoReadyToScore(muscleArm, polterLeftGust3000, polterRightGust3000),
         drivetrain.getTrajectoryCommand(scoreBall),
-        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
-    );
+        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000));
 
     Trajectory scorePreLoad = getTrajectory("pathplanner/generatedJSON/ScorePreLoadDust.wpilib.json");
     Command scorePreLoadAfterDust = new SequentialCommandGroup(
-      new AutoResetOdometry(drivetrain, scorePreLoad.getInitialPose()),
-      new UnleashTheUltimateButterDuster(butterDuster),
-      new AutoResetEncoders(drivetrain),
-      new WaitCommand(1),
-      drivetrain.getTrajectoryCommand(scorePreLoad),
-      new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
-    );
+        new AutoResetOdometry(drivetrain, scorePreLoad.getInitialPose()),
+        new UnleashTheUltimateButterDuster(butterDuster),
+        new AutoResetEncoders(drivetrain),
+        new WaitCommand(1),
+        drivetrain.getTrajectoryCommand(scorePreLoad),
+        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000));
 
     Trajectory taxiOut = getTrajectory("pathplanner/generatedJSON/TaxiOut.wpilib.json");
     Trajectory taxiDump = getTrajectory("pathplanner/generatedJSON/TaxiToDump.wpilib.json");
@@ -257,19 +239,18 @@ public class RobotContainer {
         drivetrain.getTrajectoryCommand(taxiOut),
         new WaitCommand(6),
         drivetrain.getTrajectoryCommand(taxiDump),
-        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000)
-    );
+        new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000));
 
     Trajectory dumpTax = getTrajectory("pathplanner/generatedJSON/DumpToTaxi.wpilib.json");
     Command dumpTaxi = new SequentialCommandGroup(
         new AutoResetOdometry(drivetrain, dumpTax.getInitialPose()),
         new AutoDump(muscleArm, polterLeftGust3000, polterRightGust3000),
         new WaitCommand(7),
-        drivetrain.getTrajectoryCommand(dumpTax)
-            );
+        drivetrain.getTrajectoryCommand(dumpTax));
 
-    // Command showPacManCommand = new ShowPacMan(drivetrain, pacManLights, driverGamepad.leftYAxis,
-    //     driverGamepad.rightXAxis);
+    // Command showPacManCommand = new ShowPacMan(drivetrain, pacManLights,
+    // driverGamepad.leftYAxis,
+    // driverGamepad.rightXAxis);
 
     autonomousChooser.setDefaultOption("1-ball Auto: Drive, Wait, Dump", waitForTeammate);
     autonomousChooser.addOption("2-ball Auto: From WALL Tarmac", twoBallAutoWallTarmac);
@@ -279,16 +260,15 @@ public class RobotContainer {
     autonomousChooser.addOption("Backoff only (must start at Hub instead)", backAway);
     autonomousChooser.addOption("DUST YUR BUTTERS", dustAndBackAway);
     // autonomousChooser.addOption("PAC MAN LIGHTS", showPacManCommand);
-    // autonomousChooser.addOption("Three Ball auto(Trajectory)", testTrajectoryCommand2);
+    // autonomousChooser.addOption("Three Ball auto(Trajectory)",
+    // testTrajectoryCommand2);
     autonomousChooser.addOption("Dust and Score Preload (Trajectory)", scorePreLoadAfterDust);
     autonomousChooser.addOption("Dust and Yoink Ball (Trajectory)", scoreAfterDust);
     autonomousChooser.addOption("Taxi, Wait, Dump (Trajectory)", taxiWaitDump);
     autonomousChooser.addOption("Dump, Taxi, Done (Trajectory)", dumpTaxi);
 
-
-
-
-    // autonomousChooser.addOption("TheClassicOneBallRunAndDump", testAutoTrajectory);
+    // autonomousChooser.addOption("TheClassicOneBallRunAndDump",
+    // testAutoTrajectory);
     // autonomousChooser.addOption("test trajectory", testTrajectoryCommand2);
     SmartDashboard.putData(autonomousChooser);
 

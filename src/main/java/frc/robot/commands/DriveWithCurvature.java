@@ -22,7 +22,8 @@ public class DriveWithCurvature extends CommandBase {
   protected final Axis leftAxis;
   protected final Axis rightHorizontalAxis;
 
-  public DriveWithCurvature(Drivetrain drivetrainSubsystem, StephLightShow stephLightShow ,Axis leftAxis, Axis rightHorizontalAxis) {
+  public DriveWithCurvature(Drivetrain drivetrainSubsystem, StephLightShow stephLightShow, Axis leftAxis,
+      Axis rightHorizontalAxis) {
     this.drivetrainSubsystem = drivetrainSubsystem;
     this.stephLightShow = stephLightShow;
     this.leftAxis = leftAxis;
@@ -38,7 +39,8 @@ public class DriveWithCurvature extends CommandBase {
   @Override
   public void execute() {
     double throttlePercentage = -1 * leftAxis.get() * Math.abs(leftAxis.get());
-    double curvaturePercentage = rightHorizontalAxis.get() * Math.abs(rightHorizontalAxis.get());;
+    double curvaturePercentage = rightHorizontalAxis.get() * Math.abs(rightHorizontalAxis.get());
+    ;
     boolean allowSpinning = true;
     this.stephLightShow.setSpeed(throttlePercentage);
     this.drivetrainSubsystem.driveWithCurvature(throttlePercentage, curvaturePercentage, allowSpinning);

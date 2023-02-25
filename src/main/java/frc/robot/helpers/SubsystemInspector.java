@@ -29,7 +29,8 @@ public class SubsystemInspector {
   }
 
   public void set(String name, Double value) {
-    boolean differenceIsSignificantEnoughToUpdateEntry = Math.abs(value - _getEntry(name).getDouble(Double.MAX_VALUE)) > 0.01;
+    boolean differenceIsSignificantEnoughToUpdateEntry = Math
+        .abs(value - _getEntry(name).getDouble(Double.MAX_VALUE)) > 0.01;
     if (differenceIsSignificantEnoughToUpdateEntry) {
       _getEntry(name).setDouble(value);
     }

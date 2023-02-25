@@ -56,12 +56,13 @@ public class Drivetrain extends SubsystemBase {
 
   private final PIDController leftPIDController = new PIDController(Constants.kP, 0, Constants.kD);
   private final PIDController rightPIDController = new PIDController(Constants.kP, 0, Constants.kD);
-  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.kS, Constants.kV, Constants.kA);
+  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.kS, Constants.kV,
+      Constants.kA);
   private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
       Units.inchesToMeters(Constants.trackWidthInInches));
 
   private final DifferentialDriveOdometry odometry;
-  private final Field2d field = new Field2d();
+  private Field2d field = new Field2d();
 
   private final DifferentialDrive differentialDrive = new DifferentialDrive(leftLeader, rightLeader);
   private double mostRecentLeftSensorCountTarget = 0;
@@ -99,7 +100,7 @@ public class Drivetrain extends SubsystemBase {
     odometry = new DifferentialDriveOdometry(getHeadingInRotation2d());
     resetOdometry(initialPosition);
   }
-  
+
   private DifferentialDriveWheelSpeeds getWheelSpeeds() {
     double leftSensorUnitsPer100ms = leftLeader.getSelectedSensorVelocity();
     double rightSensorUnitsPer100ms = rightLeader.getSelectedSensorVelocity();
@@ -210,11 +211,12 @@ public class Drivetrain extends SubsystemBase {
   public void stopDriving() {
     driveWithCurvature(0, 0, false);
   }
+
   private void tankDriveVolts(double leftVolts, double rightVolts) {
     leftLeader.setVoltage(leftVolts);
     rightLeader.setVoltage(rightVolts);
   }
-  
+
   public double getHeading() {
     return pigeonGyro.getRotation2d().getDegrees();
   }
@@ -245,7 +247,6 @@ public class Drivetrain extends SubsystemBase {
         this::tankDriveVolts,
         this);
 
-
     // Run path following command, then stop at the end.
     return ramseteCommand.andThen(() -> this.tankDriveVolts(0, 0));
   }
@@ -254,7 +255,8 @@ public class Drivetrain extends SubsystemBase {
     // This sets a lot of the defaults that the example code seems to require
     // for full functioning of the Falcon500s. Cargo culting FTW.
     // https://github.com/CrossTheRoadElec/Phoenix-Examples-Languages/blob/master/Java%20Talon%20FX%20(Falcon%20500)/MotionMagic/src/main/java/frc/robot/Robot.java
-    // TODO: calculate or characterize these values? why would you ever not use the 0th slots?
+    // TODO: calculate or characterize these values? why would you ever not use the
+    // 0th slots?
     int fakeSlot = 0;
     int fakePIDSlot = 0;
     int timeoutMilliseconds = 30;
@@ -262,16 +264,16 @@ public class Drivetrain extends SubsystemBase {
     motor.configNeutralDeadband(0.001); // really low deadzone
 
     motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, timeoutMilliseconds);
-		motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, timeoutMilliseconds);
+    motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, timeoutMilliseconds);
 
-		motor.selectProfileSlot(fakeSlot, fakePIDSlot);
-		motor.config_kF(fakeSlot, Tunables.armKF.get(), timeoutMilliseconds);
-		motor.config_kP(fakeSlot, Tunables.armKP.get(), timeoutMilliseconds);
-		motor.config_kI(fakeSlot, 0.0, timeoutMilliseconds);
-		motor.config_kD(fakeSlot, 0.0, timeoutMilliseconds);
+    motor.selectProfileSlot(fakeSlot, fakePIDSlot);
+    motor.config_kF(fakeSlot, Tunables.armKF.get(), timeoutMilliseconds);
+    motor.config_kP(fakeSlot, Tunables.armKP.get(), timeoutMilliseconds);
+    motor.config_kI(fakeSlot, 0.0, timeoutMilliseconds);
+    motor.config_kD(fakeSlot, 0.0, timeoutMilliseconds);
 
-		motor.configMotionCruiseVelocity(12000, timeoutMilliseconds);
-		motor.configMotionAcceleration(3000, timeoutMilliseconds);
+    motor.configMotionCruiseVelocity(12000, timeoutMilliseconds);
+    motor.configMotionAcceleration(3000, timeoutMilliseconds);
     motor.configMotionSCurveStrength(4);
   }
 
